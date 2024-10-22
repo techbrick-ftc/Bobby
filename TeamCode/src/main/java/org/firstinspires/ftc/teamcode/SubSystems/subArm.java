@@ -31,6 +31,10 @@ public class subArm {
         grab = new subGrab(hardwareMap);
     }
 
+    public void home(){
+
+    }
+
     public void bin(boolean lBump, boolean high) {
 
         if (state == 0) {
