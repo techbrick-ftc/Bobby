@@ -18,14 +18,14 @@ public class ArmTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         if (Math.abs(gamepad1.right_stick_y) > .05) {
-            should.setShld((int)(should.slides.getCurrentPosition() + 50 * gamepad1.right_stick_y), defShPow);
+            should.setShld((int)(should.lSlides.getCurrentPosition() + 50 * gamepad1.right_stick_y), defShPow);
         }
 
         if (Math.abs(gamepad1.left_stick_y) > .05) {
             should.setShld((int)(should.shoulder.getCurrentPosition() + 50 * gamepad1.left_stick_y), defShPow);
         }
 
-        telemetry.addData("Slide Value: ", should.slides.getCurrentPosition());
+        telemetry.addData("Slide Value: ", should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder Value: ", should.shoulder.getCurrentPosition());
     }
 }

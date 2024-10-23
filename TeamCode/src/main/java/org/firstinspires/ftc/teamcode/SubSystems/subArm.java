@@ -40,7 +40,7 @@ public class subArm {
         should.setShld(ground[0], defShPow);
         should.setSlides(ground[0], defSlPow);
 
-        if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol)) {
+        if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
             state = 0;
             routine = 0;
         }
@@ -62,7 +62,7 @@ public class subArm {
         }
 
         if (state == 1) {
-            if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
                 state = 0;
                 routine = 0;
             }
@@ -98,7 +98,7 @@ public class subArm {
         }
 
         if (state == 1) {
-            if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol) && a) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
                 if (high) {
                     should.setShld(railHigh[0], defShPow);
                     should.setSlides(railHigh[1], defSlPow);
@@ -129,7 +129,7 @@ public class subArm {
         }
 
         if (state == 4) {
-            if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
                 grab.stop();
                 state = 0;
                 routine = 0;

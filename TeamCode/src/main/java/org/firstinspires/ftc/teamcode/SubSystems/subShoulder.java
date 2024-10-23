@@ -9,7 +9,8 @@ public class subShoulder {
 
     // Arm motors
     public DcMotorEx shoulder;
-    public DcMotorEx slides;
+    public DcMotorEx lSlides;
+    public DcMotorEx rSlides;
 
     // Arms Vars
     ElapsedTime tm;
@@ -20,11 +21,14 @@ public class subShoulder {
         shoulder = hardwareMap.get(DcMotorEx.class, "AR");
 
         shoulder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        slides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         shoulder.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        slides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        lSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shoulder.setDirection(DcMotorEx.Direction.REVERSE);
+        rSlides.setDirection(DcMotorEx.Direction.REVERSE);
 
         tm = new ElapsedTime();
         tm.startTime();
@@ -37,9 +41,13 @@ public class subShoulder {
     }
 
     public void setSlides(int pos, double pow) {
-        slides.setTargetPosition(pos);
-        slides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        slides.setPower(pow);
+        lSlides.setTargetPosition(pos);
+        lSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        lSlides.setPower(pow);
+
+        rSlides.setTargetPosition(pos);
+        rSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rSlides.setPower(pow);
     }
 
     public boolean reached(DcMotorEx motor, int tol) {
