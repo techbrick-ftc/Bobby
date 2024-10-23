@@ -24,14 +24,14 @@ public class subGrab {
 
     }
 
-    public void intake() {
-        Lroller.setPower(-1);
-        Rroller.setPower(1);
+    public void intake(double pow) {
+        Lroller.setPower(-pow);
+        Rroller.setPower(pow);
     }
 
-    public void outtake() {
-        Lroller.setPower(1);
-        Rroller.setPower(-1);
+    public void outtake(double pow) {
+        Lroller.setPower(pow);
+        Rroller.setPower(-pow);
     }
 
     public void stop() {

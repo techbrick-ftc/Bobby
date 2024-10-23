@@ -12,6 +12,7 @@ public class subArm {
 
     double defShPow = 0.5;
     double defSlPow = 0.5;
+    double defOutPow = .5;
     int defTol = 20;
 
     // Positional vars
@@ -23,6 +24,10 @@ public class subArm {
     int[] wallLow = {0, 0};
     int[] railHigh = {0, 0};
     int[] railLow = {350, 0};
+    int[] railHighInit = {0, 0};
+    int[] railLowInit = {300, 0};
+    int[] railHighEnd = {0, 0};
+    int[] railLowEnd = {400, 0};
     int[] lowBin = {350, 0};
     int[] highBin = {450, 0};
 
@@ -58,6 +63,74 @@ public class subArm {
 
         if (state == 1) {
             if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol)) {
+                state = 0;
+                routine = 0;
+            }
+        }
+    }
+
+    public void grabberUpdate(double lt, double rt) {
+        if (rt > .05) {
+            grab.outtake(rt);
+        }
+
+        else if (lt > .05) {
+            grab.intake(lt);
+        }
+
+        else {
+            grab.stop();
+        }
+    }
+
+    public void bar(boolean high, boolean a){
+        if (state == 0) {
+            if (high) {
+                should.setShld(railHighInit[0], defShPow);
+                should.setSlides(railHighInit[1], defSlPow);
+            }
+
+            else {
+                should.setShld(railLowInit[0], defSlPow);
+                should.setSlides(railLowInit[1], defSlPow);
+            }
+            state++;
+        }
+
+        if (state == 1) {
+            if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol) && a) {
+                if (high) {
+                    should.setShld(railHigh[0], defShPow);
+                    should.setSlides(railHigh[1], defSlPow);
+                }
+
+                else {
+                    should.setShld(railLow[0], defSlPow);
+                    should.setSlides(railLow[1], defSlPow);
+                }
+                state++;
+            }
+        }
+
+        if (state == 3) {
+            if (a) {
+                grab.outtake(defOutPow);
+                if (high) {
+                    should.setShld(railHighEnd[0], defShPow);
+                    should.setSlides(railHighEnd[1], defSlPow);
+                }
+
+                else {
+                    should.setShld(railLowEnd[0], defSlPow);
+                    should.setSlides(railLowEnd[1], defSlPow);
+                }
+                state++;
+            }
+        }
+
+        if (state == 4) {
+            if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol)) {
+                grab.stop();
                 state = 0;
                 routine = 0;
             }

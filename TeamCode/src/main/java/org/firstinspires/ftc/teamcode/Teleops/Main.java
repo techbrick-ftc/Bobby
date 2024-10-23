@@ -16,8 +16,6 @@ public class Main extends LinearOpMode {
     // Timer
     ElapsedTime tm1 = new ElapsedTime();
 
-    int routine = 0;
-
     boolean driveAllowed = true;
     double defPow = 1;
     double slowPow = 0.5;
@@ -45,28 +43,36 @@ public class Main extends LinearOpMode {
             }
 
             else if (gamepad1.x) {
-                routine = 1;
+                arm.routine = 1;
 
-                if (gamepad1.left_trigger > 0.05) {
-                    routine = 2;
+                if (gamepad1.left_bumper) {
+                    arm.routine = 2;
                 }
             }
 
-            if (routine != 0) {
+            else if (gamepad1.y) {
+                arm.routine = 3;
 
-                if (routine == 1) {
+                if (gamepad1.left_bumper) {
+                    arm.routine = 4;
+                }
+            }
+
+            if (arm.routine != 0) {
+
+                drivePow = slowPow;
+
+                if (arm.routine == 1) {
                     arm.bin(true);
-                    drivePow = slowPow;
                 }
 
-                else if (routine == 2) {
+                else if (arm.routine == 2) {
                     arm.bin(false);
-                    drivePow = slowPow;
                 }
             }
 
             else {
-                grabberUpdate();
+                arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
             }
 
             driveUpdate();
@@ -88,19 +94,7 @@ public class Main extends LinearOpMode {
         telemetry.update();
     }
 
-    public void grabberUpdate() {
-        if (gamepad2.right_bumper) {
-            grab.outtake();
-        }
 
-        else if (gamepad2.left_bumper) {
-            grab.intake();
-        }
-
-        else {
-            grab.stop();
-        }
-    }
 
     // TODO: Controls
     // drive at full speed, automatically slow down at arm positions based on state
