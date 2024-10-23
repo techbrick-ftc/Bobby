@@ -31,11 +31,17 @@ public class subArm {
         grab = new subGrab(hardwareMap);
     }
 
-    public void home(){
+    public void home() {
+        should.setShld(ground[0], defShPow);
+        should.setSlides(ground[0], defSlPow);
 
+        if (should.reached(should.slides, defTol) && should.reached(should.shoulder, defTol)) {
+            state = 0;
+            routine = 0;
+        }
     }
 
-    public void bin(boolean lBump, boolean high) {
+    public void bin(boolean high) {
 
         if (state == 0) {
             if (high) {

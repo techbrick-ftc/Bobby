@@ -40,7 +40,11 @@ public class Main extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            if (gamepad1.x) {
+            if (gamepad1.b & gamepad1.right_trigger > 0.05) {
+                arm.home();
+            }
+
+            else if (gamepad1.x) {
                 routine = 1;
 
                 if (gamepad1.left_trigger > 0.05) {
@@ -51,12 +55,12 @@ public class Main extends LinearOpMode {
             if (routine != 0) {
 
                 if (routine == 1) {
-                    arm.bin(gamepad1.left_bumper, true);
+                    arm.bin(true);
                     drivePow = slowPow;
                 }
 
                 else if (routine == 2) {
-                    arm.bin(gamepad1.left_bumper, false);
+                    arm.bin(false);
                     drivePow = slowPow;
                 }
             }
@@ -107,5 +111,12 @@ public class Main extends LinearOpMode {
     // Shift + X for low basket
     // Y for high chamber (bar)
     // Shift + Y for low chamber (bar)
+
+    /* TODO: Control
+        x - high basket
+        lBump + x - low basket
+        y - high bar
+        lBump + y  - low bar
+    */
 
 }
