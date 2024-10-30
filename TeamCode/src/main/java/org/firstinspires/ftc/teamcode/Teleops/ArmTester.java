@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 @TeleOp(name="Arm Test")
 public class ArmTester extends LinearOpMode {
 
-    subShoulder should = new subShoulder(hardwareMap);
     int extendDist = 0;
     int rotateDist = 0;
 
@@ -17,15 +16,35 @@ public class ArmTester extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        if (Math.abs(gamepad1.right_stick_y) > .05) {
-            should.setShld((int)(should.lSlides.getCurrentPosition() + 50 * gamepad1.right_stick_y), defShPow);
+
+        subShoulder should = new subShoulder(hardwareMap);
+
+
+/*
+Slides min = 0
+Slides max = 2850
+
+Pitch min = 0
+Pitch max = 5000
+ */
+
+        waitForStart();
+
+        while(opModeIsActive()){
+            if (Math.abs(gamepad1.right_stick_y) > .05) {
+                should.setSlides((int)(should.lSlides.getCurrentPosition() + -50 * gamepad1.right_stick_y), defShPow);
+            }
+
+            if (Math.abs(gamepad1.left_stick_y) > .05) {
+                should.setShld((int)(should.shoulder.getCurrentPosition() + -50 * gamepad1.left_stick_y), defShPow);
+            }
+
+            telemetry.addData("Right Slide Value: ", should.rSlides.getCurrentPosition());
+            telemetry.addData("Left Slide Value: ", should.lSlides.getCurrentPosition());
+            telemetry.addData("Shoulder Value: ", should.shoulder.getCurrentPosition());
+            telemetry.update();
         }
 
-        if (Math.abs(gamepad1.left_stick_y) > .05) {
-            should.setShld((int)(should.shoulder.getCurrentPosition() + 50 * gamepad1.left_stick_y), defShPow);
-        }
 
-        telemetry.addData("Slide Value: ", should.lSlides.getCurrentPosition());
-        telemetry.addData("Shoulder Value: ", should.shoulder.getCurrentPosition());
     }
 }

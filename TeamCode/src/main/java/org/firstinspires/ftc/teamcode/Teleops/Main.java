@@ -26,12 +26,15 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
-    subDrive drive = new subDrive(hardwareMap);
-    subArm arm = new subArm(hardwareMap);
-    subGrab grab = new subGrab(hardwareMap);
+    subDrive drive = null;
+
 
     @Override
     public void runOpMode() {
+
+        drive = new subDrive(hardwareMap);
+        subArm arm = new subArm(hardwareMap);
+        subGrab grab = new subGrab(hardwareMap);
 
         waitForStart();
         tm1.startTime();
