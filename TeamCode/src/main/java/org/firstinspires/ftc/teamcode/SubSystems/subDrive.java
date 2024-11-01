@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -38,13 +39,13 @@ public class subDrive {
     public subDrive(HardwareMap hardwareMap) {
 
         // Motor definitions
-        br = hardwareMap.get(DcMotorEx.class, "BR");
-        bl = hardwareMap.get(DcMotorEx.class, "BL");
-        fr = hardwareMap.get(DcMotorEx.class, "FR");
-        fl = hardwareMap.get(DcMotorEx.class, "FL");
+        br = hardwareMap.get(DcMotorEx.class, "BRM");
+        bl = hardwareMap.get(DcMotorEx.class, "BLM");
+        fr = hardwareMap.get(DcMotorEx.class, "FRM");
+        fl = hardwareMap.get(DcMotorEx.class, "FLM");
 
-        fl.setDirection(DcMotorSimple.Direction.REVERSE);
-        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+        br.setDirection(DcMotorSimple.Direction.REVERSE);
 
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -63,7 +64,7 @@ public class subDrive {
         if (Math.abs(x_move) > 0.05 || Math.abs(y_move) > 0.05 || Math.abs(rotation_x) > 0.05) {
             // Orientation
             orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            double angle = orientation.firstAngle - offset;
+            double angle = orientation.secondAngle - offset;
 
             // Calculating power variables
             double x = x_move * Math.cos(-(angle)) - y_move * Math.sin(-(angle));
