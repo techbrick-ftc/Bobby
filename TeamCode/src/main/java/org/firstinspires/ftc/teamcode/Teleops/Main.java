@@ -67,15 +67,19 @@ public class Main extends LinearOpMode {
                     if (gamepad1.left_bumper) {
                         arm.routine = 2;
                     }
-                } else if (gamepad1.y) {
+                }
+                else if (gamepad1.y) {
                     arm.routine = 3;
 
                     if (gamepad1.left_bumper) {
                         arm.routine = 4;
                     }
-                } else if (gamepad1.a) {
+                }
+                else if (gamepad1.a) {
                     arm.routine = 5;
-
+                    if (gamepad1.left_bumper) {
+                        arm.routine = 6;
+                    }
                 }
             }
 
@@ -90,20 +94,21 @@ public class Main extends LinearOpMode {
                 else if (arm.routine == 2) {
                     arm.bin(false);
                 }
-                else if (arm.routine == 3){
-
+                else if (arm.routine == 3) {
+                    arm.highBar();
                 }
                 else if (arm.routine == 4) {
-
+                    arm.lowBar(gamepad2.a);
                 }
                 else if (arm.routine == 5) {
                     arm.pitIntake(gamepad1.a);
                 }
+                else if (arm.routine == 6) {
+                    arm.wallIntake();
+                }
             }
 
-            else {
-                arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
-            }
+            arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
 
             driveUpdate();
 
@@ -140,9 +145,14 @@ public class Main extends LinearOpMode {
     // return arm to raised height
     // button to return slides
     // X high baskets
-    // Shift + X for low basket
+    // Left Bumper + X for low basket
     // Y for high chamber (bar)
-    // Shift + Y for low chamber (bar)
+    // Left Bumper + Y for low chamber (bar)
+    // B to return slides and shoulder to home
+    // Left Bumper + B to return slides to home
+    // Right Bumper + B to return shoulder to home
+    // A to activate intake
+    // A while intake is active to switch between higher and lower points
 
     /* TODO: Control
         x - high basket

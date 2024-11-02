@@ -72,6 +72,42 @@ public class subArm {
         }
     }
 
+    public void highBar(){
+        if (state == 0) {
+            should.setShld(barHigh[0], defShPow);
+            should.setSlides(barHigh[1], defSlPow);
+            state++;
+        }
+
+        if (state == 1) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                state = 0;
+                routine = 0;
+            }
+        }
+    }
+
+    public void lowBar(boolean a){
+        if (state == 0) {
+            should.setShld(barLowInit[0], defShPow);
+            should.setSlides(barLowInit[1], defSlPow);
+            state++;
+        }
+        else if (state == 1){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
+                should.setShld(barLow[0], defShPow);
+                should.setSlides(barLow[1], defSlPow);
+                state++;
+            }
+        }
+        else if (state == 2){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
+                state = 0;
+                routine = 0;
+            }
+        }
+    }
+
     public void pitIntake(boolean a){
         if (state == 0){
             should.setShld(intakeHigh[0], defShPow);
@@ -85,14 +121,28 @@ public class subArm {
                     should.setSlides(intakeLow[1], defSlPow);
                     intakeUp = !intakeUp;
                 }
-                else if (a && !intakeUp){
+                else if (a){
                     should.setShld(intakeHigh[0], defShPow);
                     should.setSlides(intakeHigh[1], defSlPow);
                     intakeUp = !intakeUp;
                 }
             }
         }
+    }
 
+    public void wallIntake(){
+        if (state == 0) {
+            should.setShld(wall[0], defShPow);
+            should.setSlides(wall[1], defSlPow);
+            state++;
+        }
+
+        if (state == 1) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                state = 0;
+                routine = 0;
+            }
+        }
     }
 
     public void grabberUpdate(double lt, double rt) {
