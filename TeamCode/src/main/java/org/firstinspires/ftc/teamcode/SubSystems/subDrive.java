@@ -33,7 +33,7 @@ public class subDrive {
 
     boolean driveAllowed = true;
 
-    public double offset = 0;
+    public double offset = Math.PI;
 
     // Getting Hardware map from main file and setting up
     public subDrive(HardwareMap hardwareMap) {
