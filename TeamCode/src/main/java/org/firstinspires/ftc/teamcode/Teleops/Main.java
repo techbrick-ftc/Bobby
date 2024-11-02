@@ -22,6 +22,9 @@ public class Main extends LinearOpMode {
     double slowerPow = 0.25;
     double drivePow = defPow;
 
+    boolean slidesHome = true;
+    boolean shouldHome = false;
+
     double y_move;
     double x_move;
     double rotation_x;
@@ -42,23 +45,37 @@ public class Main extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            if (gamepad1.b & gamepad1.right_bumper) {
-                arm.home();
-            }
-
-            else if (gamepad1.x) {
-                arm.routine = 1;
-
-                if (gamepad1.left_bumper) {
-                    arm.routine = 2;
+            if (gamepad1.b) {
+                if (gamepad1.left_bumper){
+                    arm.homeSlides();
+                    slidesHome = true;
+                }
+                else if (gamepad1.right_bumper){
+                    arm.homeShould();
+                    shouldHome = true;
+                }
+                else{
+                    arm.home();
+                    shouldHome = true;
+                    slidesHome = true;
                 }
             }
+            if (arm.routine == 0) {
+                if (gamepad1.x) {
+                    arm.routine = 1;
 
-            else if (gamepad1.y) {
-                arm.routine = 3;
+                    if (gamepad1.left_bumper) {
+                        arm.routine = 2;
+                    }
+                } else if (gamepad1.y) {
+                    arm.routine = 3;
 
-                if (gamepad1.left_bumper) {
-                    arm.routine = 4;
+                    if (gamepad1.left_bumper) {
+                        arm.routine = 4;
+                    }
+                } else if (gamepad1.a) {
+                    arm.routine = 5;
+
                 }
             }
 
@@ -73,6 +90,15 @@ public class Main extends LinearOpMode {
                 else if (arm.routine == 2) {
                     arm.bin(false);
                 }
+                else if (arm.routine == 3){
+
+                }
+                else if (arm.routine == 4) {
+
+                }
+                else if (arm.routine == 5) {
+                    arm.pitIntake(gamepad1.a);
+                }
             }
 
             else {
@@ -80,6 +106,13 @@ public class Main extends LinearOpMode {
             }
 
             driveUpdate();
+
+            if (slidesHome){
+                arm.updateSlideHome();
+            }
+            if (shouldHome){
+                arm.updateShouldHome();
+            }
 
         }
     }

@@ -14,6 +14,7 @@ public class subArm {
     double defSlPow = 0.5;
     double defOutPow = .5;
     int defTol = 20;
+    boolean intakeUp = true;
 
     // Positional vars
     //TODO: Setup these values
@@ -38,11 +39,14 @@ public class subArm {
     public void home() {
         should.setShld(home[0], defShPow);
         should.setSlides(home[1], defSlPow);
+    }
 
-        if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-            state = 0;
-            routine = 0;
-        }
+    public void homeSlides() {
+        should.setSlides(home[1], defSlPow);
+    }
+
+    public void homeShould() {
+        should.setShld(home[0], defSlPow);
     }
 
     public void bin(boolean high) {
@@ -68,6 +72,29 @@ public class subArm {
         }
     }
 
+    public void pitIntake(boolean a){
+        if (state == 0){
+            should.setShld(intakeHigh[0], defShPow);
+            should.setSlides(intakeHigh[1], defSlPow);
+            state++;
+        }
+        else if (state == 1){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                if (a && intakeUp){
+                    should.setShld(intakeLow[0], defShPow);
+                    should.setSlides(intakeLow[1], defSlPow);
+                    intakeUp = !intakeUp;
+                }
+                else if (a && !intakeUp){
+                    should.setShld(intakeHigh[0], defShPow);
+                    should.setSlides(intakeHigh[1], defSlPow);
+                    intakeUp = !intakeUp;
+                }
+            }
+        }
+
+    }
+
     public void grabberUpdate(double lt, double rt) {
         if (rt > .05) {
             grab.outtake(rt);
@@ -79,6 +106,20 @@ public class subArm {
 
         else {
             grab.stop();
+        }
+    }
+
+    public void updateShouldHome(){
+        if (should.reached(should.shoulder, defTol)) {
+            state = 0;
+            routine = 0;
+        }
+    }
+
+    public void updateSlideHome(){
+        if (should.reached(should.lSlides, defTol)) {
+            state = 0;
+            routine = 0;
         }
     }
 }
