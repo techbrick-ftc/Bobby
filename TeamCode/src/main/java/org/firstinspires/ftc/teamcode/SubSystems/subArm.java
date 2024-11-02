@@ -19,18 +19,16 @@ public class subArm {
     //TODO: Setup these values
     //Shoulder, Slides
     int[] ground = {0, 0};
-    int[] intakeLow = {0, 0};
+    int[] home = {2500, 0};
+    int[] intakeLow = {0, 2600};
     int[] intakeHigh = {950, 2600};
-    int[] wallHigh = {0, 0};
-    int[] wallLow = {0, 0};
-    int[] railHigh = {0, 0};
-    int[] railLow = {350, 0};
-    int[] railHighInit = {0, 0};
-    int[] railLowInit = {300, 0};
-    int[] railHighEnd = {0, 0};
-    int[] railLowEnd = {400, 0};
-    int[] lowBin = {350, 0};
-    int[] highBin = {450, 0};
+    int[] wall = {1500, 1200};
+    int[] barHigh = {3815, 810};
+    int[] barLowInit = {2050, 650};
+    int[] barLow = {750, 650};
+    int[] lowBin = {3715, 1340};
+    int[] highBin = {4400, 3000};
+
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -38,8 +36,8 @@ public class subArm {
     }
 
     public void home() {
-        should.setShld(ground[0], defShPow);
-        should.setSlides(ground[0], defSlPow);
+        should.setShld(home[0], defShPow);
+        should.setSlides(home[1], defSlPow);
 
         if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
             state = 0;
@@ -81,60 +79,6 @@ public class subArm {
 
         else {
             grab.stop();
-        }
-    }
-
-    public void bar(boolean high, boolean a){
-        if (state == 0) {
-            if (high) {
-                should.setShld(railHighInit[0], defShPow);
-                should.setSlides(railHighInit[1], defSlPow);
-            }
-
-            else {
-                should.setShld(railLowInit[0], defSlPow);
-                should.setSlides(railLowInit[1], defSlPow);
-            }
-            state++;
-        }
-
-        if (state == 1) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
-                if (high) {
-                    should.setShld(railHigh[0], defShPow);
-                    should.setSlides(railHigh[1], defSlPow);
-                }
-
-                else {
-                    should.setShld(railLow[0], defSlPow);
-                    should.setSlides(railLow[1], defSlPow);
-                }
-                state++;
-            }
-        }
-
-        if (state == 3) {
-            if (a) {
-                grab.outtake(defOutPow);
-                if (high) {
-                    should.setShld(railHighEnd[0], defShPow);
-                    should.setSlides(railHighEnd[1], defSlPow);
-                }
-
-                else {
-                    should.setShld(railLowEnd[0], defSlPow);
-                    should.setSlides(railLowEnd[1], defSlPow);
-                }
-                state++;
-            }
-        }
-
-        if (state == 4) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-                grab.stop();
-                state = 0;
-                routine = 0;
-            }
         }
     }
 }

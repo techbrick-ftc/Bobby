@@ -42,7 +42,7 @@ public class Main extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            if (gamepad1.b & gamepad1.right_trigger > 0.05) {
+            if (gamepad1.b & gamepad1.right_bumper) {
                 arm.home();
             }
 
@@ -95,6 +95,7 @@ public class Main extends LinearOpMode {
         }
 
         telemetry.addData("IMU: ", drive.getImu());
+        telemetry.addData("Routine", arm.routine);
         telemetry.update();
     }
 

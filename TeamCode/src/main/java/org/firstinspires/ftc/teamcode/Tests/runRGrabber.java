@@ -30,6 +30,8 @@ public class runRGrabber extends LinearOpMode {
             rightGrabber.setPower(0.50);
             leftGrabber.setPower(0.50);
 
+
+
             telemetry.addData("Command", gamepad1.left_bumper);
             telemetry.update();
         }
