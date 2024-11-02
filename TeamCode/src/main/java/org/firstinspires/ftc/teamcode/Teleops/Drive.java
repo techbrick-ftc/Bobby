@@ -55,6 +55,7 @@ public class Drive extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
+
             double speedScale = 1;
             if (gamepad1.right_bumper) {
                 speedScale = .33;

@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class subGrab {
 
     // Arm motors
     public CRServo Lroller;
     public CRServo Rroller;
-    public CRServo rotator;
+    public Servo rotator;
 
     public ColorRangeSensor colorSensor;
 
@@ -18,7 +19,7 @@ public class subGrab {
         //TODO: Setup configurations later
         Lroller = hardwareMap.get(CRServo.class, "LG");
         Rroller = hardwareMap.get(CRServo.class, "RG");
-        rotator = hardwareMap.get(CRServo.class, "RTR");
+        rotator = hardwareMap.get(Servo.class, "RTR");
 
         colorSensor = hardwareMap.get(ColorRangeSensor.class, "CS");
 

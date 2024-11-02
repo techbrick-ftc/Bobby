@@ -33,6 +33,7 @@ Pitch max = 5000
         waitForStart();
 
         while(opModeIsActive()){
+
             if (Math.abs(gamepad1.right_stick_y) > .05) {
                 should.setSlides((int)(should.lSlides.getCurrentPosition() + -50 * gamepad1.right_stick_y), defShPow);
             }
@@ -57,7 +58,5 @@ Pitch max = 5000
             telemetry.addData("Lift Value: ", lift.lift.getCurrentPosition());
             telemetry.update();
         }
-
-
     }
 }

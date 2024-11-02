@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -52,37 +53,43 @@ public class subDrive {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+        // Adjust the orientation parameters to match your robot
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
         imu.initialize(parameters);
     }
 
     public void run(double x_move, double y_move, double rotation_x, double pow) {
-
+        /*
         if (Math.abs(x_move) > 0.05 || Math.abs(y_move) > 0.05 || Math.abs(rotation_x) > 0.05) {
             // Orientation
-            orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            double angle = orientation.secondAngle - offset;
+            double y = y_move * pow; // Remember, Y stick value is reversed
+            double x = x_move * pow;
+            double rx = rotation_x * pow;
 
-            // Calculating power variables
-            double x = x_move * Math.cos(-(angle)) - y_move * Math.sin(-(angle));
-            double y = y_move * Math.cos(-(angle)) + x_move * Math.sin(-(angle));
+            // This button choice was made so that it is hard to hit on accident,
+            // it can be freely changed based on preference.
+            // The equivalent button is start on Xbox-style controllers.
 
-            // Dividing power by a denominator to set maximum output to 1
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rotation_x), 1);
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
-            double frontLeftPower = (y + x + rotation_x) / denominator;
-            double backLeftPower = (y - x + rotation_x) / denominator;
-            double frontRightPower = (y - x - rotation_x) / denominator;
-            double backRightPower = (y + x - rotation_x) / denominator;
+            // Rotate the movement direction counter to the bot's rotation
+            double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+            double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-            // Writing the power to the motors
-            fl.setPower(frontLeftPower * pow);
-            bl.setPower(backLeftPower * pow);
-            fr.setPower(frontRightPower * pow);
-            br.setPower(backRightPower * pow);
+            rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+            double frontLeftPower = (rotY + rotX + rx) / denominator;
+            double backLeftPower = (rotY - rotX + rx) / denominator;
+            double frontRightPower = (rotY - rotX - rx) / denominator;
+            double backRightPower = (rotY + rotX - rx) / denominator;
         }
 
         else {
@@ -97,4 +104,6 @@ public class subDrive {
         //TODO: Change secondAngle if necessary. Depends on IMU orientation
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).secondAngle;
     }
+    */
+
 }
