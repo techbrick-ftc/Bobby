@@ -88,7 +88,7 @@ public class Main extends LinearOpMode {
         y_move = -gamepad1.left_stick_y;
         x_move = gamepad1.left_stick_x;
 
-        rotation_x = gamepad1.right_stick_x * 1.0;
+        rotation_x = gamepad1.right_stick_x * -1.0;
 
         if (driveAllowed) {
             drive.run(x_move, y_move, rotation_x, drivePow);

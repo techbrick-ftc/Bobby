@@ -17,9 +17,10 @@ public class subArm {
 
     // Positional vars
     //TODO: Setup these values
+    //Shoulder, Slides
     int[] ground = {0, 0};
     int[] intakeLow = {0, 0};
-    int[] intakeHigh = {200, 0};
+    int[] intakeHigh = {950, 2600};
     int[] wallHigh = {0, 0};
     int[] wallLow = {0, 0};
     int[] railHigh = {0, 0};
