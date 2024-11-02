@@ -67,15 +67,19 @@ public class Main extends LinearOpMode {
                     if (gamepad1.left_bumper) {
                         arm.routine = 2;
                     }
-                } else if (gamepad1.y) {
+                }
+                else if (gamepad1.y) {
                     arm.routine = 3;
 
                     if (gamepad1.left_bumper) {
                         arm.routine = 4;
                     }
-                } else if (gamepad1.a) {
+                }
+                else if (gamepad1.a) {
                     arm.routine = 5;
-
+                    if (gamepad1.left_bumper) {
+                        arm.routine = 6;
+                    }
                 }
             }
 
@@ -90,20 +94,21 @@ public class Main extends LinearOpMode {
                 else if (arm.routine == 2) {
                     arm.bin(false);
                 }
-                else if (arm.routine == 3){
-
+                else if (arm.routine == 3) {
+                    arm.highBar();
                 }
                 else if (arm.routine == 4) {
-
+                    arm.lowBar(gamepad2.a);
                 }
                 else if (arm.routine == 5) {
                     arm.pitIntake(gamepad1.a);
                 }
+                else if (arm.routine == 6) {
+                    arm.wallIntake();
+                }
             }
 
-            else {
-                arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
-            }
+            arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
 
             driveUpdate();
 
