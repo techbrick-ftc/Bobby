@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Teleops;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subLift;
 import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 
@@ -13,14 +14,20 @@ public class ArmTester extends LinearOpMode {
     int extendDist = 0;
     int rotateDist = 0;
 
+    double defGrabPow = .5;
     double defShPow = 0.5;
     double defLiftPow = 5.0;
+
+    subShoulder should = null;
+    subLift lift = null;
+    subGrab grab = null;
 
     @Override
     public void runOpMode() {
 
-        subShoulder should = new subShoulder(hardwareMap);
-        subLift lift = new subLift(hardwareMap);
+        should = new subShoulder(hardwareMap);
+        lift = new subLift(hardwareMap);
+        grab = new subGrab(hardwareMap);
 
 /*
 Slides min = 0
@@ -51,10 +58,23 @@ Pitch max = 5000
                 lift.runLift(0, 0);
             }
 
+            if (gamepad1.right_bumper){
+                grab.intake(defGrabPow);
+                telemetry.addData("Intake", true);
+            }
+            else if (gamepad1.left_bumper){
+                grab.outtake(defGrabPow);
+                telemetry.addData("Outtake", true);
+            }
+            else{
+                grab.stop();
+            }
+
             telemetry.addData("Right Slide Value: ", should.rSlides.getCurrentPosition());
             telemetry.addData("Left Slide Value: ", should.lSlides.getCurrentPosition());
             telemetry.addData("Shoulder Value: ", should.shoulder.getCurrentPosition());
             telemetry.addData("Lift Value: ", lift.lift.getCurrentPosition());
+
             telemetry.update();
         }
 
