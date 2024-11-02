@@ -10,7 +10,7 @@ public class subGrab {
     // Arm motors
     public CRServo Lroller;
     public CRServo Rroller;
-    public Servo rotator;
+    public CRServo rotator;
 
     public ColorRangeSensor colorSensor;
 
@@ -19,7 +19,7 @@ public class subGrab {
         //TODO: Setup configurations later
         Lroller = hardwareMap.get(CRServo.class, "LG");
         Rroller = hardwareMap.get(CRServo.class, "RG");
-        rotator = hardwareMap.get(Servo.class, "RTR");
+        //rotator = hardwareMap.get(Servo.class, "RTR");
 
         colorSensor = hardwareMap.get(ColorRangeSensor.class, "CS");
 
