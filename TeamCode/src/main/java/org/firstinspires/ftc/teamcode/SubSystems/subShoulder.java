@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -15,7 +16,7 @@ public class subShoulder {
     public int slideMin = 0;
     public int shouldMin = 0;
 
-    public int slideMax = 2850;
+    public int slideMax = 3000;
     public int shouldMax = 4950;
 
     // Arms Vars
@@ -33,6 +34,7 @@ public class subShoulder {
         rSlides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         shoulder.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shoulder.setDirection(DcMotorEx.Direction.REVERSE);
         lSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         lSlides.setDirection(DcMotorEx.Direction.REVERSE);
@@ -78,4 +80,5 @@ public class subShoulder {
     public boolean reached(DcMotorEx motor, int tol) {
         return Math.abs(motor.getTargetPosition() - motor.getCurrentPosition()) < tol;
     }
+
 }

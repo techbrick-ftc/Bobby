@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
+import org.firstinspires.ftc.teamcode.SubSystems.subLift;
 
 @TeleOp(name="Doesn't Matter")
 public class Main extends LinearOpMode {
@@ -32,6 +33,9 @@ public class Main extends LinearOpMode {
     subDrive drive = null;;
     subArm arm = null;
     subGrab grab = null;
+    subLift lift = null;
+
+
 
     @Override
     public void runOpMode() {
@@ -39,6 +43,9 @@ public class Main extends LinearOpMode {
         drive = new subDrive(hardwareMap);
         arm = new subArm(hardwareMap);
         grab = new subGrab(hardwareMap);
+        lift = new subLift(hardwareMap);
+
+        grab.setRotation(.5);
 
         waitForStart();
         tm1.startTime();
@@ -61,6 +68,7 @@ public class Main extends LinearOpMode {
                 }
             }
             if (arm.routine == 0) {
+                // Bins
                 if (gamepad1.x) {
                     arm.routine = 1;
 
@@ -68,6 +76,7 @@ public class Main extends LinearOpMode {
                         arm.routine = 2;
                     }
                 }
+                // Bars
                 else if (gamepad1.y) {
                     arm.routine = 3;
 
@@ -75,6 +84,7 @@ public class Main extends LinearOpMode {
                         arm.routine = 4;
                     }
                 }
+                // Intake
                 else if (gamepad1.a) {
                     arm.routine = 5;
                     if (gamepad1.left_bumper) {
@@ -86,6 +96,9 @@ public class Main extends LinearOpMode {
             if (arm.routine != 0) {
 
                 drivePow = slowPow;
+
+                shouldHome = false;
+                slidesHome = false;
 
                 if (arm.routine == 1) {
                     arm.bin(true);
@@ -101,11 +114,14 @@ public class Main extends LinearOpMode {
                     arm.lowBar(gamepad2.a);
                 }
                 else if (arm.routine == 5) {
-                    arm.pitIntake(gamepad1.a);
+                    arm.pitIntake(gamepad2.a);
                 }
                 else if (arm.routine == 6) {
                     arm.wallIntake();
                 }
+
+                arm.manualShould(gamepad2.left_stick_y);
+                arm.manualSlides(gamepad2.right_stick_y);
             }
 
             arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
@@ -113,11 +129,16 @@ public class Main extends LinearOpMode {
             driveUpdate();
 
             if (slidesHome){
-                arm.updateSlideHome();
+                if (arm.updateSlideHome()){
+                    slidesHome = false;
+                }
             }
             if (shouldHome){
-                arm.updateShouldHome();
+                if (arm.updateShouldHome()){
+                    shouldHome = false;
+                }
             }
+
 
         }
     }
@@ -132,6 +153,8 @@ public class Main extends LinearOpMode {
             drive.run(x_move, y_move, rotation_x, drivePow);
         }
 
+        telemetry.addData("State: ", arm.state);
+        telemetry.addData("Intake Up: ", arm.intakeUp);
         telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Routine", arm.routine);
         telemetry.update();

@@ -14,7 +14,7 @@ public class subArm {
     double defSlPow = 0.5;
     double defOutPow = .5;
     int defTol = 20;
-    boolean intakeUp = true;
+    public boolean intakeUp = true;
 
     // Positional vars
     //TODO: Setup these values
@@ -39,10 +39,13 @@ public class subArm {
     public void home() {
         should.setShld(home[0], defShPow);
         should.setSlides(home[1], defSlPow);
+        routine = 0;
+        state = 0;
     }
 
     public void homeSlides() {
         should.setSlides(home[1], defSlPow);
+
     }
 
     public void homeShould() {
@@ -145,6 +148,18 @@ public class subArm {
         }
     }
 
+    public void manualSlides(double stick_y){
+        if (Math.abs(stick_y) > .05) {
+            should.setSlides((int) (should.lSlides.getTargetPosition() - 50 * stick_y), defSlPow);
+        }
+    }
+
+    public void manualShould(double stick_y){
+        if (Math.abs(stick_y) > .05) {
+            should.setShld((int) (should.shoulder.getTargetPosition() - 50 * stick_y), defSlPow);
+        }
+    }
+
     public void grabberUpdate(double lt, double rt) {
         if (rt > .05) {
             grab.outtake(rt);
@@ -159,17 +174,21 @@ public class subArm {
         }
     }
 
-    public void updateShouldHome(){
+    public boolean updateShouldHome(){
         if (should.reached(should.shoulder, defTol)) {
             state = 0;
             routine = 0;
+            return true;
         }
+        return false;
     }
 
-    public void updateSlideHome(){
+    public boolean updateSlideHome(){
         if (should.reached(should.lSlides, defTol)) {
             state = 0;
             routine = 0;
+            return true;
         }
+        return false;
     }
 }
