@@ -175,7 +175,7 @@ public class Main extends LinearOpMode {
     // Left Bumper + B to return slides to home
     // Right Bumper + B to return shoulder to home
     // A to activate intake
-    // A while intake is active to switch between higher and lower points
+    // Red Controller A while intake is active to switch between higher and lower points
 
     /* TODO: Control
         x - high basket

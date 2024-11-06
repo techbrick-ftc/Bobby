@@ -17,7 +17,7 @@ public class subShoulder {
     public int shouldMin = 0;
 
     public int slideMax = 3000;
-    public int shouldMax = 4950;
+    public int shouldMax = 5200;
 
     // Arms Vars
     ElapsedTime tm;
