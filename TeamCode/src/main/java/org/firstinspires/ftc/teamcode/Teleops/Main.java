@@ -67,6 +67,7 @@ public class Main extends LinearOpMode {
                     slidesHome = true;
                 }
             }
+
             if (arm.routine == 0) {
                 // Bins
                 if (gamepad1.x) {
@@ -91,9 +92,12 @@ public class Main extends LinearOpMode {
                         arm.routine = 6;
                     }
                 }
-            }
+                // Hang
+                else if (gamepad2.x && gamepad2.left_bumper){
 
-            if (arm.routine != 0) {
+                }
+            }
+            else  {
 
                 drivePow = slowPow;
 
@@ -111,10 +115,10 @@ public class Main extends LinearOpMode {
                     arm.highBar();
                 }
                 else if (arm.routine == 4) {
-                    arm.lowBar(gamepad2.a);
+                    arm.lowBar(gamepad1.a);
                 }
                 else if (arm.routine == 5) {
-                    arm.pitIntake(gamepad2.a);
+                    arm.pitIntake(gamepad1.a);
                 }
                 else if (arm.routine == 6) {
                     arm.wallIntake();
@@ -162,11 +166,8 @@ public class Main extends LinearOpMode {
 
 
 
-    // TODO: Controls
-    // drive at full speed, automatically slow down at arm positions based on state
-    // button to toggle between ground and up in input
-    // return arm to raised height
-    // button to return slides
+
+    // Blue Controller
     // X high baskets
     // Left Bumper + X for low basket
     // Y for high chamber (bar)
@@ -175,13 +176,12 @@ public class Main extends LinearOpMode {
     // Left Bumper + B to return slides to home
     // Right Bumper + B to return shoulder to home
     // A to activate intake
-    // Red Controller A while intake is active to switch between higher and lower points
+    // A while intake is active to switch between higher and lower points or while at low bar to push downwards
 
-    /* TODO: Control
-        x - high basket
-        lBump + x - low basket
-        y - high bar
-        lBump + y  - low bar
-    */
+    // Red Controller
+    // Left bumper + X to initiate hang
+    // X while hang is initialized to activate
+    // B while hang is initialized to cancel
+
 
 }
