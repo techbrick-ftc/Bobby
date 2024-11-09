@@ -38,11 +38,11 @@ public class subLift {
         lift.setPower(pow);
     }
 
-    public void runLift(double pow, int dir){
-        if (dir == 0 && lift.getCurrentPosition() > liftMin){
+    public void runLiftOverride(double pow, int dir){
+        if (dir == 0){
             lift.setPower(-pow);
         }
-        else if (dir == 1 && lift.getCurrentPosition() < liftMax){
+        else if (dir == 1){
             lift.setPower(pow);
         }
         else{

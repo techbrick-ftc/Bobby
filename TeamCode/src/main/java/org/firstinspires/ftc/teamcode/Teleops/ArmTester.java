@@ -42,22 +42,22 @@ Pitch max = 5000
         while(opModeIsActive()){
 
             if (Math.abs(gamepad1.right_stick_y) > .05) {
-                should.setSlides((int)(should.lSlides.getCurrentPosition() + -50 * gamepad1.right_stick_y), defShPow);
+                should.setSlidesOverride((int)(should.lSlides.getCurrentPosition() + -50 * gamepad1.right_stick_y), defShPow);
             }
 
             if (Math.abs(gamepad1.left_stick_y) > .05) {
-                should.setShld((int)(should.shoulder.getCurrentPosition() + -50 * gamepad1.left_stick_y), defShPow);
+                should.setShldOverride((int)(should.shoulder.getCurrentPosition() + -50 * gamepad1.left_stick_y), defShPow);
             }
 
             if (gamepad1.dpad_down){
-                lift.runLift(defLiftPow, 0);
+                lift.runLiftOverride(defLiftPow, 0);
             }
 
             else if (gamepad1.dpad_up){
-                lift.runLift(defLiftPow, 1);
+                lift.runLiftOverride(defLiftPow, 1);
             }
             else{
-                lift.runLift(0, 0);
+                lift.runLiftOverride(0, 2);
             }
 
             if (gamepad1.right_bumper){

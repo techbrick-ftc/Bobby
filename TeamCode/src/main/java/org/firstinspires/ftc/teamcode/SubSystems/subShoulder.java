@@ -57,6 +57,12 @@ public class subShoulder {
         shoulder.setPower(pow);
     }
 
+    public void setShldOverride(int pos, double pow) {
+        shoulder.setTargetPosition(pos);
+        shoulder.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        shoulder.setPower(pow);
+    }
+
     public void setSlides(int pos, double pow) {
         if (pos >= slideMin && pos <= slideMax) {
             lSlides.setTargetPosition(pos);
@@ -70,6 +76,16 @@ public class subShoulder {
             lSlides.setTargetPosition(slideMax);
             rSlides.setTargetPosition(slideMax);
         }
+
+        lSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        lSlides.setPower(pow);
+        rSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        rSlides.setPower(pow);
+    }
+
+    public void setSlidesOverride(int pos, double pow) {
+        lSlides.setTargetPosition(pos);
+        rSlides.setTargetPosition(pos);
 
         lSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         lSlides.setPower(pow);

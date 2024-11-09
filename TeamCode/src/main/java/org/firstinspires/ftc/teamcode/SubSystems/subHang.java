@@ -12,8 +12,8 @@ public class subHang {
 
     int state = 0;
 
-    double defShPow = 0.5;
-    double defSlPow = 0.5;
+    double defShPow = 1;
+    double defSlPow = 1;
     double defLiftPow = 1;
 
     int defTol = 20;
@@ -23,10 +23,10 @@ public class subHang {
     int[] lowHang1 = {4400, 2700, 3900};
     int[] lowHang2 = {4850, 2700, 3900};
     int[] hookSlides = {4850, 2400, 3900};
-    int[] pullUp = {4250, 1100, 0};
-    int[] rotate = {2900, 1100, 0};
-    int[] pullHigher = {2900, 290, 0};
-    int[] finalize = {2000, 170, 0};
+    int[] pullUp = {4250, 1100, 1500};
+    int[] rotate = {2700, 1100, 0};
+    int[] pullHigher = {2700, 290, 0};
+    int[] finalize = {1800, 0, 0};
 
 
     public subHang(HardwareMap hardwareMap){
