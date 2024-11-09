@@ -171,8 +171,6 @@ public class Main extends LinearOpMode {
     }
 
 
-
-
     // Blue Controller
     // X high baskets
     // Left Bumper + X for low basket
