@@ -13,58 +13,69 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 
 @TeleOp (name="Grabber Test")
 public class grabberTest extends LinearOpMode {
 
-    private ColorSensor colorSensor;
+    private ColorRangeSensor colorSensor;
     private double redValue;
     private double greenValue;
     private double blueValue;
     private double alphaValue;
-    private double targetValue = 1000;
-    CRServo leftGrabber;
-    CRServo rightGrabber;
+    private double dist;
 
-    public void getColor()  {
+    int color = 0;
+
+    private double distThresh = 2;
+
+    subGrab grab = null;
+
+    public void readSensor()  {
         redValue = colorSensor.red();
         greenValue = colorSensor.green();
         blueValue = colorSensor.blue();
         alphaValue = colorSensor.alpha();
-
-        telemetry.addData("Red", redValue);
-        telemetry.update();
+        dist = colorSensor.getDistance(DistanceUnit.MM);
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CRServo leftGrabber = hardwareMap.get(CRServo.class, "LG");
-        CRServo rightGrabber = hardwareMap.get(CRServo.class, "RG");
+
+        grab = new subGrab(hardwareMap);
         colorSensor = hardwareMap.get(ColorRangeSensor.class, "CS");
 
         waitForStart();
-        if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            //getColor();
+
+            readSensor();
+
+            if (redValue > 60) {
+                color = 1; // Red
+            }
 
             // setting the grabber servos based on gamepad input
-            if (gamepad2.right_bumper) {
-                if (alphaValue > targetValue) {
-                    leftGrabber.setPower(1);
-                    rightGrabber.setPower(-1);
-                } else {
-                    leftGrabber.setPower(0);
-                    rightGrabber.setPower(0);
-                }
+            if (gamepad2.right_bumper && dist < distThresh) {
+                grab.intake(0.5);
             }
-            if (gamepad2.left_bumper) {
-                leftGrabber.setPower(-1);
-                rightGrabber.setPower(1);
+
+            else if (gamepad2.left_bumper || (dist < distThresh && color == 1)) {
+                grab.outtake(0.5);
+            }
+
+            else {
+                grab.stop();
             }
 
             redValue = colorSensor.red();
             telemetry.addData("Red", redValue);
+            telemetry.addData("Blue", blueValue);
+            telemetry.addData("Green", greenValue);
+            telemetry.addData("Dist, CM", dist);
+            telemetry.addData("Alpha", alphaValue);
+
             telemetry.update();
         }
     }
