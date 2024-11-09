@@ -17,6 +17,7 @@ public class subHang {
     double defLiftPow = 1;
 
     int defTol = 20;
+    int rotateTol = 50;
 
     // Shoulder, slides, lift
     int[] init = {4100, 1850, 7950};
@@ -65,7 +66,7 @@ public class subHang {
             lift.setLift(pullUp[2], defLiftPow);
             state++;
         }
-        else if (state == 5 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
+        else if (state == 5 && should.reached(should.lSlides, rotateTol) && should.reached(should.shoulder, rotateTol) && lift.reached(lift.lift, rotateTol) && x) {
             should.setShld(rotate[0], defShPow);
             should.setSlides(rotate[1], defSlPow);
             lift.setLift(rotate[2], defLiftPow);
