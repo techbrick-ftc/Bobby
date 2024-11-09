@@ -9,7 +9,7 @@ public class subLift {
 
     public DcMotorEx lift;
     public int liftMin = 0;
-    public int liftMax = 7900;
+    public int liftMax = 8000;
 
     public subLift(HardwareMap hardwareMap) {
 
@@ -17,7 +17,7 @@ public class subLift {
         lift = hardwareMap.get(DcMotorEx.class, "LA");
 
         lift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         lift.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         lift.setDirection(DcMotorEx.Direction.REVERSE);
 

@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Teleops.Main;
+
 public class subArm {
 
     subShoulder should;
     subGrab grab;
 
     public int state = 0;
-    public int routine = 0;
 
     double defShPow = 0.5;
     double defSlPow = 0.5;
@@ -39,7 +40,7 @@ public class subArm {
     public void home() {
         should.setShld(home[0], defShPow);
         should.setSlides(home[1], defSlPow);
-        routine = 0;
+        Main.routine = 0;
         state = 0;
     }
 
@@ -70,7 +71,7 @@ public class subArm {
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
                 state = 0;
-                routine = 0;
+                Main.routine = 0;
             }
         }
     }
@@ -85,7 +86,7 @@ public class subArm {
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
                 state = 0;
-                routine = 0;
+                Main.routine = 0;
             }
         }
     }
@@ -106,7 +107,7 @@ public class subArm {
         else if (state == 2){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
                 state = 0;
-                routine = 0;
+                Main.routine = 0;
             }
         }
     }
@@ -143,7 +144,7 @@ public class subArm {
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
                 state = 0;
-                routine = 0;
+                Main.routine = 0;
             }
         }
     }
@@ -177,7 +178,7 @@ public class subArm {
     public boolean updateShouldHome(){
         if (should.reached(should.shoulder, defTol)) {
             state = 0;
-            routine = 0;
+            Main.routine = 0;
             return true;
         }
         return false;
@@ -186,7 +187,7 @@ public class subArm {
     public boolean updateSlideHome(){
         if (should.reached(should.lSlides, defTol)) {
             state = 0;
-            routine = 0;
+            Main.routine = 0;
             return true;
         }
         return false;

@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
+import org.firstinspires.ftc.teamcode.SubSystems.subHang;
 import org.firstinspires.ftc.teamcode.SubSystems.subLift;
 
 @TeleOp(name="Doesn't Matter")
@@ -30,10 +31,12 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
+    public static int routine = 0;
+
     subDrive drive = null;;
     subArm arm = null;
     subGrab grab = null;
-    subLift lift = null;
+    subHang hang = null;
 
 
 
@@ -43,7 +46,7 @@ public class Main extends LinearOpMode {
         drive = new subDrive(hardwareMap);
         arm = new subArm(hardwareMap);
         grab = new subGrab(hardwareMap);
-        lift = new subLift(hardwareMap);
+        hang = new subHang(hardwareMap);
 
         grab.setRotation(.5);
 
@@ -68,33 +71,33 @@ public class Main extends LinearOpMode {
                 }
             }
 
-            if (arm.routine == 0) {
+            if (routine == 0) {
                 // Bins
                 if (gamepad1.x) {
-                    arm.routine = 1;
+                    routine = 1;
 
                     if (gamepad1.left_bumper) {
-                        arm.routine = 2;
+                        routine = 2;
                     }
                 }
                 // Bars
                 else if (gamepad1.y) {
-                    arm.routine = 3;
+                    routine = 3;
 
                     if (gamepad1.left_bumper) {
-                        arm.routine = 4;
+                        routine = 4;
                     }
                 }
                 // Intake
                 else if (gamepad1.a) {
-                    arm.routine = 5;
+                    routine = 5;
                     if (gamepad1.left_bumper) {
-                        arm.routine = 6;
+                        routine = 6;
                     }
                 }
                 // Hang
                 else if (gamepad2.x && gamepad2.left_bumper){
-
+                    routine = 7;
                 }
             }
             else  {
@@ -104,24 +107,27 @@ public class Main extends LinearOpMode {
                 shouldHome = false;
                 slidesHome = false;
 
-                if (arm.routine == 1) {
+                if (routine == 1) {
                     arm.bin(true);
                 }
 
-                else if (arm.routine == 2) {
+                else if (routine == 2) {
                     arm.bin(false);
                 }
-                else if (arm.routine == 3) {
+                else if (routine == 3) {
                     arm.highBar();
                 }
-                else if (arm.routine == 4) {
+                else if (routine == 4) {
                     arm.lowBar(gamepad1.a);
                 }
-                else if (arm.routine == 5) {
+                else if (routine == 5) {
                     arm.pitIntake(gamepad1.a);
                 }
-                else if (arm.routine == 6) {
+                else if (routine == 6) {
                     arm.wallIntake();
+                }
+                else if (routine == 7){
+                    hang.hang(gamepad2.x, gamepad2.b);
                 }
 
                 arm.manualShould(gamepad2.left_stick_y);
@@ -160,7 +166,7 @@ public class Main extends LinearOpMode {
         telemetry.addData("State: ", arm.state);
         telemetry.addData("Intake Up: ", arm.intakeUp);
         telemetry.addData("IMU: ", drive.getImu());
-        telemetry.addData("Routine", arm.routine);
+        telemetry.addData("Routine", routine);
         telemetry.update();
     }
 
@@ -180,7 +186,7 @@ public class Main extends LinearOpMode {
 
     // Red Controller
     // Left bumper + X to initiate hang
-    // X while hang is initialized to activate
+    // A while hang is initialized to activate
     // B while hang is initialized to cancel
 
 
