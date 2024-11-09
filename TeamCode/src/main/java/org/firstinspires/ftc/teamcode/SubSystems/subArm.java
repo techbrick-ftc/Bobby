@@ -21,16 +21,15 @@ public class subArm {
     //TODO: Setup these values
     //Shoulder, Slides
     int[] ground = {0, 0};
-    int[] home = {2500, 0};
-    int[] intakeLow = {0, 2600};
-    int[] intakeHigh = {950, 2600};
-    int[] wall = {1500, 1200};
-    int[] barHigh = {3815, 810};
-    int[] barLowInit = {2050, 650};
-    int[] barLow = {750, 650};
-    int[] lowBin = {3715, 1340};
-    int[] highBin = {4400, 3000};
-
+    int[] home = {1800, 0};
+    int[] intakeLow = {100, 2600};
+    int[] intakeHigh = {510, 2600};
+    int[] wall = {1080, 1200};
+    int[] barHigh = {3290, 810};
+    int[] barLowInit = {1700, 650};
+    int[] barLow = {950, 650};
+    int[] lowBin = {3250, 1340};
+    int[] highBin = {3825, 3000};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
