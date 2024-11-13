@@ -35,6 +35,7 @@ public class subShoulder {
 
         shoulder.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shoulder.setDirection(DcMotorEx.Direction.REVERSE);
+
         lSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         rSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         lSlides.setDirection(DcMotorEx.Direction.REVERSE);

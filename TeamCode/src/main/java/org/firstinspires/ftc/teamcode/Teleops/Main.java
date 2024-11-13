@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subHang;
 import org.firstinspires.ftc.teamcode.SubSystems.subLift;
+import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 
 @TeleOp(name="Doesn't Matter")
 public class Main extends LinearOpMode {
@@ -174,13 +175,15 @@ public class Main extends LinearOpMode {
     // Blue Controller
     // X high baskets
     // Left Bumper + X for low basket
-    // Y for high chamber (bar)
-    // Left Bumper + Y for low chamber (bar)
+    // Y for high bar
+    // Left Bumper + Y for low bar
+    // A while at low bar to push downwards
     // B to return slides and shoulder to home
     // Left Bumper + B to return slides to home
     // Right Bumper + B to return shoulder to home
-    // A to activate intake
-    // A while intake is active to switch between higher and lower points or while at low bar to push downwards
+    // A to activate intake mode
+    // A while intake is active to switch between higher and lower points
+    // Triggers to activate intake wheels
 
     // Red Controller
     // Left bumper + X to initiate hang
