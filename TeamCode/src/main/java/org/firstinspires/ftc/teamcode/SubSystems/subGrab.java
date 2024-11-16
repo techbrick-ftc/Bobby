@@ -54,18 +54,15 @@ public class subGrab {
 
         if (y >= 0 && x >= 0){
             angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
-            angleRadians += (3 * Math.PI) / 2;
         }
         else if (y >= 0 && x <= 0){
-            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
-            angleRadians += Math.PI;
+            angleRadians = Math.PI - Math.atan2(Math.abs(y), Math.abs(x));
         }
         else if (y <= 0 && x <= 0){
-            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
-            angleRadians += Math.PI / 2;
+            angleRadians = Math.PI + Math.atan2(Math.abs(y), Math.abs(x));
         }
         else{
-            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
+            angleRadians = (Math.PI * 2) - Math.atan2(Math.abs(y), Math.abs(x));
         }
 
         return angleRadians;
