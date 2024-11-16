@@ -52,28 +52,41 @@ public class subGrab {
         rotator.setPosition(ang);
     }
 
-    public double rotateWrist(double y, double x) {
+    public void rotateWrist(double y, double x) {
 
-        double stickAngle = Math.atan(Math.abs(y) / Math.abs(x));
+        double stickAngle = 0;
 
-        if (y >= 0 && x <= 0){
-            stickAngle = Math.PI - stickAngle;
+        if (x != 0){
+            stickAngle = Math.atan(Math.abs(y) / Math.abs(x));
+
+            if (y >= 0 && x <= 0){
+                stickAngle = Math.PI - stickAngle;
+            }
+            else if (y <= 0 && x <= 0){
+                stickAngle = Math.PI + stickAngle;
+            }
+            else if (y <= 0 && x >= 0){
+                stickAngle = (Math.PI * 2) - stickAngle;
+            }
         }
-        else if (y <= 0 && x <= 0){
-            stickAngle = Math.PI + stickAngle;
+        else if (y >= 0){
+            stickAngle = Math.PI / 2;
         }
-        else if (y <= 0 && x >= 0){
-            stickAngle = (Math.PI * 2) - stickAngle;
+        else{
+            stickAngle = (3 * Math.PI) / 2;
         }
 
         double robotAngle = drive.getImu();
 
-        double wristAngle = (stickAngle + robotAngle) % (Math.PI * 2);
+        double wristAngle = (stickAngle - robotAngle - (Math.PI / 2)) % (Math.PI * 2);
+
         if (wristAngle < 0){
             wristAngle += Math.PI * 2;
         }
 
-        return wristAngle;
+        wristAngle = Range.scale(wristAngle, 0, Math.PI * 2, 0.95, 0.05);
+
+        setRotation(wristAngle);
 
     }
 }

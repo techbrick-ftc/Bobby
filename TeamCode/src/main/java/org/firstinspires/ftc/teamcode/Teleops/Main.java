@@ -32,7 +32,7 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
-    double wristRotate = .5;
+    double defWristRotate = .5;
 
     public static int routine = 0;
 
@@ -51,7 +51,7 @@ public class Main extends LinearOpMode {
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
 
-        grab.setRotation(wristRotate);
+        grab.setRotation(defWristRotate);
 
         waitForStart();
         tm1.startTime();
@@ -72,6 +72,8 @@ public class Main extends LinearOpMode {
                     shouldHome = true;
                     slidesHome = true;
                 }
+                grab.setRotation(defWristRotate);
+                drivePow = defPow;
             }
 
             if (routine == 0) {
@@ -125,6 +127,9 @@ public class Main extends LinearOpMode {
                 }
                 else if (routine == 5) {
                     arm.pitIntake(gamepad1.a);
+                    if (Math.abs(gamepad1.left_stick_x) >= .1 || Math.abs(gamepad1.left_stick_y) >= .1){
+                        grab.rotateWrist(-gamepad1.left_stick_y, gamepad1.left_stick_x);
+                    }
                 }
                 else if (routine == 6) {
                     arm.wallIntake();
@@ -170,10 +175,6 @@ public class Main extends LinearOpMode {
         telemetry.addData("Intake Up: ", arm.intakeUp);
         telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Routine", routine);
-        if (Math.abs(gamepad1.left_stick_x) >= .05){
-            wristRotate = grab.rotateWrist(-gamepad1.left_stick_y, gamepad1.left_stick_x);
-        }
-        telemetry.addData("Wrist Angle: ", wristRotate);
         telemetry.update();
     }
 
@@ -195,8 +196,8 @@ public class Main extends LinearOpMode {
     // Left bumper + X to initiate hang
     // A while hang is initialized to activate
     // B while hang is initialized to cancel
-    // Left stick to adjust slide length
-    // Right stick to adjust shoulder pitch
+    // Left stick to manually adjust slide length
+    // Right stick to manually adjust shoulder pitch
 
 
 }
