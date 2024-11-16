@@ -58,16 +58,28 @@ public class subGrab {
         direction = 0;
     }
 
-    public void checkObject(){
+    public boolean checkObjectIn(){
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
 
         if (direction == 1 && distance <= distanceTarget){
-            stop();
+            return true;
         }
-        if (direction == -1 && distance >= distanceTarget){
-            stop();
-        }
+
+        return false;
     }
+
+    public boolean checkObjectOut(){
+        double distance = distanceSensor.getDistance(DistanceUnit.CM);
+
+        if (direction == -1 && distance >= distanceTarget){
+            return true;
+        }
+
+        return false;
+    }
+
+
+
 
     public void setRotation(double ang){
         rotator.setPosition(ang);
