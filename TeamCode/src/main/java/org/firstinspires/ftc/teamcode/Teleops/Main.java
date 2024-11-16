@@ -170,7 +170,7 @@ public class Main extends LinearOpMode {
         telemetry.addData("Intake Up: ", arm.intakeUp);
         telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Routine", routine);
-        if (gamepad1.left_stick_x >= .05){
+        if (Math.abs(gamepad1.left_stick_x) >= .05){
             wristRotate = grab.rotateWrist(-gamepad1.left_stick_y, gamepad1.left_stick_x);
         }
         telemetry.addData("Wrist Angle: ", wristRotate);

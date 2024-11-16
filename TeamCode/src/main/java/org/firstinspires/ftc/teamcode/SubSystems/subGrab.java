@@ -16,6 +16,8 @@ public class subGrab {
     public CRServo Rroller;
     public Servo rotator;
 
+    public subDrive drive;
+
     public ColorRangeSensor colorSensor;
 
     public subGrab(HardwareMap hardwareMap) {
@@ -26,6 +28,8 @@ public class subGrab {
         rotator = hardwareMap.get(Servo.class, "RTR");
 
         colorSensor = hardwareMap.get(ColorRangeSensor.class, "CS");
+
+        drive = new subDrive(hardwareMap);
 
     }
 
@@ -50,21 +54,26 @@ public class subGrab {
 
     public double rotateWrist(double y, double x) {
 
-        double angleRadians = 0;
+        double stickAngle = Math.atan(Math.abs(y) / Math.abs(x));
 
-        if (y >= 0 && x >= 0){
-            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
-        }
-        else if (y >= 0 && x <= 0){
-            angleRadians = Math.PI - Math.atan2(Math.abs(y), Math.abs(x));
+        if (y >= 0 && x <= 0){
+            stickAngle = Math.PI - stickAngle;
         }
         else if (y <= 0 && x <= 0){
-            angleRadians = Math.PI + Math.atan2(Math.abs(y), Math.abs(x));
+            stickAngle = Math.PI + stickAngle;
         }
-        else{
-            angleRadians = (Math.PI * 2) - Math.atan2(Math.abs(y), Math.abs(x));
+        else if (y <= 0 && x >= 0){
+            stickAngle = (Math.PI * 2) - stickAngle;
         }
 
-        return angleRadians;
+        double robotAngle = drive.getImu();
+
+        double wristAngle = (stickAngle + robotAngle) % (Math.PI * 2);
+        if (wristAngle < 0){
+            wristAngle += Math.PI * 2;
+        }
+
+        return wristAngle;
+
     }
 }
