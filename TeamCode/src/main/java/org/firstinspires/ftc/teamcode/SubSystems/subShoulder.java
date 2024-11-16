@@ -48,7 +48,7 @@ public class subShoulder {
         if (pos >= shouldMin && pos <= shouldMax) {
             shoulder.setTargetPosition(pos);
         }
-        else if (pos < slideMin){
+        else if (pos < shouldMin){
             shoulder.setTargetPosition(slideMin);
         }
         else{

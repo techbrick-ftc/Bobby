@@ -32,7 +32,7 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
-    double defWristRotate = .5;
+    public static double defWristRotate = .5;
 
     public static int routine = 0;
 
@@ -73,10 +73,12 @@ public class Main extends LinearOpMode {
                     slidesHome = true;
                 }
                 grab.setRotation(defWristRotate);
-                drivePow = defPow;
             }
 
             if (routine == 0) {
+
+                drivePow = defPow;
+
                 // Bins
                 if (gamepad1.x) {
                     routine = 1;
@@ -126,10 +128,7 @@ public class Main extends LinearOpMode {
                     arm.lowBar(gamepad1.a);
                 }
                 else if (routine == 5) {
-                    arm.pitIntake(gamepad1.a);
-                    if (Math.abs(gamepad1.left_stick_x) >= .1 || Math.abs(gamepad1.left_stick_y) >= .1){
-                        grab.rotateWrist(-gamepad1.left_stick_y, gamepad1.left_stick_x);
-                    }
+                    arm.pitIntake(gamepad1.a, gamepad1.left_stick_x, gamepad1.left_stick_y);
                 }
                 else if (routine == 6) {
                     arm.wallIntake();

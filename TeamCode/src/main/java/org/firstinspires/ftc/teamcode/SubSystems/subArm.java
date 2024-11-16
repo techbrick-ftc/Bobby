@@ -11,10 +11,10 @@ public class subArm {
 
     public int state = 0;
 
-    double defShPow = 0.5;
-    double defSlPow = 0.5;
+    double defShPow = 1;
+    double defSlPow = 1;
     double defOutPow = .5;
-    double outtakeLimit = .2;
+    double outtakeLimit = .25;
     int defTol = 20;
     public boolean intakeUp = true;
 
@@ -112,7 +112,7 @@ public class subArm {
         }
     }
 
-    public void pitIntake(boolean a){
+    public void pitIntake(boolean a, double x, double y){
         if (state == 0){
             should.setShld(intakeHigh[0], defShPow);
             should.setSlides(intakeHigh[1], defSlPow);
@@ -120,6 +120,7 @@ public class subArm {
         }
         else if (state == 1){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+
                 if (a && intakeUp){
                     should.setShld(intakeLow[0], defShPow);
                     should.setSlides(intakeLow[1], defSlPow);
@@ -130,6 +131,23 @@ public class subArm {
                     should.setSlides(intakeHigh[1], defSlPow);
                     intakeUp = !intakeUp;
                 }
+
+                if (Math.abs(x) >= .1 || Math.abs(y) >= .1){
+                    grab.rotateWrist(-y, x);
+                }
+
+                if (grab.checkObjectIn()){
+                    should.setShld(home[0], defShPow);
+                    should.setSlides(home[1], defSlPow);
+                    grab.setRotation(Main.defWristRotate);
+                    state++;
+                }
+            }
+        }
+        else if (state == 2){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                state = 0;
+                Main.routine = 0;
             }
         }
     }
@@ -165,20 +183,14 @@ public class subArm {
         if (rt > .05) {
             grab.outtake(rt * outtakeLimit);
         }
-
         else {
-            if (lt > .05) {
+            if (lt > .05 && !grab.checkObjectIn()) {
                 grab.intake(lt);
             }
             else {
                 grab.stop();
             }
-
-            grab.checkObject();
         }
-
-
-
     }
 
     public boolean updateShouldHome(){
