@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+
+import org.opencv.core.Mat;
 
 public class subGrab {
 
@@ -43,5 +46,28 @@ public class subGrab {
 
     public void setRotation(double ang){
         rotator.setPosition(ang);
+    }
+
+    public double rotateWrist(double y, double x) {
+
+        double angleRadians = 0;
+
+        if (y >= 0 && x >= 0){
+            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
+            angleRadians += (3 * Math.PI) / 2;
+        }
+        else if (y >= 0 && x <= 0){
+            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
+            angleRadians += Math.PI;
+        }
+        else if (y <= 0 && x <= 0){
+            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
+            angleRadians += Math.PI / 2;
+        }
+        else{
+            angleRadians = Math.atan2(Math.abs(y), Math.abs(x));
+        }
+
+        return angleRadians;
     }
 }

@@ -32,6 +32,8 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
+    double wristRotate = .5;
+
     public static int routine = 0;
 
     subDrive drive = null;;
@@ -49,7 +51,7 @@ public class Main extends LinearOpMode {
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
 
-        grab.setRotation(.5);
+        grab.setRotation(wristRotate);
 
         waitForStart();
         tm1.startTime();
@@ -168,6 +170,10 @@ public class Main extends LinearOpMode {
         telemetry.addData("Intake Up: ", arm.intakeUp);
         telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Routine", routine);
+        if (gamepad1.left_stick_x >= .05){
+            wristRotate = grab.rotateWrist(gamepad1.left_stick_y, gamepad1.left_stick_x);
+        }
+        telemetry.addData("Wrist Angle: ", wristRotate);
         telemetry.update();
     }
 
@@ -189,6 +195,8 @@ public class Main extends LinearOpMode {
     // Left bumper + X to initiate hang
     // A while hang is initialized to activate
     // B while hang is initialized to cancel
+    // Left stick to adjust slide length
+    // Right stick to adjust shoulder pitch
 
 
 }
