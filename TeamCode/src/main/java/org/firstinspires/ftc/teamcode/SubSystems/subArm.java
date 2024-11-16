@@ -14,7 +14,7 @@ public class subArm {
     double defShPow = 1;
     double defSlPow = 1;
     double defOutPow = .5;
-    double outtakeLimit = .25;
+    double outtakeLimit = .3;
     int defTol = 20;
     public boolean intakeUp = true;
 
@@ -22,15 +22,15 @@ public class subArm {
     //TODO: Setup these values
     //Shoulder, Slides
     int[] ground = {0, 0};
-    int[] home = {1800, 0};
+    int[] home = {1800, 50};
     int[] intakeLow = {100, 2050};
-    int[] intakeHigh = {540, 2050};
-    int[] wall = {1080, 1200};
+    int[] intakeHigh = {600, 2050};
+    int[] wall = {1220, 850};
     int[] barHigh = {3290, 810};
     int[] barLowInit = {1700, 650};
     int[] barLow = {950, 650};
     int[] lowBin = {3250, 1340};
-    int[] highBin = {3825, 3000};
+    int[] highBin = {3760, 3085};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -160,9 +160,9 @@ public class subArm {
         }
 
         if (state == 1) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
                 state = 0;
-                Main.routine = 0;
+                Main.routine = 6;
             }
         }
     }

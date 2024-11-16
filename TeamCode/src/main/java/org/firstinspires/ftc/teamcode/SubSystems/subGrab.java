@@ -61,21 +61,13 @@ public class subGrab {
     public boolean checkObjectIn(){
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
 
-        if (direction == 1 && distance <= distanceTarget){
-            return true;
-        }
-
-        return false;
+        return distance <= distanceTarget;
     }
 
     public boolean checkObjectOut(){
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
 
-        if (direction == -1 && distance >= distanceTarget){
-            return true;
-        }
-
-        return false;
+        return distance >= distanceTarget;
     }
 
 

@@ -32,6 +32,12 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
+    boolean heldHeading = false;
+    boolean start = false;
+    boolean lastStart = false;
+    double angleCorrection = (5 * Math.PI) / 4;
+    double angle;
+
     public static double defWristRotate = .5;
 
     public static int routine = 0;
@@ -58,6 +64,14 @@ public class Main extends LinearOpMode {
 
         while(opModeIsActive()) {
 
+            start = gamepad1.start;
+
+            if (start && !lastStart){
+                heldHeading = !heldHeading;
+            }
+
+            lastStart = start;
+
             if (gamepad1.b) {
                 if (gamepad1.left_bumper){
                     arm.homeSlides();
@@ -71,13 +85,12 @@ public class Main extends LinearOpMode {
                     arm.home();
                     shouldHome = true;
                     slidesHome = true;
+                    drivePow = defPow;
                 }
                 grab.setRotation(defWristRotate);
             }
 
             if (routine == 0) {
-
-                drivePow = defPow;
 
                 // Bins
                 if (gamepad1.x) {
@@ -141,7 +154,7 @@ public class Main extends LinearOpMode {
                 arm.manualSlides(gamepad2.right_stick_y);
             }
 
-            arm.grabberUpdate(gamepad1.left_trigger, gamepad1.right_trigger);
+            arm.grabberUpdate(gamepad1.right_trigger, gamepad1.left_trigger);
 
             driveUpdate();
 
@@ -167,7 +180,22 @@ public class Main extends LinearOpMode {
         rotation_x = gamepad1.right_stick_x * -1.0;
 
         if (driveAllowed) {
-            drive.run(x_move, y_move, rotation_x, drivePow);
+            if (heldHeading) {
+                angle = drive.getImu() - angleCorrection - drive.offset;
+                if (angle >= Math.PI){
+                    angle -= 2*Math.PI;
+                }
+                if (angle <= -Math.PI){
+                    angle += 2*Math.PI;
+                }
+
+                drive.run(x_move, y_move, 2. * angle, drivePow);
+
+            }
+
+            else {
+                drive.run(x_move, y_move, rotation_x, drivePow);
+            }
         }
 
         telemetry.addData("State: ", arm.state);
@@ -197,6 +225,9 @@ public class Main extends LinearOpMode {
     // B while hang is initialized to cancel
     // Left stick to manually adjust slide length
     // Right stick to manually adjust shoulder pitch
+
+    // TODO:
+    // go to high bar when picking up from wall
 
 
 }
