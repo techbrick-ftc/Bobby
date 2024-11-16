@@ -16,6 +16,7 @@ public class subArm {
     double defOutPow = .5;
     double outtakeLimit = .3;
     int defTol = 20;
+    int highBinTol = 10;
     public boolean intakeUp = true;
 
     // Positional vars
@@ -25,12 +26,12 @@ public class subArm {
     int[] home = {1800, 50};
     int[] intakeLow = {100, 2050};
     int[] intakeHigh = {600, 2050};
-    int[] wall = {1220, 850};
+    int[] wall = {1260, 850};
     int[] barHigh = {3290, 810};
     int[] barLowInit = {1700, 650};
     int[] barLow = {950, 650};
     int[] lowBin = {3250, 1340};
-    int[] highBin = {3760, 3085};
+    int[] highBin = {3760, 3250};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -69,7 +70,7 @@ public class subArm {
         }
 
         if (state == 1) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)) {
                 state = 0;
                 Main.routine = 0;
             }
@@ -162,7 +163,7 @@ public class subArm {
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
                 state = 0;
-                Main.routine = 6;
+                Main.routine = 3;
             }
         }
     }

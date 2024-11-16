@@ -181,13 +181,7 @@ public class Main extends LinearOpMode {
 
         if (driveAllowed) {
             if (heldHeading) {
-                angle = drive.getImu() - angleCorrection - drive.offset;
-                if (angle >= Math.PI){
-                    angle -= 2*Math.PI;
-                }
-                if (angle <= -Math.PI){
-                    angle += 2*Math.PI;
-                }
+                angle = (drive.getImu() - angleCorrection) % Math.PI;
 
                 drive.run(x_move, y_move, 2. * angle, drivePow);
 
@@ -225,9 +219,6 @@ public class Main extends LinearOpMode {
     // B while hang is initialized to cancel
     // Left stick to manually adjust slide length
     // Right stick to manually adjust shoulder pitch
-
-    // TODO:
-    // go to high bar when picking up from wall
 
 
 }
