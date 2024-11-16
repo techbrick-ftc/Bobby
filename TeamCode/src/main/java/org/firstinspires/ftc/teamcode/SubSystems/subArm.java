@@ -165,13 +165,19 @@ public class subArm {
             grab.outtake(rt);
         }
 
-        else if (lt > .05) {
-            grab.intake(lt);
+        else {
+            if (lt > .05) {
+                grab.intake(lt);
+            }
+            else {
+                grab.stop();
+            }
+
+            grab.checkObject();
         }
 
-        else {
-            grab.stop();
-        }
+
+
     }
 
     public boolean updateShouldHome(){
