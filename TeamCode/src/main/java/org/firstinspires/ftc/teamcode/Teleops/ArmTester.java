@@ -17,6 +17,7 @@ public class ArmTester extends LinearOpMode {
     double defGrabPow = 0.9;
     double defShPow = 0.5;
     double defLiftPow = 5.0;
+    double ang = .5;
 
     subShoulder should = null;
     subLift lift = null;
@@ -60,6 +61,9 @@ Pitch max = 5000
                 lift.runLiftOverride(0, 2);
             }
 
+            ang = (gamepad2.left_stick_x + 1) / 2;
+            grab.setRotation(ang);
+
             if (gamepad1.right_bumper){
                 grab.intake(defGrabPow);
                 telemetry.addData("Intake", true);
@@ -68,9 +72,23 @@ Pitch max = 5000
                 grab.outtake(defGrabPow);
                 telemetry.addData("Outtake", true);
             }
+            else if (gamepad2.dpad_up){
+                grab.Rroller.setPower(defGrabPow);
+            }
+            else if (gamepad2.dpad_down){
+                grab.Rroller.setPower(-defGrabPow);
+            }
+            else if (gamepad2.dpad_left){
+                grab.Lroller.setPower(defGrabPow);
+            }
+            else if (gamepad2.dpad_right){
+                grab.Lroller.setPower(-defGrabPow);
+            }
             else{
                 grab.stop();
             }
+
+
 
             telemetry.addData("Right Slide Value: ", should.rSlides.getCurrentPosition());
             telemetry.addData("Left Slide Value: ", should.lSlides.getCurrentPosition());

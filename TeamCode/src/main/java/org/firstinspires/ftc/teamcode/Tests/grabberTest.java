@@ -50,22 +50,17 @@ public class grabberTest extends LinearOpMode {
 
             // setting the grabber servos based on gamepad input
             if (gamepad2.right_bumper) {
-                if (alphaValue > targetValue) {
-                    leftGrabber.setPower(1);
-                    rightGrabber.setPower(-1);
-                } else {
-                    leftGrabber.setPower(0);
-                    rightGrabber.setPower(0);
-                }
+                leftGrabber.setPower(1);
+                rightGrabber.setPower(-1);
             }
-            if (gamepad2.left_bumper) {
+            else if (gamepad2.left_bumper) {
                 leftGrabber.setPower(-1);
                 rightGrabber.setPower(1);
             }
-
-            redValue = colorSensor.red();
-            telemetry.addData("Red", redValue);
-            telemetry.update();
+            else {
+                leftGrabber.setPower(0);
+                rightGrabber.setPower(0);
+            }
         }
     }
 }

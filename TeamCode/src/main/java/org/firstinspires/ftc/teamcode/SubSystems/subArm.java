@@ -14,6 +14,7 @@ public class subArm {
     double defShPow = 0.5;
     double defSlPow = 0.5;
     double defOutPow = .5;
+    double outtakeLimit = .2;
     int defTol = 20;
     public boolean intakeUp = true;
 
@@ -22,8 +23,8 @@ public class subArm {
     //Shoulder, Slides
     int[] ground = {0, 0};
     int[] home = {1800, 0};
-    int[] intakeLow = {100, 2600};
-    int[] intakeHigh = {510, 2600};
+    int[] intakeLow = {100, 2050};
+    int[] intakeHigh = {540, 2050};
     int[] wall = {1080, 1200};
     int[] barHigh = {3290, 810};
     int[] barLowInit = {1700, 650};
@@ -162,7 +163,7 @@ public class subArm {
 
     public void grabberUpdate(double lt, double rt) {
         if (rt > .05) {
-            grab.outtake(rt);
+            grab.outtake(rt * outtakeLimit);
         }
 
         else {
