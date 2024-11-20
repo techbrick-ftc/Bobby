@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,13 +10,16 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.opencv.core.Mat;
+
+import java.sql.Time;
+import java.util.Date;
+import java.util.Timer;
 
 public class subGrab {
 
     // Arm motors
-    public CRServo Lroller;
-    public CRServo Rroller;
+    public CRServo lRoller;
+    public CRServo rRoller;
     public Servo rotator;
 
     double distanceTarget = 5.75;
@@ -23,14 +27,30 @@ public class subGrab {
 
     public subDrive drive;
 
-    private ColorSensor colorSensor;
-    private DistanceSensor distanceSensor;
+    // false = blue, true = red
+    boolean color = false;
+    double hue;
+    float hsvValues[] = {0F, 0F, 0F};
+    double hueTol = 10;
+    double red1Ang = 0;
+    double red2Ang = 360;
+    double blueAng = 220;
+    double yellowAng = 40;
+
+    public static Date time = new Date();
+    long initTime;
+    int delayMS = 150;
+
+    public ColorSensor colorSensor;
+    public DistanceSensor distanceSensor;
+    public static boolean detected = false;
+    boolean lastDetected = false;
 
     public subGrab(HardwareMap hardwareMap) {
 
         //TODO: Setup configurations later
-        Lroller = hardwareMap.get(CRServo.class, "LG");
-        Rroller = hardwareMap.get(CRServo.class, "RG");
+        lRoller = hardwareMap.get(CRServo.class, "LG");
+        rRoller = hardwareMap.get(CRServo.class, "RG");
         rotator = hardwareMap.get(Servo.class, "RTR");
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "CS");
@@ -41,27 +61,64 @@ public class subGrab {
     }
 
     public void intake(double pow) {
-        Lroller.setPower(pow);
-        Rroller.setPower(-pow);
+        lRoller.setPower(pow);
+        rRoller.setPower(-pow);
         direction = 1;
     }
 
     public void outtake(double pow) {
-        Lroller.setPower(-pow);
-        Rroller.setPower(pow);
+        lRoller.setPower(-pow);
+        rRoller.setPower(pow);
         direction = -1;
     }
 
     public void stop() {
-        Lroller.setPower(0);
-        Rroller.setPower(0);
+        lRoller.setPower(0);
+        rRoller.setPower(0);
         direction = 0;
     }
 
     public boolean checkObjectIn(){
         double distance = distanceSensor.getDistance(DistanceUnit.CM);
+        time = new Date();
+        if (distance <= distanceTarget){
+            Color.RGBToHSV((int) (colorSensor.red()),
+                    (int) (colorSensor.green()),
+                    (int) (colorSensor.blue()),
+                    hsvValues);
+            hue = hsvValues[0];
 
-        return distance <= distanceTarget;
+            // If red
+            if (color && (hue <= red1Ang + hueTol || hue >= red2Ang - hueTol)){
+                detected = true;
+            }
+            // If blue
+            else if (!color && (hue >= blueAng - hueTol && hue <= blueAng + hueTol)){
+                detected = true;
+            }
+            // If yellow
+            else if (hue >= yellowAng - hueTol && hue <= yellowAng + hueTol){
+                detected = true;
+            }
+            else{
+                detected = false;
+            }
+        }
+        else{
+            detected = false;
+        }
+
+        if (!detected || !lastDetected){
+            initTime = time.getTime();
+        }
+        lastDetected = detected;
+
+        if (detected && time.getTime() - initTime >= delayMS){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean checkObjectOut(){
@@ -69,9 +126,6 @@ public class subGrab {
 
         return distance >= distanceTarget;
     }
-
-
-
 
     public void setRotation(double ang){
         rotator.setPosition(ang);
@@ -113,5 +167,9 @@ public class subGrab {
 
         setRotation(wristAngle);
 
+    }
+
+    public void toggleColor(){
+        color = !color;
     }
 }

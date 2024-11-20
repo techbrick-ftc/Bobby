@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleops;
 
+import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -23,6 +24,8 @@ public class ArmTester extends LinearOpMode {
     subLift lift = null;
     subGrab grab = null;
 
+    float hsvValues[] = {0F, 0F, 0F};
+
     @Override
     public void runOpMode() {
 
@@ -41,6 +44,13 @@ Pitch max = 5000
         waitForStart();
 
         while(opModeIsActive()){
+
+            Color.RGBToHSV((int) (grab.colorSensor.red()),
+                    (int) (grab.colorSensor.green()),
+                    (int) (grab.colorSensor.blue()),
+                    hsvValues);
+
+
 
             if (Math.abs(gamepad1.right_stick_y) > .05) {
                 should.setSlidesOverride((int)(should.lSlides.getCurrentPosition() + -50 * gamepad1.right_stick_y), defShPow);
@@ -73,16 +83,16 @@ Pitch max = 5000
                 telemetry.addData("Outtake", true);
             }
             else if (gamepad2.dpad_up){
-                grab.Rroller.setPower(defGrabPow);
+                grab.rRoller.setPower(defGrabPow);
             }
             else if (gamepad2.dpad_down){
-                grab.Rroller.setPower(-defGrabPow);
+                grab.rRoller.setPower(-defGrabPow);
             }
             else if (gamepad2.dpad_left){
-                grab.Lroller.setPower(defGrabPow);
+                grab.lRoller.setPower(defGrabPow);
             }
             else if (gamepad2.dpad_right){
-                grab.Lroller.setPower(-defGrabPow);
+                grab.lRoller.setPower(-defGrabPow);
             }
             else{
                 grab.stop();
@@ -94,7 +104,9 @@ Pitch max = 5000
             telemetry.addData("Left Slide Value: ", should.lSlides.getCurrentPosition());
             telemetry.addData("Shoulder Value: ", should.shoulder.getCurrentPosition());
             telemetry.addData("Lift Value: ", lift.lift.getCurrentPosition());
-
+            telemetry.addData("Hue Value: ", hsvValues[0]);
+            telemetry.addData("Saturation Value: ", hsvValues[1]);
+            telemetry.addData("Value Value: ", hsvValues[2]);
             telemetry.update();
         }
     }

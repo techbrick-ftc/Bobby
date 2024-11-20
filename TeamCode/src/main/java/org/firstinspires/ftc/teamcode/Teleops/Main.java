@@ -33,8 +33,10 @@ public class Main extends LinearOpMode {
     double rotation_x;
 
     boolean heldHeading = false;
-    boolean start = false;
-    boolean lastStart = false;
+    boolean g1start = false;
+    boolean g2start = false;
+    boolean lastG1Start = false;
+    boolean lastG2Start = false;
     double angleCorrection = (5 * Math.PI) / 4;
     double angle;
 
@@ -64,13 +66,21 @@ public class Main extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            start = gamepad1.start;
+            g1start = gamepad1.start;
+            g2start = gamepad2.start;
 
-            if (start && !lastStart){
+            if (g1start && !lastG1Start){
                 heldHeading = !heldHeading;
             }
+            if (g2start && !lastG2Start){
+                grab.toggleColor();
+            }
+            if (gamepad2.y){
+                arm.zero();
+            }
 
-            lastStart = start;
+            lastG1Start = g1start;
+            lastG2Start = g2start;
 
             if (gamepad1.b) {
                 if (gamepad1.left_bumper){
@@ -122,7 +132,12 @@ public class Main extends LinearOpMode {
             }
             else  {
 
-                drivePow = slowPow;
+                if (routine != 3) {
+                    drivePow = slowPow;
+                }
+                else{
+                    drivePow = defPow;
+                }
 
                 shouldHome = false;
                 slidesHome = false;
@@ -142,7 +157,7 @@ public class Main extends LinearOpMode {
                 }
                 else if (routine == 5) {
                     // arm.pitIntakeFine(gamepad1.a, gamepad1.left_stick_x, gamepad1.left_stick_y);
-                    arm.pitIntakeCoarse(gamepad1.a, gamepad2.dpad_left, gamepad2.dpad_right, gamepad2.dpad_up, gamepad2.dpad_down);
+                    arm.pitIntakeCoarse(gamepad1.a, gamepad1.dpad_left, gamepad1.dpad_right, gamepad1.dpad_up, gamepad1.dpad_down);
                 }
                 else if (routine == 6) {
                     arm.wallIntake();
@@ -150,6 +165,11 @@ public class Main extends LinearOpMode {
                 else if (routine == 7){
                     hang.hang(gamepad2.x, gamepad2.b);
                 }
+            }
+
+            if (gamepad2.left_stick_y > .05 || gamepad2.right_stick_y > .05){
+                routine = 0;
+                arm.state = 0;
 
                 arm.manualShould(gamepad2.left_stick_y);
                 arm.manualSlides(gamepad2.right_stick_y);
@@ -182,7 +202,11 @@ public class Main extends LinearOpMode {
 
         if (driveAllowed) {
             if (heldHeading) {
-                angle = (drive.getImu() - angleCorrection) % Math.PI;
+                angle = (drive.getImu() - angleCorrection) % (2 * Math.PI);
+                if (angle < 0){
+                    angle += 2 * Math.PI;
+                }
+                angle = angle / (2 * Math.PI);
 
                 drive.run(x_move, y_move, angle, drivePow);
 
@@ -196,7 +220,9 @@ public class Main extends LinearOpMode {
         telemetry.addData("State: ", arm.state);
         telemetry.addData("Intake Up: ", arm.intakeUp);
         telemetry.addData("IMU: ", drive.getImu());
-        telemetry.addData("Routine", routine);
+        telemetry.addData("Routine: ", routine);
+        telemetry.addData("Detected: ", subGrab.detected);
+        telemetry.addData("Time: ", grab.time.getTime());
         telemetry.update();
     }
 
