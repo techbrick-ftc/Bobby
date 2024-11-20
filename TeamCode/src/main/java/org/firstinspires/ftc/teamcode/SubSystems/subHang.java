@@ -75,13 +75,13 @@ public class subHang {
         else if (state == 6 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
             should.setShld(pullHigher[0], defShPow);
             should.setSlides(pullHigher[1], defSlPow);
-            lift.setLift(pullHigher[2], defLiftPow);
+            lift.setLift(pullHigher[2], 0);
             state++;
         }
         else if (state == 7 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
             should.setShld(finalize[0], defShPow);
             should.setSlides(finalize[1], defSlPow);
-            lift.setLift(finalize[2], defLiftPow);
+            lift.setLift(finalize[2], 0);
             state = 0;
             Main.routine = 0;
         }

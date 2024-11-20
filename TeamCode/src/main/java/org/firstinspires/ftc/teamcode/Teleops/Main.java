@@ -20,10 +20,10 @@ public class Main extends LinearOpMode {
     ElapsedTime tm1 = new ElapsedTime();
 
     boolean driveAllowed = true;
-    double defPow = 1;
+    public static double defPow = 1;
     double slowPow = 0.5;
     double slowerPow = 0.25;
-    double drivePow = defPow;
+    public static double drivePow = defPow;
 
     boolean slidesHome = true;
     boolean shouldHome = false;
@@ -141,7 +141,8 @@ public class Main extends LinearOpMode {
                     arm.lowBar(gamepad1.a);
                 }
                 else if (routine == 5) {
-                    arm.pitIntake(gamepad1.a, gamepad1.left_stick_x, gamepad1.left_stick_y);
+                    // arm.pitIntakeFine(gamepad1.a, gamepad1.left_stick_x, gamepad1.left_stick_y);
+                    arm.pitIntakeCoarse(gamepad1.a, gamepad2.dpad_left, gamepad2.dpad_right, gamepad2.dpad_up, gamepad2.dpad_down);
                 }
                 else if (routine == 6) {
                     arm.wallIntake();
@@ -183,7 +184,7 @@ public class Main extends LinearOpMode {
             if (heldHeading) {
                 angle = (drive.getImu() - angleCorrection) % Math.PI;
 
-                drive.run(x_move, y_move, 2. * angle, drivePow);
+                drive.run(x_move, y_move, angle, drivePow);
 
             }
 

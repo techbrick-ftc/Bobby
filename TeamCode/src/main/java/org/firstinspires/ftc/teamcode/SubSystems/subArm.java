@@ -26,6 +26,7 @@ public class subArm {
     int[] home = {1800, 50};
     int[] intakeLow = {100, 2050};
     int[] intakeHigh = {600, 2050};
+    int[] intakeIn = {900, 50};
     int[] wall = {1260, 850};
     int[] barHigh = {3290, 810};
     int[] barLowInit = {1700, 650};
@@ -113,7 +114,7 @@ public class subArm {
         }
     }
 
-    public void pitIntake(boolean a, double x, double y){
+    public void pitIntakeFine(boolean a, double x, double y){
         if (state == 0){
             should.setShld(intakeHigh[0], defShPow);
             should.setSlides(intakeHigh[1], defSlPow);
@@ -138,8 +139,8 @@ public class subArm {
                 }
 
                 if (grab.checkObjectIn()){
-                    should.setShld(home[0], defShPow);
-                    should.setSlides(home[1], defSlPow);
+                    should.setShld(intakeIn[0], defShPow);
+                    should.setSlides(intakeIn[1], defSlPow);
                     grab.setRotation(Main.defWristRotate);
                     state++;
                 }
@@ -147,6 +148,77 @@ public class subArm {
         }
         else if (state == 2){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                Main.drivePow = Main.defPow;
+                should.setShld(home[0], defShPow);
+                should.setSlides(home[1], defSlPow);
+                state = 0;
+                Main.routine = 0;
+            }
+        }
+    }
+
+    public void pitIntakeCoarse(boolean a, boolean l, boolean r, boolean u, boolean d){
+        if (state == 0){
+            should.setShld(intakeHigh[0], defShPow);
+            should.setSlides(intakeHigh[1], defSlPow);
+            state++;
+        }
+        else if (state == 1){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+
+                if (a && intakeUp){
+                    should.setShld(intakeLow[0], defShPow);
+                    should.setSlides(intakeLow[1], defSlPow);
+                    intakeUp = !intakeUp;
+                }
+                else if (a){
+                    should.setShld(intakeHigh[0], defShPow);
+                    should.setSlides(intakeHigh[1], defSlPow);
+                    intakeUp = !intakeUp;
+                }
+
+                else if (l){
+                    if (u){
+                        grab.setRotation(.3875);
+                    }
+                    else if (d){
+                        grab.setRotation(.1625);
+                    }
+                    else {
+                        grab.setRotation(.275);
+                    }
+                }
+                else if (r){
+                    if (u){
+                        grab.setRotation(.8875);
+                    }
+                    else if (d){
+                        grab.setRotation(.6625);
+                    }
+                    else {
+                        grab.setRotation(.775);
+                    }
+                }
+                else if (u){
+                    grab.setRotation(.5);
+                }
+                else if (d){
+                    grab.setRotation(.05);
+                }
+
+                if (grab.checkObjectIn()){
+                    should.setShld(intakeIn[0], defShPow);
+                    should.setSlides(intakeIn[1], defSlPow);
+                    grab.setRotation(Main.defWristRotate);
+                    state++;
+                }
+            }
+        }
+        else if (state == 2){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                Main.drivePow = Main.defPow;
+                should.setShld(home[0], defShPow);
+                should.setSlides(home[1], defSlPow);
                 state = 0;
                 Main.routine = 0;
             }
