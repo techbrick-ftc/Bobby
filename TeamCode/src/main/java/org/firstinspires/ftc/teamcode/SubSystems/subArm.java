@@ -14,7 +14,7 @@ public class subArm {
     double defShPow = 1;
     double defSlPow = 1;
     double defOutPow = .5;
-    double outtakeLimit = .3;
+    double outtakeLimit = .4;
     int defTol = 20;
     int highBinTol = 10;
     public boolean intakeUp = true;
@@ -27,12 +27,12 @@ public class subArm {
     int[] intakeLow = {100, 2050};
     int[] intakeHigh = {600, 2050};
     int[] intakeIn = {900, 50};
-    int[] wall = {1260, 850};
+    int[] wall = {1310, 850};
     int[] barHigh = {3290, 810};
     int[] barLowInit = {1700, 650};
     int[] barLow = {950, 650};
     int[] lowBin = {3250, 1340};
-    int[] highBin = {3760, 3250};
+    int[] highBin = {3760, 3500};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -282,5 +282,12 @@ public class subArm {
             return true;
         }
         return false;
+    }
+
+    public void zero(){
+        should.setShld(ground[0], defShPow);
+        should.setSlides(ground[1], defSlPow);
+        Main.routine = 0;
+        state = 0;
     }
 }
