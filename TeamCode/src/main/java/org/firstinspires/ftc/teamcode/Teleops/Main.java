@@ -24,6 +24,7 @@ public class Main extends LinearOpMode {
     double slowPow = 0.5;
     double slowerPow = 0.25;
     public static double drivePow = defPow;
+    boolean lockPow = false;
 
     boolean slidesHome = true;
     boolean shouldHome = false;
@@ -138,11 +139,8 @@ public class Main extends LinearOpMode {
             }
             else  {
 
-                if (routine != 3) {
+                if (!lockPow) {
                     drivePow = slowPow;
-                }
-                else{
-                    drivePow = defPow;
                 }
 
                 shouldHome = false;
