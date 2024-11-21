@@ -29,10 +29,6 @@ public class subShoulder {
         lSlides = hardwareMap.get(DcMotorEx.class, "SL");
         rSlides = hardwareMap.get(DcMotorEx.class, "SR");
 
-        shoulder.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        lSlides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rSlides.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
         shoulder.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shoulder.setDirection(DcMotorEx.Direction.REVERSE);
 

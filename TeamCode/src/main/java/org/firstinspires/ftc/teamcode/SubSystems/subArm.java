@@ -19,20 +19,19 @@ public class subArm {
     int highBinTol = 10;
     public boolean intakeUp = true;
 
-    // Positional vars
-    //TODO: Setup these values
-    //Shoulder, Slides
+    // Positions
+    // Shoulder, Slides
     int[] ground = {0, 0};
     int[] home = {1800, 50};
     int[] init = {2420, 20};
-    int[] intakeLow = {100, 1830};
-    int[] intakeHigh = {600, 1830};
+    int[] intakeLow = {100, 1905};
+    int[] intakeHigh = {600, 1905};
     int[] intakeIn = {900, 50};
-    int[] wall = {1310, 630};
-    int[] barHigh = {3290, 590};
-    int[] barLowInit = {1700, 430};
-    int[] barLow = {950, 430};
-    int[] lowBin = {3250, 1120};
+    int[] wall = {1310, 705};
+    int[] barHigh = {3290, 665};
+    int[] barLowInit = {1700, 505};
+    int[] barLow = {950, 505};
+    int[] lowBin = {3250, 1195};
     int[] highBin = {3760, 3500};
 
     public subArm(HardwareMap hardwareMap) {

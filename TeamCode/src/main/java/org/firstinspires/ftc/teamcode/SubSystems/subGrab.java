@@ -11,9 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-import java.sql.Time;
 import java.util.Date;
-import java.util.Timer;
 
 public class subGrab {
 
@@ -30,10 +28,11 @@ public class subGrab {
     // false = blue, true = red
     boolean color = false;
     double hue;
+    double val;
     float[] hsvValues = {0F, 0F, 0F};
     double hueTol = 10;
-    double red1Ang = 0;
-    double red2Ang = 360;
+    double redAng1 = 0;
+    double redAng2 = 360;
     double blueAng = 220;
     double yellowAng = 40;
 
@@ -87,21 +86,24 @@ public class subGrab {
                     (int) (colorSensor.blue()),
                     hsvValues);
             hue = hsvValues[0];
+            val = hsvValues[2];
 
-            // If red
-            if (color && (hue <= red1Ang + hueTol || hue >= red2Ang - hueTol)){
-                detected = true;
-            }
-            // If blue
-            else if (!color && (hue >= blueAng - hueTol && hue <= blueAng + hueTol)){
-                detected = true;
-            }
-            // If yellow
-            else if (hue >= yellowAng - hueTol && hue <= yellowAng + hueTol){
-                detected = true;
-            }
-            else{
-                detected = false;
+            if (val > .8)
+            {
+                // If red
+                if (color && (hue <= redAng1 + hueTol || hue >= redAng2 - hueTol)) {
+                    detected = true;
+                }
+                // If blue
+                else if (!color && (hue >= blueAng - hueTol && hue <= blueAng + hueTol)) {
+                    detected = true;
+                }
+                // If yellow
+                else if (hue >= yellowAng - hueTol && hue <= yellowAng + hueTol) {
+                    detected = true;
+                } else {
+                    detected = false;
+                }
             }
         }
         else{
@@ -175,5 +177,13 @@ public class subGrab {
 
     public boolean getColor(){
         return color;
+    }
+
+    public float[] getHSV(){
+        Color.RGBToHSV((int) (colorSensor.red()),
+                (int) (colorSensor.green()),
+                (int) (colorSensor.blue()),
+                hsvValues);
+        return hsvValues;
     }
 }

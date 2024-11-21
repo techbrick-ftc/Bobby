@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subHang;
 import org.firstinspires.ftc.teamcode.SubSystems.subLift;
 import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 
-@TeleOp(name="Doesn't Matter")
+@TeleOp(name="0A TeleOp")
 public class Main extends LinearOpMode {
 
     // Timer
@@ -234,11 +234,12 @@ public class Main extends LinearOpMode {
         else{
             telemetry.addData("Color: ", "Blue");
         }
+        telemetry.addData("HSV: ", grab.getHSV());
         telemetry.update();
     }
 
 
-    // Blue Controller
+    // Blue Controller (controller 1)
     // X high baskets
     // Left Bumper + X for low basket
     // Y for high bar
@@ -250,13 +251,17 @@ public class Main extends LinearOpMode {
     // A to activate intake mode
     // A while intake is active to switch between higher and lower points
     // Triggers to activate intake wheels
+    // D pad to control intake direction
 
-    // Red Controller
+    // Red Controller (controller 2)
     // Left bumper + X to initiate hang
     // A while hang is initialized to activate
     // B while hang is initialized to cancel
     // Left stick to manually adjust slide length
     // Right stick to manually adjust shoulder pitch
+    // Start to toggle color (default blue)
+    // D pad up to reset IMU
+
 
 
 }

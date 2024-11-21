@@ -63,8 +63,7 @@ public class subDrive {
 
         if (Math.abs(x_move) > 0.05 || Math.abs(y_move) > 0.05 || Math.abs(rotation_x) > 0.05) {
             // Orientation
-            orientation = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            double angle = orientation.firstAngle - offset;
+            double angle = getImu();
 
             // Calculating power variables
             double x = x_move * Math.cos(-(angle)) - y_move * Math.sin(-(angle));
@@ -94,7 +93,6 @@ public class subDrive {
     }
 
     public double getImu() {
-        //TODO: Change secondAngle if necessary. Depends on IMU orientation
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - offset;
     }
 
