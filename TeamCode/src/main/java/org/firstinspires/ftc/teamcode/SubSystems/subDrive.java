@@ -97,4 +97,9 @@ public class subDrive {
         //TODO: Change secondAngle if necessary. Depends on IMU orientation
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle - offset;
     }
+
+    public void setOffset(double angle){
+        offset = angle;
+    }
+
 }

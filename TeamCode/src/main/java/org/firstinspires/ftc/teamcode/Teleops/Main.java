@@ -37,6 +37,7 @@ public class Main extends LinearOpMode {
     boolean g2start = false;
     boolean lastG1Start = false;
     boolean lastG2Start = false;
+
     double angleCorrection = (5 * Math.PI) / 4;
     double angle;
 
@@ -66,11 +67,14 @@ public class Main extends LinearOpMode {
 
         while(opModeIsActive()) {
 
+            lastG1Start = g1start;
+            lastG2Start = g2start;
+
             g1start = gamepad1.start;
             g2start = gamepad2.start;
 
             if (g1start && !lastG1Start){
-                heldHeading = !heldHeading;
+                // heldHeading = !heldHeading;
             }
             if (g2start && !lastG2Start){
                 grab.toggleColor();
@@ -78,9 +82,11 @@ public class Main extends LinearOpMode {
             if (gamepad2.y){
                 arm.zero();
             }
+            if (gamepad2.dpad_up){
+                drive.setOffset(drive.getImu());
+            }
 
-            lastG1Start = g1start;
-            lastG2Start = g2start;
+
 
             if (gamepad1.b) {
                 if (gamepad1.left_bumper){
@@ -218,11 +224,16 @@ public class Main extends LinearOpMode {
         }
 
         telemetry.addData("State: ", arm.state);
-        telemetry.addData("Intake Up: ", arm.intakeUp);
-        telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Routine: ", routine);
-        telemetry.addData("Detected: ", subGrab.detected);
-        telemetry.addData("Time: ", grab.time.getTime());
+        telemetry.addData("IMU: ", drive.getImu());
+        telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
+        telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
+        if (grab.getColor()){
+            telemetry.addData("Color: ", "Red");
+        }
+        else{
+            telemetry.addData("Color: ", "Blue");
+        }
         telemetry.update();
     }
 

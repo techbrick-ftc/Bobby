@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Teleops.Main;
 
 public class subArm {
 
-    subShoulder should;
+    public subShoulder should;
     subGrab grab;
 
     public int state = 0;

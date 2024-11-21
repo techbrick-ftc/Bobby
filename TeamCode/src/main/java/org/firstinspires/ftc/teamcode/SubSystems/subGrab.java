@@ -30,20 +30,20 @@ public class subGrab {
     // false = blue, true = red
     boolean color = false;
     double hue;
-    float hsvValues[] = {0F, 0F, 0F};
+    float[] hsvValues = {0F, 0F, 0F};
     double hueTol = 10;
     double red1Ang = 0;
     double red2Ang = 360;
     double blueAng = 220;
     double yellowAng = 40;
 
-    public static Date time = new Date();
+    Date time = new Date();
     long initTime;
     int delayMS = 150;
 
     public ColorSensor colorSensor;
     public DistanceSensor distanceSensor;
-    public static boolean detected = false;
+    boolean detected = false;
     boolean lastDetected = false;
 
     public subGrab(HardwareMap hardwareMap) {
@@ -171,5 +171,9 @@ public class subGrab {
 
     public void toggleColor(){
         color = !color;
+    }
+
+    public boolean getColor(){
+        return color;
     }
 }
