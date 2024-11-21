@@ -101,6 +101,8 @@ public class subArm {
         }
         else if (state == 1){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
+                Main.lockPower();
+                Main.speedUp();
                 should.setShld(barLow[0], defShPow);
                 should.setSlides(barLow[1], defSlPow);
                 state++;
@@ -207,6 +209,8 @@ public class subArm {
                 }
 
                 if (grab.checkObjectIn()){
+                    Main.lockPower();
+                    Main.speedUp();
                     should.setShld(intakeIn[0], defShPow);
                     should.setSlides(intakeIn[1], defSlPow);
                     grab.setRotation(Main.defWristRotate);
@@ -216,7 +220,6 @@ public class subArm {
         }
         else if (state == 2){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-                Main.drivePow = Main.defPow;
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
                 state = 0;

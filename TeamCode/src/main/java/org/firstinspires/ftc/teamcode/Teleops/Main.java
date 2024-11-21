@@ -24,7 +24,7 @@ public class Main extends LinearOpMode {
     double slowPow = 0.5;
     double slowerPow = 0.25;
     public static double drivePow = defPow;
-    boolean lockPow = false;
+    static boolean lockPow = false;
 
     boolean slidesHome = true;
     boolean shouldHome = false;
@@ -136,6 +136,8 @@ public class Main extends LinearOpMode {
                 else if (gamepad2.x && gamepad2.left_bumper){
                     routine = 7;
                 }
+
+                lockPow = false;
             }
             else  {
 
@@ -196,6 +198,14 @@ public class Main extends LinearOpMode {
 
 
         }
+    }
+
+    public static void lockPower(){
+        lockPow = true;
+    }
+
+    public static void speedUp(){
+        drivePow = defPow;
     }
 
     public void driveUpdate() {
