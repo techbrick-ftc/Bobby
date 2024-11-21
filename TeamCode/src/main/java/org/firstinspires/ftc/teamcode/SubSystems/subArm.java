@@ -24,14 +24,15 @@ public class subArm {
     //Shoulder, Slides
     int[] ground = {0, 0};
     int[] home = {1800, 50};
-    int[] intakeLow = {100, 2050};
-    int[] intakeHigh = {600, 2050};
+    int[] init = {2420, 20};
+    int[] intakeLow = {100, 1830};
+    int[] intakeHigh = {600, 1830};
     int[] intakeIn = {900, 50};
-    int[] wall = {1310, 850};
-    int[] barHigh = {3290, 810};
-    int[] barLowInit = {1700, 650};
-    int[] barLow = {950, 650};
-    int[] lowBin = {3250, 1340};
+    int[] wall = {1310, 630};
+    int[] barHigh = {3290, 590};
+    int[] barLowInit = {1700, 430};
+    int[] barLow = {950, 430};
+    int[] lowBin = {3250, 1120};
     int[] highBin = {3760, 3500};
 
     public subArm(HardwareMap hardwareMap) {
