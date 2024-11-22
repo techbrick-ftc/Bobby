@@ -83,8 +83,8 @@ public class Main extends LinearOpMode {
             if (gamepad2.y){
                 arm.zero();
             }
-            if (gamepad2.dpad_up){
-                drive.setOffset(drive.getRawImu());
+            if (gamepad2.dpad_up && gamepad2.right_bumper){
+                drive.recalibrate();
             }
 
 
@@ -243,9 +243,6 @@ public class Main extends LinearOpMode {
         telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", grab.getColor());
-        telemetry.addData("Red Check", grab.redCheck);
-        telemetry.addData("Blue Check", grab.blueCheck);
-        telemetry.addData("Distance Check", grab.distCheck);
         telemetry.update();
     }
 
@@ -272,6 +269,7 @@ public class Main extends LinearOpMode {
     // Right stick to manually adjust shoulder pitch
     // Start to toggle color (default blue)
     // D pad up to reset IMU
+    // D pad down to reset slides and shoulders
 
 
 

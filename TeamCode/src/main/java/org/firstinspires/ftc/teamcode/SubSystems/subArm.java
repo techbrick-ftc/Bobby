@@ -16,6 +16,7 @@ public class subArm {
     double defOutPow = .5;
     double outtakeLimit = .4;
     int defTol = 20;
+    int highTol = 60;
     int highBinTol = 10;
     public boolean intakeUp = true;
 
@@ -28,11 +29,11 @@ public class subArm {
     int[] intakeHigh = {600, 1905};
     int[] intakeIn = {900, 50};
     int[] wall = {1310, 705};
-    int[] barHigh = {3290, 700};
+    int[] barHigh = {3290, 795};
     int[] barLowInit = {1700, 505};
     int[] barLow = {950, 505};
     int[] lowBin = {3250, 1345};
-    int[] highBin = {3760, 3500};
+    int[] highBin = {3760, 3100};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -168,7 +169,7 @@ public class subArm {
             state++;
         }
         else if (state == 1){
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
 
                 if (a && intakeUp){
                     should.setShld(intakeLow[0], defShPow);
@@ -221,7 +222,7 @@ public class subArm {
             }
         }
         else if (state == 2){
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
                 state = 0;

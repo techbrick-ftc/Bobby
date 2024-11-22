@@ -103,6 +103,7 @@ public class subGrab {
 
             if (val > .8)
             {
+                /*
                 // If red
                 if (team && redCheck) {
                     detected = true;
@@ -118,6 +119,12 @@ public class subGrab {
                 else {
                     detected = false;
                 }
+                */
+
+                detected = true;
+            }
+            else{
+                detected = false;
             }
         }
         else{

@@ -35,6 +35,8 @@ public class subDrive {
 
     public double offset = Math.PI;
 
+    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
     // Getting Hardware map from main file and setting up
     public subDrive(HardwareMap hardwareMap) {
 
@@ -54,7 +56,6 @@ public class subDrive {
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
     }
@@ -100,8 +101,7 @@ public class subDrive {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
     }
 
-    public void setOffset(double angle){
-        offset = angle;
+    public void recalibrate() {
+        imu.initialize(parameters);
     }
-
 }

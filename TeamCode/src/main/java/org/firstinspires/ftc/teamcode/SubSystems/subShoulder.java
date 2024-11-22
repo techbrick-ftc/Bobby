@@ -16,7 +16,7 @@ public class subShoulder {
     public int slideMin = 0;
     public int shouldMin = 0;
 
-    public int slideMax = 3000;
+    public int slideMax = 3100;
     public int shouldMax = 5200;
 
     // Arms Vars
