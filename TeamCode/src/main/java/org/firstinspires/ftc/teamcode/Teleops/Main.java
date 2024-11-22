@@ -84,7 +84,7 @@ public class Main extends LinearOpMode {
                 arm.zero();
             }
             if (gamepad2.dpad_up){
-                drive.setOffset(drive.getImu());
+                drive.setOffset(drive.getRawImu());
             }
 
 
@@ -242,7 +242,9 @@ public class Main extends LinearOpMode {
         else{
             telemetry.addData("Color: ", "Blue");
         }
-        telemetry.addData("HSV: ", grab.getHSV());
+        telemetry.addData("H: ", grab.getHSV()[0]);
+        telemetry.addData("S: ", grab.getHSV()[1]);
+        telemetry.addData("V: ", grab.getHSV()[2]);
         telemetry.update();
     }
 
