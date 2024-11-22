@@ -21,17 +21,17 @@ public class subArm {
 
     // Positions
     // Shoulder, Slides
-    int[] ground = {0, 0};
+    int[] ground = {5, 5};
     int[] home = {1800, 50};
     int[] init = {2420, 20};
     int[] intakeLow = {100, 1905};
     int[] intakeHigh = {600, 1905};
     int[] intakeIn = {900, 50};
     int[] wall = {1310, 705};
-    int[] barHigh = {3290, 665};
+    int[] barHigh = {3290, 700};
     int[] barLowInit = {1700, 505};
     int[] barLow = {950, 505};
-    int[] lowBin = {3250, 1195};
+    int[] lowBin = {3250, 1345};
     int[] highBin = {3760, 3500};
 
     public subArm(HardwareMap hardwareMap) {
@@ -80,6 +80,8 @@ public class subArm {
 
     public void highBar(){
         if (state == 0) {
+            Main.lockPower();
+            Main.speedUp();
             should.setShld(barHigh[0], defShPow);
             should.setSlides(barHigh[1], defSlPow);
             state++;
@@ -285,6 +287,10 @@ public class subArm {
             return true;
         }
         return false;
+    }
+
+    public void resetEncoders() {
+        should.resetEncoders();
     }
 
     public void zero(){

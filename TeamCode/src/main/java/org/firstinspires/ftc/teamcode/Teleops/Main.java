@@ -109,6 +109,8 @@ public class Main extends LinearOpMode {
 
             if (routine == 0) {
 
+                lockPow = false;
+
                 // Bins
                 if (gamepad1.x) {
                     routine = 1;
@@ -137,7 +139,7 @@ public class Main extends LinearOpMode {
                     routine = 7;
                 }
 
-                lockPow = false;
+
             }
             else  {
 
@@ -179,6 +181,10 @@ public class Main extends LinearOpMode {
 
                 arm.manualShould(gamepad2.left_stick_y);
                 arm.manualSlides(gamepad2.right_stick_y);
+            }
+
+            if (gamepad2.right_bumper && gamepad2.dpad_down) {
+                arm.resetEncoders();
             }
 
             arm.grabberUpdate(gamepad1.right_trigger, gamepad1.left_trigger);
@@ -236,15 +242,10 @@ public class Main extends LinearOpMode {
         telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
-        if (grab.getColor()){
-            telemetry.addData("Color: ", "Red");
-        }
-        else{
-            telemetry.addData("Color: ", "Blue");
-        }
-        telemetry.addData("H: ", grab.getHSV()[0]);
-        telemetry.addData("S: ", grab.getHSV()[1]);
-        telemetry.addData("V: ", grab.getHSV()[2]);
+        telemetry.addData("Team (false = blue): ", grab.getColor());
+        telemetry.addData("Red Check", grab.redCheck);
+        telemetry.addData("Blue Check", grab.blueCheck);
+        telemetry.addData("Distance Check", grab.distCheck);
         telemetry.update();
     }
 

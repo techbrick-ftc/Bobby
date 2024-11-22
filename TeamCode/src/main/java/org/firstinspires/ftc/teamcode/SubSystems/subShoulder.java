@@ -94,4 +94,10 @@ public class subShoulder {
         return Math.abs(motor.getTargetPosition() - motor.getCurrentPosition()) < tol;
     }
 
+    public void resetEncoders() {
+        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
 }

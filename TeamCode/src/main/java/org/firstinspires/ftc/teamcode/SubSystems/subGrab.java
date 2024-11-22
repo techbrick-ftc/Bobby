@@ -26,7 +26,8 @@ public class subGrab {
     public subDrive drive;
 
     // false = blue, true = red
-    boolean color = false;
+    boolean team = false;
+
     double hue;
     double val;
     float[] hsvValues = {0F, 0F, 0F};
@@ -35,6 +36,12 @@ public class subGrab {
     double redAng2 = 360;
     double blueAng = 220;
     double yellowAng = 40;
+
+    public static boolean redCheck;
+    public static boolean blueCheck;
+    public static boolean distCheck;
+
+    double distance;
 
     Date time = new Date();
     long initTime;
@@ -78,9 +85,12 @@ public class subGrab {
     }
 
     public boolean checkObjectIn(){
-        double distance = distanceSensor.getDistance(DistanceUnit.CM);
+        distance = distanceSensor.getDistance(DistanceUnit.CM);
         time = new Date();
-        if (distance <= distanceTarget){
+
+        distCheck = distance <= distanceTarget;
+
+        if (distCheck){
             Color.RGBToHSV((int) (colorSensor.red()),
                     (int) (colorSensor.green()),
                     (int) (colorSensor.blue()),
@@ -88,20 +98,24 @@ public class subGrab {
             hue = hsvValues[0];
             val = hsvValues[2];
 
+            redCheck = (hue <= redAng1 + hueTol || hue >= redAng2 - hueTol);
+            blueCheck = (hue >= blueAng - hueTol && hue <= blueAng + hueTol);
+
             if (val > .8)
             {
                 // If red
-                if (color && (hue <= redAng1 + hueTol || hue >= redAng2 - hueTol)) {
+                if (team && redCheck) {
                     detected = true;
                 }
                 // If blue
-                else if (!color && (hue >= blueAng - hueTol && hue <= blueAng + hueTol)) {
+                else if (!team && blueCheck) {
                     detected = true;
                 }
                 // If yellow
-                else if (hue >= yellowAng - hueTol && hue <= yellowAng + hueTol) {
+                else if (hue >= yellowAng - hueTol & hue <= yellowAng + hueTol) {
                     detected = true;
-                } else {
+                }
+                else {
                     detected = false;
                 }
             }
@@ -172,11 +186,11 @@ public class subGrab {
     }
 
     public void toggleColor(){
-        color = !color;
+        team = !team;
     }
 
     public boolean getColor(){
-        return color;
+        return team;
     }
 
     public float[] getHSV(){
@@ -185,5 +199,9 @@ public class subGrab {
                 (int) (colorSensor.blue()),
                 hsvValues);
         return hsvValues;
+    }
+
+    public double getDistance(){
+        return distance;
     }
 }
