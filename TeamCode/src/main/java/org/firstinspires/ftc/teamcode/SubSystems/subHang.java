@@ -25,9 +25,9 @@ public class subHang {
     int[] lowHang2 = {4850, 2700, 3900};
     int[] hookSlides = {4850, 2400, 3900};
     int[] pullUp = {4250, 1100, 1500};
-    int[] rotate = {2700, 1100, 0};
-    int[] pullHigher = {2700, 290, 0};
-    int[] finalize = {1800, 20, 0};
+    int[] rotate = {2700, 1100, 30};
+    int[] pullHigher = {2700, 290, 30};
+    int[] finalize = {1800, 20, 30};
 
 
     public subHang(HardwareMap hardwareMap){
