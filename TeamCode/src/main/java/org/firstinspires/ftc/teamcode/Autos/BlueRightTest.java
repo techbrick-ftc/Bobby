@@ -18,6 +18,7 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
@@ -32,6 +33,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 
 @Config
 @Autonomous(name = "Blue Right Test")
+@Disabled
 public class BlueRightTest extends LinearOpMode {
 
     public class AutoArm {

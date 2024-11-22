@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -37,6 +38,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 
 @Config
 @TeleOp(name = "Turn Test")
+@Disabled
 public class RDRTurnTest extends LinearOpMode {
 
     //RR
