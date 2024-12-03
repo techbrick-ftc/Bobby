@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.Teleops;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subHang;
-import org.firstinspires.ftc.teamcode.SubSystems.subLift;
-import org.firstinspires.ftc.teamcode.SubSystems.subShoulder;
 
 @TeleOp(name="0A TeleOp")
 public class Main extends LinearOpMode {
@@ -21,10 +17,12 @@ public class Main extends LinearOpMode {
 
     boolean driveAllowed = true;
     public static double defPow = 1;
+    public static double midPow = .6;
     double slowPow = 0.5;
     double slowerPow = 0.25;
     public static double drivePow = defPow;
     static boolean lockPow = false;
+    static boolean slowMode = false;
 
     boolean slidesHome = true;
     boolean shouldHome = false;
@@ -75,7 +73,7 @@ public class Main extends LinearOpMode {
             g2start = gamepad2.start;
 
             if (g1start && !lastG1Start){
-                // heldHeading = !heldHeading;
+                slowMode = !slowMode;
             }
             if (g2start && !lastG2Start){
                 grab.toggleColor();
@@ -86,8 +84,16 @@ public class Main extends LinearOpMode {
             if (gamepad2.dpad_up && gamepad2.right_bumper){
                 drive.recalibrate();
             }
+            if (gamepad2.x && gamepad2.left_bumper){
+                routine = 7;
+            }
 
-
+            if (slowMode){
+                speedMid();
+            }
+            else{
+                speedHigh();
+            }
 
             if (gamepad1.b) {
                 if (gamepad1.left_bumper){
@@ -108,6 +114,7 @@ public class Main extends LinearOpMode {
             }
 
             if (routine == 0) {
+
 
                 lockPow = false;
 
@@ -134,31 +141,21 @@ public class Main extends LinearOpMode {
                         routine = 6;
                     }
                 }
-                // Hang
-                else if (gamepad2.x && gamepad2.left_bumper){
-                    routine = 7;
-                }
-
-
             }
             else  {
-
-                if (!lockPow) {
-                    drivePow = slowPow;
-                }
 
                 shouldHome = false;
                 slidesHome = false;
 
                 if (routine == 1) {
-                    arm.bin(true);
+                    arm.highBin(gamepad1.x);
                 }
 
                 else if (routine == 2) {
-                    arm.bin(false);
+                    arm.lowBin();
                 }
                 else if (routine == 3) {
-                    arm.highBar();
+                    arm.highBar(gamepad1.a);
                 }
                 else if (routine == 4) {
                     arm.lowBar(gamepad1.a);
@@ -175,7 +172,7 @@ public class Main extends LinearOpMode {
                 }
             }
 
-            if (gamepad2.left_stick_y > .05 || gamepad2.right_stick_y > .05){
+            if (Math.abs(gamepad2.left_stick_y) > .05 || Math.abs(gamepad2.right_stick_y) > .05){
                 routine = 0;
                 arm.state = 0;
 
@@ -206,13 +203,22 @@ public class Main extends LinearOpMode {
         }
     }
 
-    public static void lockPower(){
-        lockPow = true;
-    }
-
-    public static void speedUp(){
+    void speedHigh(){
         drivePow = defPow;
     }
+
+    void speedMid(){
+        drivePow = midPow;
+    }
+
+    public static void activateSlowMode(){
+        Main.slowMode = true;
+    }
+
+    public static void deactivateSlowMode(){
+        Main.slowMode = false;
+    }
+
 
     public void driveUpdate() {
         y_move = -gamepad1.left_stick_y;

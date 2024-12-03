@@ -74,7 +74,7 @@ public class subGrab {
 
     public void outtake(double pow) {
         lRoller.setPower(-pow);
-        rRoller.setPower(pow);
+        // rRoller.setPower(pow);
         direction = -1;
     }
 
@@ -91,6 +91,7 @@ public class subGrab {
         distCheck = distance <= distanceTarget;
 
         if (distCheck){
+            /*
             Color.RGBToHSV((int) (colorSensor.red()),
                     (int) (colorSensor.green()),
                     (int) (colorSensor.blue()),
@@ -103,7 +104,7 @@ public class subGrab {
 
             if (val > .8)
             {
-                /*
+
                 // If red
                 if (team && redCheck) {
                     detected = true;
@@ -119,13 +120,14 @@ public class subGrab {
                 else {
                     detected = false;
                 }
-                */
 
                 detected = true;
             }
             else{
                 detected = false;
             }
+             */
+            detected = true;
         }
         else{
             detected = false;

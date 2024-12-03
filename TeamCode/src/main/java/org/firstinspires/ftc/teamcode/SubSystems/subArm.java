@@ -27,13 +27,14 @@ public class subArm {
     int[] init = {2420, 20};
     int[] intakeLow = {100, 1905};
     int[] intakeHigh = {600, 1905};
-    int[] intakeIn = {900, 50};
-    int[] wall = {1310, 705};
-    int[] barHigh = {3290, 795};
+    int[] intakeIn = {900, 100};
+    int[] wall = {1330, 705};
+    int[] barHighInit = {3350, 835};
+    int[] barHigh = {2700, 835};
     int[] barLowInit = {1700, 505};
     int[] barLow = {950, 505};
     int[] lowBin = {3250, 1345};
-    int[] highBin = {3760, 3100};
+    int[] highBin = {3690, 3100};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -56,40 +57,60 @@ public class subArm {
         should.setShld(home[0], defSlPow);
     }
 
-    public void bin(boolean high) {
-
+    public void highBin(boolean x){
+        Main.activateSlowMode();
         if (state == 0) {
-            if (high) {
-                should.setShld(highBin[0], defShPow);
-                should.setSlides(highBin[1], defSlPow);
-            }
-
-            else {
-                should.setShld(lowBin[0], defSlPow);
-                should.setSlides(lowBin[1], defSlPow);
-            }
+            should.setShld(highBin[0], defShPow);
+            should.setSlides(highBin[1], defSlPow);
             state++;
         }
-
         if (state == 1) {
-            if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)) {
+            if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol) && x){
+                should.setSlides(home[1], defSlPow);
+                state++;
+            }
+        }
+        if (state == 2){
+            if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)){
+                should.setShld(home[1], defSlPow);
+                Main.deactivateSlowMode();
                 state = 0;
                 Main.routine = 0;
             }
         }
     }
 
-    public void highBar(){
+    public void lowBin() {
+
         if (state == 0) {
-            Main.lockPower();
-            Main.speedUp();
-            should.setShld(barHigh[0], defShPow);
-            should.setSlides(barHigh[1], defSlPow);
+            should.setShld(lowBin[0], defSlPow);
+            should.setSlides(lowBin[1], defSlPow);
+            state++;
+        }
+        if (state == 1) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
+                state = 0;
+                Main.routine = 0;
+            }
+        }
+    }
+
+    public void highBar(boolean a){
+        if (state == 0) {
+            should.setShld(barHighInit[0], defShPow);
+            should.setSlides(barHighInit[1], defSlPow);
             state++;
         }
 
         if (state == 1) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
+                should.setShld(barHigh[0], defShPow);
+                should.setSlides(barHigh [1], defSlPow);
+                state++;
+            }
+        }
+        else if (state == 2){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
                 state = 0;
                 Main.routine = 0;
             }
@@ -104,8 +125,6 @@ public class subArm {
         }
         else if (state == 1){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
-                Main.lockPower();
-                Main.speedUp();
                 should.setShld(barLow[0], defShPow);
                 should.setSlides(barLow[1], defSlPow);
                 state++;
@@ -212,8 +231,6 @@ public class subArm {
                 }
 
                 if (grab.checkObjectIn()){
-                    Main.lockPower();
-                    Main.speedUp();
                     should.setShld(intakeIn[0], defShPow);
                     should.setSlides(intakeIn[1], defSlPow);
                     grab.setRotation(Main.defWristRotate);
@@ -248,13 +265,13 @@ public class subArm {
 
     public void manualSlides(double stick_y){
         if (Math.abs(stick_y) > .05) {
-            should.setSlides((int) (should.lSlides.getTargetPosition() - 50 * stick_y), defSlPow);
+            should.setSlides((int) (should.lSlides.getCurrentPosition() - 50 * stick_y), defSlPow);
         }
     }
 
     public void manualShould(double stick_y){
         if (Math.abs(stick_y) > .05) {
-            should.setShld((int) (should.shoulder.getTargetPosition() - 50 * stick_y), defSlPow);
+            should.setShld((int) (should.shoulder.getCurrentPosition() - 50 * stick_y), defSlPow);
         }
     }
 
