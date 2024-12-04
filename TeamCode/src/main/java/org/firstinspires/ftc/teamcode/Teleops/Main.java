@@ -36,6 +36,7 @@ public class Main extends LinearOpMode {
     boolean g2start = false;
     boolean lastG1Start = false;
     boolean lastG2Start = false;
+    boolean endgame = false;
 
     double angleCorrection = (5 * Math.PI) / 4;
     double angle;
@@ -86,6 +87,14 @@ public class Main extends LinearOpMode {
             }
             if (gamepad2.x && gamepad2.left_bumper){
                 routine = 7;
+                endgame = true;
+            }
+            if (gamepad2.b){
+                arm.stopAll();
+                hang.stopLift();
+            }
+            if (endgame){
+                hang.releaseSlides(gamepad2.a);
             }
 
             if (slowMode){
@@ -168,7 +177,7 @@ public class Main extends LinearOpMode {
                     arm.wallIntake();
                 }
                 else if (routine == 7){
-                    hang.hang(gamepad2.x, gamepad2.b);
+                    hang.altHang(gamepad2.x);
                 }
             }
 
@@ -269,8 +278,9 @@ public class Main extends LinearOpMode {
 
     // Red Controller (controller 2)
     // Left bumper + X to initiate hang
-    // A while hang is initialized to activate
-    // B while hang is initialized to cancel
+    // X while hang is active to continue hang
+    // A at endgame to start timer
+    // B to stop all motors at their current position
     // Left stick to manually adjust slide length
     // Right stick to manually adjust shoulder pitch
     // Start to toggle color (default blue)

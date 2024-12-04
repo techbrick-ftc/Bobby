@@ -44,6 +44,7 @@ public class subArm {
     public void home() {
         should.setShld(home[0], defShPow);
         should.setSlides(home[1], defSlPow);
+        Main.deactivateSlowMode();
         Main.routine = 0;
         state = 0;
     }
@@ -57,8 +58,12 @@ public class subArm {
         should.setShld(home[0], defSlPow);
     }
 
-    public void highBin(boolean x){
-        Main.activateSlowMode();
+    public void highBin(boolean x) {
+
+        if (should.lSlides.getCurrentPosition() > 1500 || should.shoulder.getCurrentPosition() > 2300){
+            Main.activateSlowMode();
+        }
+
         if (state == 0) {
             should.setShld(highBin[0], defShPow);
             should.setSlides(highBin[1], defSlPow);
@@ -189,6 +194,7 @@ public class subArm {
         }
         else if (state == 1){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
+                Main.activateSlowMode();
 
                 if (a && intakeUp){
                     should.setShld(intakeLow[0], defShPow);
@@ -234,6 +240,7 @@ public class subArm {
                     should.setShld(intakeIn[0], defShPow);
                     should.setSlides(intakeIn[1], defSlPow);
                     grab.setRotation(Main.defWristRotate);
+                    Main.deactivateSlowMode();
                     state++;
                 }
             }
@@ -316,5 +323,12 @@ public class subArm {
         should.setSlides(ground[1], defSlPow);
         Main.routine = 0;
         state = 0;
+    }
+
+    public void stopAll(){
+        should.setShld(should.shoulder.getCurrentPosition(), defShPow);
+        should.setSlides(should.lSlides.getCurrentPosition(), defSlPow);
+        state = 0;
+        Main.routine = 0;
     }
 }
