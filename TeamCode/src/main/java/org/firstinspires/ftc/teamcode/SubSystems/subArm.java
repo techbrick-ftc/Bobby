@@ -267,6 +267,13 @@ public class subArm {
         }
 
         if (state == 1) {
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                Main.deactivateSlowMode();
+                should.setSlides(wall[1], 0);
+                state++;
+            }
+        }
+        if (state == 2) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
                 Main.deactivateSlowMode();
                 state = 0;
