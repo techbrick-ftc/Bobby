@@ -72,9 +72,9 @@ public class subGrab {
         direction = 1;
     }
 
-    public void outtake(double pow) {
-        lRoller.setPower(-pow);
-        // rRoller.setPower(pow);
+    public void outtake(double lPow, double rPow) {
+        lRoller.setPower(-lPow);
+        rRoller.setPower(rPow);
         direction = -1;
     }
 

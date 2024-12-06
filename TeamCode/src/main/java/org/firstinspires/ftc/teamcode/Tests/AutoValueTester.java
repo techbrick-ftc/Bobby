@@ -134,7 +134,7 @@ public class AutoValueTester extends LinearOpMode {
                 telemetry.addData("Intake", true);
             }
             else if (gamepad1.left_bumper){
-                grab.outtake(defGrabPow);
+                grab.outtake(defGrabPow, defGrabPow);
                 telemetry.addData("Outtake", true);
             }
             else{

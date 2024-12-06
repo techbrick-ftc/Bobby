@@ -79,7 +79,7 @@ Pitch max = 5000
                 telemetry.addData("Intake", true);
             }
             else if (gamepad1.left_bumper){
-                grab.outtake(defGrabPow);
+                grab.outtake(defGrabPow, defGrabPow);
                 telemetry.addData("Outtake", true);
             }
             else if (gamepad2.dpad_up){

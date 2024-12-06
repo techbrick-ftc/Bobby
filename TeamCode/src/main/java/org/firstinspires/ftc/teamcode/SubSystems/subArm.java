@@ -14,7 +14,8 @@ public class subArm {
     double defShPow = 1;
     double defSlPow = 1;
     double defOutPow = .5;
-    double outtakeLimit = .4;
+    double outtakeLimitLeft = .5;
+    double outtakeLimitRight = .2;
     int defTol = 20;
     int highTol = 60;
     int highBinTol = 10;
@@ -77,9 +78,11 @@ public class subArm {
             }
         }
         if (state == 2){
+            if (should.lSlides.getCurrentPosition() < highBin[1] / 2){
+                Main.deactivateSlowMode();
+            }
             if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)){
                 should.setShld(home[0], defSlPow);
-                Main.deactivateSlowMode();
                 state = 0;
                 Main.routine = 0;
             }
@@ -265,6 +268,7 @@ public class subArm {
 
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
+                Main.deactivateSlowMode();
                 state = 0;
                 Main.routine = 3;
             }
@@ -285,7 +289,7 @@ public class subArm {
 
     public void grabberUpdate(double lt, double rt) {
         if (rt > .05) {
-            grab.outtake(rt * outtakeLimit);
+            grab.outtake(rt * outtakeLimitLeft, rt * outtakeLimitRight);
         }
         else {
             if (lt > .05 && !grab.checkObjectIn()) {
@@ -315,8 +319,12 @@ public class subArm {
         return false;
     }
 
-    public void resetEncoders() {
-        should.resetEncoders();
+    public void resetShoulder() {
+        should.resetShoulder();
+    }
+
+    public void resetSlides(){
+        should.resetSlides();
     }
 
     public void zero(){

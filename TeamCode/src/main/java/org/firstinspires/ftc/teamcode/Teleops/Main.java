@@ -189,9 +189,19 @@ public class Main extends LinearOpMode {
                 arm.manualSlides(gamepad2.right_stick_y);
             }
 
-            if (gamepad2.right_bumper && gamepad2.dpad_down) {
-                arm.resetEncoders();
+            if (gamepad2.right_bumper) {
+                if (gamepad2.dpad_down) {
+                    arm.resetShoulder();
+                    arm.resetSlides();
+                }
+                else if (gamepad2.dpad_right){
+                    arm.resetSlides();
+                }
+                else if (gamepad2.dpad_left){
+                    arm.resetShoulder();
+                }
             }
+
 
             arm.grabberUpdate(gamepad1.right_trigger, gamepad1.left_trigger);
 
@@ -258,6 +268,8 @@ public class Main extends LinearOpMode {
         telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", grab.getColor());
+        telemetry.addData("Timer started: ", hang.getTimerStarted());
+        telemetry.addData("Time checking: ", hang.getEndTime());
         telemetry.update();
     }
 

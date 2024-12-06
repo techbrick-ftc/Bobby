@@ -23,7 +23,7 @@ public class subHang {
     int rotateTol = 50;
 
     Date time = new Date();
-    long endTime;
+    long endTime = 0;
     int delayMS = 6000;
     boolean timerStarted = false;
 
@@ -35,7 +35,7 @@ public class subHang {
     int[] pullUp = {4250, 1100, 3000};
     int[] rotate = {2700, 1100, 2000};
     int[] pullHigher = {2700, 290, 1000};
-    int[] finalize = {750, 20, 30};
+    int[] finalize = {2000, 70, 30};
 
 
     public subHang(HardwareMap hardwareMap){
@@ -155,4 +155,11 @@ public class subHang {
         Main.routine = 0;
     }
 
+    public boolean getTimerStarted(){
+        return timerStarted;
+    }
+
+    public long getEndTime(){
+        return endTime;
+    }
 }
