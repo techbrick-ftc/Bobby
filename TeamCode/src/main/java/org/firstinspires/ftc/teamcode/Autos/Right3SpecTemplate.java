@@ -175,7 +175,7 @@ public class Right3SpecTemplate extends LinearOpMode {
                 rotator.setPosition(0.5);
                 armToPos(1330, 705);
                 grab.intake(1);
-                return reached(20);
+                return !reached(20);
             }
         }
         public Action toWall() {
@@ -188,7 +188,7 @@ public class Right3SpecTemplate extends LinearOpMode {
                 rotator.setPosition(0.5);
                 armToPos(3390, 705);
                 grab.stop();
-                return reached(30);
+                return !reached(30);
             }
         }
         public Action pitchUp() {
@@ -217,13 +217,15 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         TrajectoryActionBuilder waiter1 = drive.actionBuilder(initialPose)
                 .waitSeconds(1);
+        TrajectoryActionBuilder waiter2 = drive.actionBuilder(initialPose)
+                .waitSeconds(1);
 
         waitForStart();
 
         Actions.runBlocking(
                 new ParallelAction(
-                        arm.armToBar(),
-                        part1.build()
+                        arm.armToBar(), // Raises arm to correct
+                        part1.build() // Drive into the bar
                 )
         );
 
@@ -232,9 +234,9 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.score(),
-                        arm.armIn(),
-                        part2.build()
+                        arm.score(), // drop arm down to score
+                        arm.armIn(), // pull arm back
+                        part2.build() // start moving to grabbing position
                 )
         );
 
@@ -243,8 +245,8 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new ParallelAction(
-                        arm.slideReady(),
-                        part3.build()
+                        arm.slideReady(), // move out the slides a bit
+                        part3.build() // Get to the position to grab the first additional specimen
                 )
         );
 
@@ -253,11 +255,11 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.slideOut(),
-                        arm.slideReady(),
-                        part4.build(),
-                        arm.depo(),
-                        arm.slideReady()
+                        arm.slideOut(), // move the arm out till you grab something
+                        arm.slideReady(), // bring the arm back
+                        part4.build(), // rotate over
+                        arm.depo(), // put it out for the human player
+                        arm.slideReady() // pull back
                 )
         );
 
@@ -266,9 +268,9 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        part5.build(),
-                        arm.slideOut(),
-                        arm.slideReady()
+                        part5.build(), // Go back for another
+                        arm.slideOut(), // move out slide till you grab something
+                        arm.slideReady() // move slides back
                 )
         );
 
@@ -277,9 +279,9 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        part6.build(),
-                        arm.depo(),
-                        arm.slideReady()
+                        part6.build(), // Angle again
+                        arm.depo(), // deposit for human player
+                        arm.slideReady() // draw back in
                 )
         );
 
@@ -289,8 +291,8 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new ParallelAction(
-                        part7.build(),
-                        arm.toWall()
+                        part7.build(), // Go to the wall to pickup
+                        arm.toWall() // Extend arm out
                 )
         );
 
@@ -299,10 +301,10 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        waiter1.build(),
-                        arm.pitchUp(),
-                        part8.build(),
-                        arm.armToBar()
+                        waiter1.build(), // wait for a bit to grab properly
+                        arm.pitchUp(), // pitch up
+                        part8.build(), // move to slightly back from the scoring position
+                        arm.armToBar() // move arm up
                 )
         );
 
@@ -311,8 +313,8 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        part9.build(),
-                        arm.score()
+                        part9.build(), // Get to scoring
+                        arm.score() // put arm down
                 )
         );
 
@@ -321,8 +323,8 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new ParallelAction(
-                        part10.build(),
-                        arm.armIn()
+                        part10.build(), // Pull back and take arm in
+                        arm.armIn() // take arm in
                 )
         );
 
@@ -331,9 +333,11 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        part11.build(),
-                        arm.toWall()
+                        part11.build(), // Go back for another
+                        arm.toWall() // Intake
                 )
         );
+
+        //TODO: If everything works so far, you are good to copy and paste the code in.
     }
 }
