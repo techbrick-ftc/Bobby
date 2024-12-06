@@ -192,7 +192,7 @@ public class LeftTest extends LinearOpMode {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.outtake(0.3, 1);
+                grab.outtake(0.5, 1);
                 return false;
             }
         }
@@ -283,7 +283,7 @@ public class LeftTest extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part4 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(18, -20), Math.toRadians(-90));
+                .strafeToLinearHeading(new Vector2d(18, -20), Math.toRadians(-105));
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -308,7 +308,8 @@ public class LeftTest extends LinearOpMode {
                 )
         );
 
-        /*
+        PoseStorage.heading = drive.pose.heading.toDouble() + Math.PI/2;
+
 
         TrajectoryActionBuilder part6 = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(5.5, -20), Math.toRadians(-45));
@@ -319,12 +320,11 @@ public class LeftTest extends LinearOpMode {
                         arm.output(),
                         waiter3.build(),
                         arm.readyPosBack(),
-                        arm.slideIn(),
-                        part6.build(),
-                        arm.pitchDown(),
-                        arm.lastOut()
+                        arm.readyPos()
                 )
         );
+
+        /*
 
         TrajectoryActionBuilder part7 = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(scorePos, scoreAng);
