@@ -160,13 +160,39 @@ public class Right3SpecTemplate extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
-                armToPos(10, 2200);
+                armToPos(10, 1500);
                 grab.outtake(1);
                 return !reached(20);
             }
         }
         public Action depo() {
             return new Depo();
+        }
+
+        public class ToWall implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                rotator.setPosition(0.5);
+                armToPos(1330, 705);
+                grab.intake(1);
+                return reached(20);
+            }
+        }
+        public Action toWall() {
+            return new ToWall();
+        }
+
+        public class PitchUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                rotator.setPosition(0.5);
+                armToPos(3390, 705);
+                grab.stop();
+                return reached(30);
+            }
+        }
+        public Action pitchUp() {
+            return new PitchUp();
         }
     }
 
@@ -189,6 +215,9 @@ public class Right3SpecTemplate extends LinearOpMode {
         TrajectoryActionBuilder part1 = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(32, 0));
 
+        TrajectoryActionBuilder waiter1 = drive.actionBuilder(initialPose)
+                .waitSeconds(1);
+
         waitForStart();
 
         Actions.runBlocking(
@@ -199,7 +228,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part2 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, 0), Math.toRadians(-90));
+                .strafeToLinearHeading(new Vector2d(24, 0), Math.toRadians(0));
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -210,7 +239,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, -24), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(24, -25), Math.toRadians(-45));
 
         Actions.runBlocking(
                 new ParallelAction(
@@ -235,14 +264,19 @@ public class Right3SpecTemplate extends LinearOpMode {
         TrajectoryActionBuilder part5 = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(24, -36), Math.toRadians(-45));
 
+        Actions.runBlocking(
+                new SequentialAction(
+                        part5.build(),
+                        arm.slideOut(),
+                        arm.slideReady()
+                )
+        );
+
         TrajectoryActionBuilder part6 = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(22, -36), Math.toRadians(-135));
 
         Actions.runBlocking(
                 new SequentialAction(
-                        part5.build(),
-                        arm.slideOut(),
-                        arm.slideReady(),
                         part6.build(),
                         arm.depo(),
                         arm.slideReady()
@@ -250,21 +284,56 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part7 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, -48), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(22, -24), Math.toRadians(-180));
 
-        TrajectoryActionBuilder part8 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(22, -48), Math.toRadians(-135));
 
         Actions.runBlocking(
-                new SequentialAction(
+                new ParallelAction(
                         part7.build(),
-                        arm.slideOut(),
-                        arm.slideReady(),
-                        part8.build(),
-                        arm.depo(),
-                        arm.slideReady()
+                        arm.toWall()
                 )
         );
 
+        TrajectoryActionBuilder part8 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(26, 2), Math.toRadians(0));
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        waiter1.build(),
+                        arm.pitchUp(),
+                        part8.build(),
+                        arm.armToBar()
+                )
+        );
+
+        TrajectoryActionBuilder part9 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(32, 2), Math.toRadians(0));
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        part9.build(),
+                        arm.score()
+                )
+        );
+
+        TrajectoryActionBuilder part10 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(26, 2), Math.toRadians(0));
+
+        Actions.runBlocking(
+                new ParallelAction(
+                        part10.build(),
+                        arm.armIn()
+                )
+        );
+
+        TrajectoryActionBuilder part11 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(22, -24), Math.toRadians(180));
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        part11.build(),
+                        arm.toWall()
+                )
+        );
     }
 }
