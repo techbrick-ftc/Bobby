@@ -19,6 +19,7 @@ public class subArm {
     int highTol = 60;
     int highBinTol = 10;
     public boolean intakeUp = true;
+    int slidesSlowHeight = 2500;
 
     // Positions
     // Shoulder, Slides
@@ -60,7 +61,7 @@ public class subArm {
 
     public void highBin(boolean x) {
 
-        if (should.lSlides.getCurrentPosition() > 1500 || should.shoulder.getCurrentPosition() > 2300){
+        if (should.lSlides.getCurrentPosition() > slidesSlowHeight){
             Main.activateSlowMode();
         }
 
@@ -77,7 +78,7 @@ public class subArm {
         }
         if (state == 2){
             if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)){
-                should.setShld(home[1], defSlPow);
+                should.setShld(home[0], defSlPow);
                 Main.deactivateSlowMode();
                 state = 0;
                 Main.routine = 0;

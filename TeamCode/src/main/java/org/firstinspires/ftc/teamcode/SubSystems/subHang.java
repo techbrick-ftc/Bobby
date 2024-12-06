@@ -25,6 +25,7 @@ public class subHang {
     Date time = new Date();
     long endTime;
     int delayMS = 6000;
+    boolean timerStarted = false;
 
     // Shoulder, slides, lift
     int[] init = {4100, 1850, 7950};
@@ -115,16 +116,17 @@ public class subHang {
         }
         else if (state == 3 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
             should.setShld(hookSlides[0], defShPow);
-            should.setSlides(finalize[1], defSlPow);
+            should.setSlides(hookSlides[1], defSlPow);
             lift.setLift(hookSlides[2], defLiftPow);
             state++;
         }
-        else if (state == 4 && should.lSlides.getCurrentPosition() < hookSlides[1] && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, rotateTol) && x) {
+        else if (state == 4 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, rotateTol) && x) {
             should.setShld(rotate[0], defShPow);
+            should.setSlides(finalize[1], defSlPow);
             lift.setLift(rotate[2], defLiftPow);
             state++;
         }
-        else if (state == 5 && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
+        else if (state == 5 && should.lSlides.getCurrentPosition() < hookSlides[1] && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
             should.setShld(finalize[0], defShPow);
             lift.setLift(finalize[2], 0);
             state = 0;
@@ -134,8 +136,9 @@ public class subHang {
     public void releaseSlides(boolean a){
         if (a){
             endTime = time.getTime();
+            timerStarted = true;
         }
-        else if (time.getTime() - endTime > delayMS){
+        else if (time.getTime() - endTime > delayMS && timerStarted){
             should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             should.rSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
