@@ -160,7 +160,7 @@ public class Right3SpecTemplate extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
-                armToPos(10, 1800);
+                armToPos(10, 2200);
                 grab.outtake(1);
                 return !reached(20);
             }
@@ -223,7 +223,7 @@ public class Right3SpecTemplate extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(22, -24), Math.toRadians(-135));
 
         Actions.runBlocking(
-                new ParallelAction(
+                new SequentialAction(
                         arm.slideOut(),
                         arm.slideReady(),
                         part4.build(),
@@ -233,6 +233,38 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part5 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, -30), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(24, -36), Math.toRadians(-45));
+
+        TrajectoryActionBuilder part6 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(22, -36), Math.toRadians(-135));
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        part5.build(),
+                        arm.slideOut(),
+                        arm.slideReady(),
+                        part6.build(),
+                        arm.depo(),
+                        arm.slideReady()
+                )
+        );
+
+        TrajectoryActionBuilder part7 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(24, -48), Math.toRadians(-45));
+
+        TrajectoryActionBuilder part8 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(22, -48), Math.toRadians(-135));
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        part7.build(),
+                        arm.slideOut(),
+                        arm.slideReady(),
+                        part8.build(),
+                        arm.depo(),
+                        arm.slideReady()
+                )
+        );
+
     }
 }

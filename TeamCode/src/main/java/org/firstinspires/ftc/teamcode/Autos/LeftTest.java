@@ -283,7 +283,7 @@ public class LeftTest extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part4 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(18, -20), Math.toRadians(-105));
+                .strafeToLinearHeading(new Vector2d(18, -20), Math.toRadians(-95));
 
         Actions.runBlocking(
                 new SequentialAction(
