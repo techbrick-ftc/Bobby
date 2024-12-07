@@ -31,11 +31,11 @@ public class subHang {
     int[] init = {4100, 1850, 7950};
     int[] lowHang1 = {4400, 2850, 3900};
     int[] lowHang2 = {4850, 2850, 3900};
-    int[] hookSlides = {4850, 2400, 3900};
+    int[] hookSlides = {4850, 2450, 3900};
     int[] pullUp = {4250, 1100, 3000};
     int[] rotate = {2700, 1100, 2000};
     int[] pullHigher = {2700, 290, 1000};
-    int[] finalize = {1800, 70, 30};
+    int[] finalize = {2000, 70, 30};
 
 
     public subHang(HardwareMap hardwareMap){
@@ -121,15 +121,11 @@ public class subHang {
             state++;
         }
         else if (state == 4 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, rotateTol) && x) {
-            should.setShld(rotate[0], defShPow);
-            should.setSlides(finalize[1], defSlPow);
-            lift.setLift(rotate[2], defLiftPow);
-            state++;
-        }
-        else if (state == 5 && should.lSlides.getCurrentPosition() < hookSlides[1] && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
             should.setShld(finalize[0], defShPow);
-            lift.setLift(finalize[2], 0);
+            should.setSlides(finalize[1], defSlPow);
+            lift.setLift(finalize[2], defLiftPow);
             state = 0;
+            Main.routine = 0;
         }
     }
 

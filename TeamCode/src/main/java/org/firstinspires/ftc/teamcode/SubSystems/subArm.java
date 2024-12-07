@@ -29,9 +29,9 @@ public class subArm {
     int[] home = {1800, 50};
     int[] init = {2420, 20};
     int[] intakeLow = {100, 1905};
-    int[] intakeHigh = {600, 1905};
+    int[] intakeHigh = {650, 1905};
     int[] intakeIn = {900, 100};
-    int[] wall = {1400, 705};
+    int[] wall = {1450, 705};
     int[] barHighInit = {3350, 835};
     int[] barHigh = {2700, 835};
     int[] barLowInit = {1700, 505};
@@ -275,9 +275,10 @@ public class subArm {
             }
         }
         if (state == 2) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
+            if (should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
                 Main.deactivateSlowMode();
                 should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                should.rSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 state = 0;
                 Main.routine = 3;
             }

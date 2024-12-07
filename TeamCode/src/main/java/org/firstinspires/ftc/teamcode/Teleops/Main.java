@@ -182,9 +182,6 @@ public class Main extends LinearOpMode {
             }
 
             if (Math.abs(gamepad2.left_stick_y) > .05 || Math.abs(gamepad2.right_stick_y) > .05){
-                routine = 0;
-                arm.state = 0;
-
                 arm.manualShould(gamepad2.left_stick_y);
                 arm.manualSlides(gamepad2.right_stick_y);
             }
