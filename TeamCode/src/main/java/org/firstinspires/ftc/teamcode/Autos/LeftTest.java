@@ -319,8 +319,17 @@ public class LeftTest extends LinearOpMode {
                         arm.armToBin(),
                         arm.output(),
                         waiter3.build(),
+                        arm.readyPosBack()
+                )
+        );
+
+        TrajectoryActionBuilder part7 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(2, -24), Math.toRadians(-90));
+
+        Actions.runBlocking(
+                new ParallelAction(
                         arm.readyPosBack(),
-                        arm.readyPos()
+                        part7.build()
                 )
         );
 
