@@ -229,7 +229,7 @@ public class Right3SpecTemplate extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
-                armToPos(3390, 705);
+                armToPos(1700, 705);
                 grab.stop();
                 return !reached(30);
             }
@@ -259,9 +259,9 @@ public class Right3SpecTemplate extends LinearOpMode {
                 .strafeTo(new Vector2d(32, 0));
 
         TrajectoryActionBuilder waiter1 = drive.actionBuilder(initialPose)
-                .waitSeconds(1);
+                .waitSeconds(0.5);
         TrajectoryActionBuilder waiter2 = drive.actionBuilder(initialPose)
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         waitForStart();
 
@@ -284,7 +284,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, -29), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(22, -29), Math.toRadians(-45));
 
         Actions.runBlocking(
                 new ParallelAction(
@@ -373,7 +373,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part11 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(10.5, -24), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(10.5, -26), Math.toRadians(180));
 
         Actions.runBlocking(
                 new SequentialAction(
