@@ -192,7 +192,7 @@ public class LeftTest extends LinearOpMode {
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.outtake(0.5, 1);
+                grab.outtake(0.2, 0.5);
                 return false;
             }
         }
@@ -260,7 +260,7 @@ public class LeftTest extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part2 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(8, -20), Math.toRadians(-90));
+                .strafeToLinearHeading(new Vector2d(9, -20), Math.toRadians(-90));
 
         Actions.runBlocking(
                 new SequentialAction(
