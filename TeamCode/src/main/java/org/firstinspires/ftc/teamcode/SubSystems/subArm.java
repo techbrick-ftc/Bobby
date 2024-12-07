@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Teleops.Main;
@@ -30,7 +31,7 @@ public class subArm {
     int[] intakeLow = {100, 1905};
     int[] intakeHigh = {600, 1905};
     int[] intakeIn = {900, 100};
-    int[] wall = {1330, 705};
+    int[] wall = {1400, 705};
     int[] barHighInit = {3350, 835};
     int[] barHigh = {2700, 835};
     int[] barLowInit = {1700, 505};
@@ -268,14 +269,15 @@ public class subArm {
 
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-                Main.deactivateSlowMode();
                 should.setSlides(wall[1], 0);
+                should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 state++;
             }
         }
         if (state == 2) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
                 Main.deactivateSlowMode();
+                should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 state = 0;
                 Main.routine = 3;
             }

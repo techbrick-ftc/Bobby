@@ -35,7 +35,7 @@ public class subHang {
     int[] pullUp = {4250, 1100, 3000};
     int[] rotate = {2700, 1100, 2000};
     int[] pullHigher = {2700, 290, 1000};
-    int[] finalize = {2000, 70, 30};
+    int[] finalize = {1800, 70, 30};
 
 
     public subHang(HardwareMap hardwareMap){
@@ -134,11 +134,12 @@ public class subHang {
     }
 
     public void releaseSlides(boolean a){
+        time = new Date();
         if (a){
             endTime = time.getTime();
             timerStarted = true;
         }
-        else if (time.getTime() - endTime > delayMS && timerStarted){
+        if (time.getTime() - endTime > delayMS && timerStarted){
             should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             should.rSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
