@@ -294,7 +294,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part4 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(22, -24), Math.toRadians(-135));
+                .strafeToLinearHeading(new Vector2d(22, -24), Math.toRadians(-150));
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -346,7 +346,12 @@ public class Right3SpecTemplate extends LinearOpMode {
                 new SequentialAction(
                         arm.toWall(),
                         waiter1.build(), // wait for a bit to grab properly
-                        arm.pitchUp(), // pitch up
+                        arm.pitchUp() // pitch up
+                )
+        );
+
+        Actions.runBlocking(
+                new ParallelAction(
                         part8.build(), // move to slightly back from the scoring position
                         arm.armToBar() // move arm up
                 )
@@ -390,9 +395,24 @@ public class Right3SpecTemplate extends LinearOpMode {
                 new SequentialAction(
                         arm.toWall(),
                         waiter1.build(), // wait for a bit to grab properly
-                        arm.pitchUp(), // pitch up
+                        arm.pitchUp()
+                )
+        );
+
+        Actions.runBlocking(
+                new ParallelAction(
                         part12.build(), // move to slightly back from the scoring position
                         arm.armToBar() // move arm up
+                )
+        );
+
+        TrajectoryActionBuilder part13 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(32, 8), Math.toRadians(0));
+
+        Actions.runBlocking(
+                new ParallelAction(
+                        part13.build(), // move to slightly back from the scoring position
+                        arm.score() // move arm up
                 )
         );
 
