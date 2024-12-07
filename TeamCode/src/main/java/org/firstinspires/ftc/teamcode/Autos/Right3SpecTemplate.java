@@ -381,7 +381,7 @@ public class Right3SpecTemplate extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(10.5, -28), Math.toRadians(180));
 
         Actions.runBlocking(
-                new SequentialAction(
+                new ParallelAction(
                         arm.pitchToWall(),
                         part11.build() // Go back for another
                 )
