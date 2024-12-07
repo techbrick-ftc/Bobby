@@ -126,7 +126,7 @@ public class Right3SpecTemplate extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
-                armToPos(3190, 800);
+                armToPos(3190, 850);
                 return !reached(20);
             }
         }
@@ -151,7 +151,7 @@ public class Right3SpecTemplate extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
                 grab.stop();
-                armToPos(10, 600, 1, 0.7);
+                armToPos(10, 600, 1, 0.3);
                 return !reached(20);
             }
         }
@@ -318,7 +318,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part6 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(22, -36), Math.toRadians(-135));
+                .strafeToLinearHeading(new Vector2d(22, -36), Math.toRadians(-150));
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -333,9 +333,9 @@ public class Right3SpecTemplate extends LinearOpMode {
 
 
         Actions.runBlocking(
-                new ParallelAction(
-                        part7.build(), // Go to the wall to pickup
-                        arm.pitchToWall() // Extend arm out
+                new SequentialAction(
+                        arm.pitchToWall(), // Extend arm out
+                        part7.build() // Go to the wall to pickup
                 )
         );
 
@@ -376,9 +376,9 @@ public class Right3SpecTemplate extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(10.5, -24), Math.toRadians(180));
 
         Actions.runBlocking(
-                new ParallelAction(
-                        part11.build(), // Go back for another
-                        arm.pitchToWall() // Intake
+                new SequentialAction(
+                        arm.pitchToWall(),
+                        part11.build() // Go back for another
                 )
         );
 
