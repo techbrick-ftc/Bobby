@@ -88,6 +88,23 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         }
 
+        private void armToPos(int pitch, int slide, double powP, double powS) {
+
+            // Setting position
+            shoulder.setTargetPosition(pitch);
+            lSlides.setTargetPosition(slide);
+            rSlides.setTargetPosition(slide);
+
+            // Setting power
+            shoulder.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            lSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            rSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            shoulder.setPower(powP);
+            lSlides.setPower(powS);
+            rSlides.setPower(powS);
+
+        }
+
         private boolean reached(int tol) {
             return Math.abs(lSlides.getCurrentPosition() - lSlides.getTargetPosition()) < tol && Math.abs(shoulder.getCurrentPosition() - shoulder.getTargetPosition()) < tol;
         }
@@ -101,7 +118,6 @@ public class Right3SpecTemplate extends LinearOpMode {
                 return !reached(10);
             }
         }
-
         public Action armToBar() {
             return new ArmToBar();
         }
@@ -128,6 +144,19 @@ public class Right3SpecTemplate extends LinearOpMode {
         }
         public Action armIn() {
             return new ArmIn();
+        }
+
+        public class FirstSlideReady implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                rotator.setPosition(0.5);
+                grab.stop();
+                armToPos(10, 600, 1, 0.7);
+                return !reached(20);
+            }
+        }
+        public Action firstSlideReady() {
+            return new FirstSlideReady();
         }
 
         public class SlideReady implements Action {
@@ -168,6 +197,20 @@ public class Right3SpecTemplate extends LinearOpMode {
         public Action depo() {
             return new Depo();
         }
+
+        public class PitchToWall implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                rotator.setPosition(0.5);
+                armToPos(1330, 10);
+                grab.intake(1);
+                return !reached(20);
+            }
+        }
+        public Action pitchToWall() {
+            return new PitchToWall();
+        }
+
 
         public class ToWall implements Action {
             @Override
@@ -241,11 +284,11 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, -27), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(24, -29), Math.toRadians(-45));
 
         Actions.runBlocking(
                 new ParallelAction(
-                        arm.slideReady(), // move out the slides a bit
+                        arm.firstSlideReady(), // move out the slides a bit
                         part3.build() // Get to the position to grab the first additional specimen
                 )
         );
@@ -292,7 +335,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         part7.build(), // Go to the wall to pickup
-                        arm.toWall() // Extend arm out
+                        arm.pitchToWall() // Extend arm out
                 )
         );
 
@@ -301,6 +344,7 @@ public class Right3SpecTemplate extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
+                        arm.toWall(),
                         waiter1.build(), // wait for a bit to grab properly
                         arm.pitchUp(), // pitch up
                         part8.build(), // move to slightly back from the scoring position
@@ -329,12 +373,26 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part11 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(10, -24), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(10.5, -24), Math.toRadians(180));
+
+        Actions.runBlocking(
+                new ParallelAction(
+                        part11.build(), // Go back for another
+                        arm.pitchToWall() // Intake
+                )
+        );
+
+        TrajectoryActionBuilder part12 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(26, 8), Math.toRadians(0));
+
 
         Actions.runBlocking(
                 new SequentialAction(
-                        part11.build(), // Go back for another
-                        arm.toWall() // Intake
+                        arm.toWall(),
+                        waiter1.build(), // wait for a bit to grab properly
+                        arm.pitchUp(), // pitch up
+                        part12.build(), // move to slightly back from the scoring position
+                        arm.armToBar() // move arm up
                 )
         );
 
