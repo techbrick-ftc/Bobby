@@ -412,7 +412,12 @@ public class Right3SpecTemplate extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         part13.build(), // move to slightly back from the scoring position
-                        arm.score(), // move arm up
+                        arm.score() // move arm up
+                )
+        );
+
+        Actions.runBlocking(
+                new SequentialAction(
                         arm.armIn()
                 )
         );
