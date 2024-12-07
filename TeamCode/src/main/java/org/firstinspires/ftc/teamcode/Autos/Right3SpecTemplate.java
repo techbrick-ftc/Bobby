@@ -202,7 +202,7 @@ public class Right3SpecTemplate extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
-                armToPos(1330, 10);
+                armToPos(1430, 10);
                 grab.intake(1);
                 return !reached(20);
             }
@@ -216,7 +216,7 @@ public class Right3SpecTemplate extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 rotator.setPosition(0.5);
-                armToPos(1330, 705);
+                armToPos(1430, 705);
                 grab.intake(1);
                 return !reached(20);
             }
@@ -259,9 +259,9 @@ public class Right3SpecTemplate extends LinearOpMode {
                 .strafeTo(new Vector2d(32, 0));
 
         TrajectoryActionBuilder waiter1 = drive.actionBuilder(initialPose)
-                .waitSeconds(0.5);
+                .waitSeconds(0.25);
         TrajectoryActionBuilder waiter2 = drive.actionBuilder(initialPose)
-                .waitSeconds(0.5);
+                .waitSeconds(0.25);
 
         waitForStart();
 
@@ -284,7 +284,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(22, -29), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(20, -29), Math.toRadians(-45));
 
         Actions.runBlocking(
                 new ParallelAction(
@@ -307,7 +307,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part5 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(24, -36), Math.toRadians(-45));
+                .strafeToLinearHeading(new Vector2d(22, -36), Math.toRadians(-45));
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -373,7 +373,7 @@ public class Right3SpecTemplate extends LinearOpMode {
         );
 
         TrajectoryActionBuilder part11 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(10.5, -26), Math.toRadians(180));
+                .strafeToLinearHeading(new Vector2d(10.5, -28), Math.toRadians(180));
 
         Actions.runBlocking(
                 new SequentialAction(
