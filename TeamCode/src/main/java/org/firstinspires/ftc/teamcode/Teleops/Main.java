@@ -40,8 +40,8 @@ public class Main extends LinearOpMode {
     boolean lastG2Start = false;
     boolean endgame = false;
 
-    double binsAngle = (5 * Math.PI) / 4;
-    double wallAngle = Math.PI;
+    double binsAngle = (7 * Math.PI) / 4;
+    double wallAngle = 2 * Math.PI;
     double targetAngle = wallAngle;
     double angle;
 
@@ -265,10 +265,19 @@ public class Main extends LinearOpMode {
         }
 
         if (driveAllowed) {
-            if (heldHeading) {
-                angle = (drive.getImu() - targetAngle) % (Math.PI);
+            angle = drive.getImu() - drive.offset;
+            if (angle >= Math.PI){
+                angle -= 2*Math.PI;
+            }
+            if (angle <= -Math.PI){
+                angle += 2*Math.PI;
+            }
 
-                angle /= (2 * Math.PI);
+            drive.run(x_move, y_move, 2. * angle, drivePow);
+            /*
+            if (heldHeading) {
+                angle = (-drive.getImu() - targetAngle) % (2 * Math.PI);
+                angle *= 2;
 
                 drive.run(x_move, y_move, angle, drivePow);
 
@@ -277,6 +286,7 @@ public class Main extends LinearOpMode {
             else {
                 drive.run(x_move, y_move, rotation_x, drivePow);
             }
+            */
         }
 
 
@@ -287,8 +297,8 @@ public class Main extends LinearOpMode {
         telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", isRedTeam);
-        telemetry.addData("Timer started: ", hang.getTimerStarted());
-        telemetry.addData("Time checking: ", hang.getEndTime());
+        telemetry.addData("Target Angle: ", targetAngle);
+        telemetry.addData("Turning Angle", (drive.getImu() - targetAngle) % (Math.PI));
         telemetry.update();
     }
 
