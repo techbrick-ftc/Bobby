@@ -26,7 +26,6 @@ public class subGrab {
     public subDrive drive;
 
     // false = blue, true = red
-    boolean team = false;
 
     double hue;
     double val;
@@ -192,14 +191,6 @@ public class subGrab {
 
         setRotation(wristAngle);
 
-    }
-
-    public void toggleColor(){
-        team = !team;
-    }
-
-    public boolean getColor(){
-        return team;
     }
 
     public float[] getHSV(){

@@ -24,6 +24,8 @@ public class Main extends LinearOpMode {
     static boolean lockPow = false;
     static boolean slowMode = false;
 
+    boolean isRedTeam = false;
+
     boolean slidesHome = true;
     boolean shouldHome = false;
 
@@ -38,7 +40,9 @@ public class Main extends LinearOpMode {
     boolean lastG2Start = false;
     boolean endgame = false;
 
-    double angleCorrection = (5 * Math.PI) / 4;
+    double binsAngle = (5 * Math.PI) / 4;
+    double wallAngle = Math.PI;
+    double targetAngle = wallAngle;
     double angle;
 
     public static double defWristRotate = .5;
@@ -77,7 +81,12 @@ public class Main extends LinearOpMode {
                 slowMode = !slowMode;
             }
             if (g2start && !lastG2Start){
-                grab.toggleColor();
+                if (!heldHeading){
+                    heldHeading = !heldHeading;
+                }
+                else{
+                    toggleAngle();
+                }
             }
             if (gamepad2.y){
                 arm.zero();
@@ -227,6 +236,15 @@ public class Main extends LinearOpMode {
         drivePow = midPow;
     }
 
+    void toggleAngle(){
+        if (targetAngle == wallAngle){
+            targetAngle = binsAngle;
+        }
+        else{
+            targetAngle = wallAngle;
+        }
+    }
+
     public static void activateSlowMode(){
         Main.slowMode = true;
     }
@@ -242,13 +260,15 @@ public class Main extends LinearOpMode {
 
         rotation_x = gamepad1.right_stick_x * -1.0;
 
+        if (Math.abs(rotation_x) > .05){
+            heldHeading = false;
+        }
+
         if (driveAllowed) {
             if (heldHeading) {
-                angle = (drive.getImu() - angleCorrection) % (2 * Math.PI);
-                if (angle < 0){
-                    angle += 2 * Math.PI;
-                }
-                angle = angle / (2 * Math.PI);
+                angle = (drive.getImu() - targetAngle) % (Math.PI);
+
+                angle /= (2 * Math.PI);
 
                 drive.run(x_move, y_move, angle, drivePow);
 
@@ -259,15 +279,21 @@ public class Main extends LinearOpMode {
             }
         }
 
+
+
         telemetry.addData("State: ", arm.state);
         telemetry.addData("Routine: ", routine);
         telemetry.addData("IMU: ", drive.getImu());
         telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
-        telemetry.addData("Team (false = blue): ", grab.getColor());
+        telemetry.addData("Team (false = blue): ", isRedTeam);
         telemetry.addData("Timer started: ", hang.getTimerStarted());
         telemetry.addData("Time checking: ", hang.getEndTime());
         telemetry.update();
+    }
+
+    public void toggleColor(){
+        isRedTeam = !isRedTeam;
     }
 
 

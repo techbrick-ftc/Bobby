@@ -28,14 +28,14 @@ public class subHang {
     boolean timerStarted = false;
 
     // Shoulder, slides, lift
-    int[] init = {4100, 1850, 7950};
-    int[] lowHang1 = {4400, 2850, 3900};
-    int[] lowHang2 = {4850, 2850, 3900};
-    int[] hookSlides = {4850, 2450, 3900};
-    int[] pullUp = {4250, 1100, 3000};
-    int[] rotate = {2700, 1100, 2000};
-    int[] pullHigher = {2700, 290, 1000};
-    int[] finalize = {2000, 70, 30};
+    int[] init = {2940, 1850, 5700};
+    int[] lowHang1 = {3155, 2850, 2800};
+    int[] lowHang2 = {3480, 2850, 2800};
+    int[] hookSlides = {3480, 2450, 2800};
+    int[] pullUp = {3050, 1100, 1450};
+    int[] rotate = {1940, 1100, 1450};
+    int[] pullHigher = {1940, 290, 720};
+    int[] finalize = {1440, 70, 30};
 
 
     public subHang(HardwareMap hardwareMap){

@@ -25,19 +25,19 @@ public class subArm {
 
     // Positions
     // Shoulder, Slides
-    int[] ground = {5, 5};
-    int[] home = {1800, 50};
+    int[] ground = {10, 5};
+    int[] home = {1400, 50};
     int[] init = {2420, 20};
-    int[] intakeLow = {100, 1905};
-    int[] intakeHigh = {650, 1905};
-    int[] intakeIn = {900, 100};
-    int[] wall = {1450, 705};
-    int[] barHighInit = {3350, 835};
-    int[] barHigh = {2700, 835};
-    int[] barLowInit = {1700, 505};
-    int[] barLow = {950, 505};
-    int[] lowBin = {3250, 1345};
-    int[] highBin = {3690, 3100};
+    int[] intakeLow = {72, 1905};
+    int[] intakeHigh = {470, 1905};
+    int[] intakeIn = {650, 100};
+    int[] wall = {1040, 705};
+    int[] barHighInit = {2400, 835};
+    int[] barHigh = {1940, 835};
+    int[] barLowInit = {1220, 505};
+    int[] barLow = {680, 505};
+    int[] lowBin = {2330, 1345};
+    int[] highBin = {2650, 3100};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
