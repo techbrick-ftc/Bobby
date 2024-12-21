@@ -40,9 +40,9 @@ public class Main extends LinearOpMode {
     boolean lastG2Start = false;
     boolean endgame = false;
 
-    double binsAngle = (7 * Math.PI) / 4;
-    double wallAngle = 2 * Math.PI;
-    double targetAngle = wallAngle;
+    double binsAngle = (5 * Math.PI) / 4;
+    double wallAngle = Math.PI;
+    double targetAngle = binsAngle;
     double angle;
 
     public static double defWristRotate = .5;
@@ -77,10 +77,10 @@ public class Main extends LinearOpMode {
             g1start = gamepad1.start;
             g2start = gamepad2.start;
 
-            if (g1start && !lastG1Start){
+            if (g2start && !lastG2Start){
                 slowMode = !slowMode;
             }
-            if (g2start && !lastG2Start){
+            if (g1start && !lastG1Start){
                 if (!heldHeading){
                     heldHeading = !heldHeading;
                 }
@@ -265,19 +265,25 @@ public class Main extends LinearOpMode {
         }
 
         if (driveAllowed) {
-            angle = drive.getImu() - drive.offset;
-            if (angle >= Math.PI){
-                angle -= 2*Math.PI;
-            }
-            if (angle <= -Math.PI){
-                angle += 2*Math.PI;
-            }
 
-            drive.run(x_move, y_move, 2. * angle, drivePow);
-            /*
             if (heldHeading) {
+
+                /*
                 angle = (-drive.getImu() - targetAngle) % (2 * Math.PI);
                 angle *= 2;
+
+                drive.run(x_move, y_move, angle, drivePow);
+                 */
+
+                angle = -drive.getImu() + Math.PI - targetAngle;
+
+                if (angle >= Math.PI){
+                    angle -= 2*Math.PI;
+                }
+                if (angle <= -Math.PI){
+                    angle += 2*Math.PI;
+                }
+
 
                 drive.run(x_move, y_move, angle, drivePow);
 
@@ -286,7 +292,6 @@ public class Main extends LinearOpMode {
             else {
                 drive.run(x_move, y_move, rotation_x, drivePow);
             }
-            */
         }
 
 
@@ -298,7 +303,7 @@ public class Main extends LinearOpMode {
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", isRedTeam);
         telemetry.addData("Target Angle: ", targetAngle);
-        telemetry.addData("Turning Angle", (drive.getImu() - targetAngle) % (Math.PI));
+        telemetry.addData("Turning Angle", angle);
         telemetry.update();
     }
 
