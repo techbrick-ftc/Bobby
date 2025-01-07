@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Teleops.Main;
 
 import java.util.Date;
 
@@ -31,16 +32,13 @@ public class subGrab {
     double val;
     float[] hsvValues = {0F, 0F, 0F};
     double hueTol = 10;
+    double yellowValTol = .8;
+    double blueValTol = .4;
+    double redValTol = .65;
     double redAng1 = 0;
     double redAng2 = 360;
     double blueAng = 220;
     double yellowAng = 40;
-
-    public static boolean redCheck;
-    public static boolean blueCheck;
-    public static boolean distCheck;
-
-    double distance;
 
     Date time = new Date();
     long initTime;
@@ -84,49 +82,28 @@ public class subGrab {
     }
 
     public boolean checkObjectIn(){
-        distance = distanceSensor.getDistance(DistanceUnit.CM);
         time = new Date();
 
-        distCheck = distance <= distanceTarget;
+        if (distanceCheck()){
+            updateHSV();
+            hue = getHue();
+            val = getVal();
 
-        if (distCheck){
-            /*
-            Color.RGBToHSV((int) (colorSensor.red()),
-                    (int) (colorSensor.green()),
-                    (int) (colorSensor.blue()),
-                    hsvValues);
-            hue = hsvValues[0];
-            val = hsvValues[2];
-
-            redCheck = (hue <= redAng1 + hueTol || hue >= redAng2 - hueTol);
-            blueCheck = (hue >= blueAng - hueTol && hue <= blueAng + hueTol);
-
-            if (val > .8)
-            {
-
-                // If red
-                if (team && redCheck) {
-                    detected = true;
-                }
-                // If blue
-                else if (!team && blueCheck) {
-                    detected = true;
-                }
-                // If yellow
-                else if (hue >= yellowAng - hueTol & hue <= yellowAng + hueTol) {
-                    detected = true;
-                }
-                else {
-                    detected = false;
-                }
-
+            // If red
+            if (Main.isRedTeam && redCheck() && val >= redValTol) {
                 detected = true;
             }
-            else{
+            // If blue
+            else if (!Main.isRedTeam && blueCheck() && val >= blueValTol) {
+                detected = true;
+            }
+            // If yellow
+            else if (yellowCheck() && val >= yellowValTol) {
+                detected = true;
+            }
+            else {
                 detected = false;
             }
-             */
-            detected = true;
         }
         else{
             detected = false;
@@ -143,12 +120,6 @@ public class subGrab {
         else {
             return false;
         }
-    }
-
-    public boolean checkObjectOut(){
-        double distance = distanceSensor.getDistance(DistanceUnit.CM);
-
-        return distance >= distanceTarget;
     }
 
     public void setRotation(double ang){
@@ -193,15 +164,42 @@ public class subGrab {
 
     }
 
-    public float[] getHSV(){
+    public void updateHSV(){
         Color.RGBToHSV((int) (colorSensor.red()),
                 (int) (colorSensor.green()),
                 (int) (colorSensor.blue()),
                 hsvValues);
-        return hsvValues;
     }
 
     public double getDistance(){
-        return distance;
+        return distanceSensor.getDistance(DistanceUnit.CM);
+    }
+
+    public boolean getDetected(){
+        return detected;
+    }
+
+    public boolean distanceCheck(){
+        return getDistance() <= distanceTarget;
+    }
+
+    public boolean redCheck(){
+        return (hue <= redAng1 + hueTol || hue >= redAng2 - hueTol);
+    }
+
+    public boolean blueCheck(){
+        return (hue >= blueAng - hueTol && hue <= blueAng + hueTol);
+    }
+
+    public boolean yellowCheck(){
+        return (hue >= yellowAng - hueTol && hue <= yellowAng + hueTol);
+    }
+
+    public double getHue(){
+        return hsvValues[0];
+    }
+
+    public double getVal(){
+        return hsvValues[2];
     }
 }

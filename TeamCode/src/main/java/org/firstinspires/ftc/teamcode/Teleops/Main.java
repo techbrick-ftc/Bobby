@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.UtilityOctoQuadConfigMenu;
 import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
@@ -24,7 +25,7 @@ public class Main extends LinearOpMode {
     static boolean lockPow = false;
     static boolean slowMode = false;
 
-    boolean isRedTeam = false;
+    public static boolean isRedTeam = false;
 
     boolean slidesHome = true;
     boolean shouldHome = false;
@@ -78,7 +79,8 @@ public class Main extends LinearOpMode {
             g2start = gamepad2.start;
 
             if (g2start && !lastG2Start){
-                slowMode = !slowMode;
+                //slowMode = !slowMode;
+                toggleColor();
             }
             if (g1start && !lastG1Start){
                 if (!heldHeading){
@@ -302,8 +304,10 @@ public class Main extends LinearOpMode {
         telemetry.addData("Arm: ", arm.should.lSlides.getCurrentPosition());
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", isRedTeam);
-        telemetry.addData("Target Angle: ", targetAngle);
-        telemetry.addData("Turning Angle", angle);
+        telemetry.addData("Distance: ", grab.getDistance());
+        grab.updateHSV();
+        telemetry.addData("Val: ", grab.getVal());
+        telemetry.addData("Hue: ", grab.getHue());
         telemetry.update();
     }
 

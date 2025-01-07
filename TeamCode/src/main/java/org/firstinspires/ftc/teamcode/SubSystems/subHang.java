@@ -21,6 +21,7 @@ public class subHang {
 
     int defTol = 20;
     int rotateTol = 50;
+    int shouldTol = 100;
 
     Date time = new Date();
     long endTime = 0;
@@ -30,7 +31,7 @@ public class subHang {
     // Shoulder, slides, lift
     int[] init = {2940, 1850, 5700};
     int[] lowHang1 = {3155, 2850, 2800};
-    int[] lowHang2 = {3480, 2850, 2800};
+    int[] lowHang2 = {3600, 2850, 2800};
     int[] hookSlides = {3480, 2450, 2800};
     int[] pullUp = {3050, 1100, 1450};
     int[] rotate = {1940, 1100, 1450};
@@ -114,7 +115,7 @@ public class subHang {
             lift.setLift(lowHang2[2], defLiftPow);
             state++;
         }
-        else if (state == 3 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && lift.reached(lift.lift, defTol) && x) {
+        else if (state == 3 && should.reached(should.lSlides, defTol) && should.reached(should.shoulder, rotateTol) && lift.reached(lift.lift, defTol) && x) {
             should.setShld(hookSlides[0], defShPow);
             should.setSlides(hookSlides[1], defSlPow);
             lift.setLift(hookSlides[2], defLiftPow);
