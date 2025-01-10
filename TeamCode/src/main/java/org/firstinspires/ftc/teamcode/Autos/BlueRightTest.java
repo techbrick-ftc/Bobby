@@ -47,7 +47,7 @@ public class BlueRightTest extends LinearOpMode {
             grab = new subGrab(hardwareMap);
 
             grab.stop();
-            grab.rotator.setPosition(0.5);
+            grab.setWristRotation(0.5);
         }
 
         public class ArmToBar implements Action {

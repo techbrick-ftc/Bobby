@@ -17,9 +17,10 @@ import java.util.Date;
 public class subGrab {
 
     // Arm motors
-    public CRServo lRoller;
-    public CRServo rRoller;
-    public Servo rotator;
+    public CRServo intake;
+    public Servo wrist1;
+    public Servo wrist2;
+    public Servo claw;
 
     double distanceTarget = 5.75;
     int direction = 0;
@@ -40,6 +41,10 @@ public class subGrab {
     double blueAng = 220;
     double yellowAng = 40;
 
+    // TODO: Get claw open and close positions
+    double grabAngle = .5;
+    double releaseAngle = .5;
+
     Date time = new Date();
     long initTime;
     int delayMS = 150;
@@ -51,10 +56,10 @@ public class subGrab {
 
     public subGrab(HardwareMap hardwareMap) {
 
-        //TODO: Setup configurations later
-        lRoller = hardwareMap.get(CRServo.class, "LG");
-        rRoller = hardwareMap.get(CRServo.class, "RG");
-        rotator = hardwareMap.get(Servo.class, "RTR");
+        intake = hardwareMap.get(CRServo.class, "IN");
+        wrist1 = hardwareMap.get(Servo.class, "W1");
+        wrist2 = hardwareMap.get(Servo.class, "W2");
+        claw = hardwareMap.get(Servo.class, "CL");
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "CS");
         colorSensor = hardwareMap.get(ColorSensor.class, "CS");
@@ -64,20 +69,26 @@ public class subGrab {
     }
 
     public void intake(double pow) {
-        lRoller.setPower(pow);
-        rRoller.setPower(-pow);
+        intake.setPower(pow);
         direction = 1;
     }
 
-    public void outtake(double lPow, double rPow) {
-        lRoller.setPower(-lPow);
-        rRoller.setPower(rPow);
+    public void outtake(double pow) {
+        intake.setPower(-pow);
         direction = -1;
     }
 
+
+    public void grab(){
+        claw.setPosition(grabAngle);
+    }
+
+    public void release(){
+        claw.setPosition(releaseAngle);
+    }
+
     public void stop() {
-        lRoller.setPower(0);
-        rRoller.setPower(0);
+        intake.setPower(0);
         direction = 0;
     }
 
@@ -122,46 +133,9 @@ public class subGrab {
         }
     }
 
-    public void setRotation(double ang){
-        rotator.setPosition(ang);
-    }
-
-    public void rotateWrist(double y, double x) {
-
-        double stickAngle = 0;
-
-        if (x != 0){
-            stickAngle = Math.atan(Math.abs(y) / Math.abs(x));
-
-            if (y >= 0 && x <= 0){
-                stickAngle = Math.PI - stickAngle;
-            }
-            else if (y <= 0 && x <= 0){
-                stickAngle = Math.PI + stickAngle;
-            }
-            else if (y <= 0 && x >= 0){
-                stickAngle = (Math.PI * 2) - stickAngle;
-            }
-        }
-        else if (y >= 0){
-            stickAngle = Math.PI / 2;
-        }
-        else{
-            stickAngle = (3 * Math.PI) / 2;
-        }
-
-        double robotAngle = drive.getImu();
-
-        double wristAngle = (stickAngle - robotAngle - (Math.PI / 2)) % (Math.PI * 2);
-
-        if (wristAngle < 0){
-            wristAngle += Math.PI * 2;
-        }
-
-        wristAngle = Range.scale(wristAngle, 0, Math.PI * 2, 0.95, 0.05);
-
-        setRotation(wristAngle);
-
+    public void setWristRotation(double ang){
+        wrist1.setPosition(ang);
+        wrist2.setPosition(1-ang);
     }
 
     public void updateHSV(){

@@ -14,22 +14,21 @@ public class subArm {
 
     double defShPow = 1;
     double defSlPow = 1;
-    double defOutPow = .5;
-    double outtakeLimitLeft = .5;
-    double outtakeLimitRight = .2;
     int defTol = 20;
     int highTol = 60;
     int highBinTol = 10;
     public boolean intakeUp = true;
     int slidesSlowHeight = 2500;
 
+    // TODO: Get wrist up and down angles
+    double wristDownAngle = .5;
+
     // Positions
     // Shoulder, Slides
     int[] ground = {10, 5};
     int[] home = {1400, 50};
     int[] init = {2420, 20};
-    int[] intakeLow = {72, 1905};
-    int[] intakeHigh = {470, 1905};
+    int[] intake = {20, 1905};
     int[] intakeIn = {650, 100};
     int[] wall = {1040, 705};
     int[] barHighInit = {2400, 835};
@@ -148,103 +147,29 @@ public class subArm {
         }
     }
 
-    public void pitIntakeFine(boolean a, double x, double y){
+    public void pitIntake(boolean a, boolean lastA){
         if (state == 0){
-            should.setShld(intakeHigh[0], defShPow);
-            should.setSlides(intakeHigh[1], defSlPow);
-            state++;
-        }
-        else if (state == 1){
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-
-                if (a && intakeUp){
-                    should.setShld(intakeLow[0], defShPow);
-                    should.setSlides(intakeLow[1], defSlPow);
-                    intakeUp = !intakeUp;
-                }
-                else if (a){
-                    should.setShld(intakeHigh[0], defShPow);
-                    should.setSlides(intakeHigh[1], defSlPow);
-                    intakeUp = !intakeUp;
-                }
-
-                if (Math.abs(x) >= .1 || Math.abs(y) >= .1){
-                    grab.rotateWrist(-y, x);
-                }
-
-                if (grab.checkObjectIn()){
-                    should.setShld(intakeIn[0], defShPow);
-                    should.setSlides(intakeIn[1], defSlPow);
-                    grab.setRotation(Main.defWristRotate);
-                    state++;
-                }
-            }
-        }
-        else if (state == 2){
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-                Main.drivePow = Main.defPow;
-                should.setShld(home[0], defShPow);
-                should.setSlides(home[1], defSlPow);
-                state = 0;
-                Main.routine = 0;
-            }
-        }
-    }
-
-    public void pitIntakeCoarse(boolean a, boolean l, boolean r, boolean u, boolean d){
-        if (state == 0){
-            should.setShld(intakeHigh[0], defShPow);
-            should.setSlides(intakeHigh[1], defSlPow);
+            should.setShld(intake[0], defShPow);
+            should.setSlides(intake[1], defSlPow);
             state++;
         }
         else if (state == 1){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 Main.activateSlowMode();
 
-                if (a && intakeUp){
-                    should.setShld(intakeLow[0], defShPow);
-                    should.setSlides(intakeLow[1], defSlPow);
+                if (a && !lastA && intakeUp){
+                    grab.setWristRotation(wristDownAngle);
                     intakeUp = !intakeUp;
                 }
-                else if (a){
-                    should.setShld(intakeHigh[0], defShPow);
-                    should.setSlides(intakeHigh[1], defSlPow);
+                else if (a && !lastA){
+                    grab.setWristRotation(Main.defWristAngle);
                     intakeUp = !intakeUp;
-                }
-
-                else if (l){
-                    if (u){
-                        grab.setRotation(.3875);
-                    }
-                    else if (d){
-                        grab.setRotation(.1625);
-                    }
-                    else {
-                        grab.setRotation(.275);
-                    }
-                }
-                else if (r){
-                    if (u){
-                        grab.setRotation(.8875);
-                    }
-                    else if (d){
-                        grab.setRotation(.6625);
-                    }
-                    else {
-                        grab.setRotation(.775);
-                    }
-                }
-                else if (u){
-                    grab.setRotation(.5);
-                }
-                else if (d){
-                    grab.setRotation(.05);
                 }
 
                 if (grab.checkObjectIn()){
                     should.setShld(intakeIn[0], defShPow);
                     should.setSlides(intakeIn[1], defSlPow);
-                    grab.setRotation(Main.defWristRotate);
+                    grab.setWristRotation(Main.defWristAngle);
                     Main.deactivateSlowMode();
                     state++;
                 }
@@ -299,7 +224,7 @@ public class subArm {
 
     public void grabberUpdate(double lt, double rt) {
         if (rt > .05) {
-            grab.outtake(rt * outtakeLimitLeft, rt * outtakeLimitRight);
+            grab.outtake(rt);
         }
         else {
             if (lt > .05 && !grab.checkObjectIn()) {

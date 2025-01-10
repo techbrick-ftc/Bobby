@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.UtilityOctoQuadConfigMenu;
 import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
@@ -41,12 +40,16 @@ public class Main extends LinearOpMode {
     boolean lastG2Start = false;
     boolean endgame = false;
 
+    boolean g1A = false;
+    boolean lastG1A = false;
+
     double binsAngle = (5 * Math.PI) / 4;
     double wallAngle = Math.PI;
     double targetAngle = binsAngle;
     double angle;
 
-    public static double defWristRotate = .5;
+    // TODO: Get wrist up and down angles
+    public static double defWristAngle = .5;
 
     public static int routine = 0;
 
@@ -65,7 +68,7 @@ public class Main extends LinearOpMode {
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
 
-        grab.setRotation(defWristRotate);
+        grab.setWristRotation(defWristAngle);
 
         waitForStart();
         tm1.startTime();
@@ -74,9 +77,11 @@ public class Main extends LinearOpMode {
 
             lastG1Start = g1start;
             lastG2Start = g2start;
+            lastG1A = g1A;
 
             g1start = gamepad1.start;
             g2start = gamepad2.start;
+            g1A = gamepad1.a;
 
             if (g2start && !lastG2Start){
                 //slowMode = !slowMode;
@@ -130,7 +135,7 @@ public class Main extends LinearOpMode {
                     slidesHome = true;
                     drivePow = defPow;
                 }
-                grab.setRotation(defWristRotate);
+                grab.setWristRotation(defWristAngle);
             }
 
             if (routine == 0) {
@@ -155,7 +160,7 @@ public class Main extends LinearOpMode {
                     }
                 }
                 // Intake
-                else if (gamepad1.a) {
+                else if (g1A) {
                     routine = 5;
                     if (gamepad1.left_bumper) {
                         routine = 6;
@@ -175,14 +180,13 @@ public class Main extends LinearOpMode {
                     arm.lowBin();
                 }
                 else if (routine == 3) {
-                    arm.highBar(gamepad1.a);
+                    arm.highBar(g1A);
                 }
                 else if (routine == 4) {
-                    arm.lowBar(gamepad1.a);
+                    arm.lowBar(g1A);
                 }
                 else if (routine == 5) {
-                    // arm.pitIntakeFine(gamepad1.a, gamepad1.left_stick_x, gamepad1.left_stick_y);
-                    arm.pitIntakeCoarse(gamepad1.a, gamepad1.dpad_left, gamepad1.dpad_right, gamepad1.dpad_up, gamepad1.dpad_down);
+                    arm.pitIntake(g1A, lastG1A);
                 }
                 else if (routine == 6) {
                     arm.wallIntake();

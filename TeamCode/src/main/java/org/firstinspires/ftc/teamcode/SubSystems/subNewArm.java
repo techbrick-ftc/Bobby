@@ -208,7 +208,7 @@ public class subNewArm {
                 if (grab.checkObjectIn()){
                     should.setShld(intakeIn[0], defShPow);
                     should.setSlides(intakeIn[1], defSlPow);
-                    grab.setRotation(Main.defWristRotate);
+                    grab.setRotation(Main.defWristAngle);
                     Main.deactivateSlowMode();
                     state++;
                 }

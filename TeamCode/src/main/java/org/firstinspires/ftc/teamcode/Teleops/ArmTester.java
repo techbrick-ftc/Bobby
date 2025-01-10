@@ -15,10 +15,11 @@ public class ArmTester extends LinearOpMode {
     int extendDist = 0;
     int rotateDist = 0;
 
-    double defGrabPow = 0.9;
+    double defIntakePow = 0.9;
     double defShPow = 0.5;
     double defLiftPow = 5.0;
-    double ang = .5;
+    double wristAng = .5;
+    double clawAng = .5;
 
     subShoulder should = null;
     subLift lift = null;
@@ -50,6 +51,7 @@ Pitch max = 5000
                     (int) (grab.colorSensor.blue()),
                     hsvValues);
 
+            grab.claw.setPosition(clawAng);
 
 
             if (Math.abs(gamepad1.right_stick_y) > .05) {
@@ -71,28 +73,28 @@ Pitch max = 5000
                 lift.runLiftOverride(0, 2);
             }
 
-            ang = (gamepad2.left_stick_x + 1) / 2;
-            grab.setRotation(ang);
+            wristAng = (gamepad2.left_stick_x + 1) / 2;
+            grab.setWristRotation(wristAng);
 
             if (gamepad1.right_bumper){
-                grab.intake(defGrabPow);
+                grab.intake(defIntakePow);
                 telemetry.addData("Intake", true);
             }
             else if (gamepad1.left_bumper){
-                grab.outtake(defGrabPow, defGrabPow);
+                grab.outtake(defIntakePow);
                 telemetry.addData("Outtake", true);
             }
             else if (gamepad2.dpad_up){
-                grab.rRoller.setPower(defGrabPow);
+                clawAng += .1;
             }
             else if (gamepad2.dpad_down){
-                grab.rRoller.setPower(-defGrabPow);
+                clawAng -= .1;
             }
             else if (gamepad2.dpad_left){
-                grab.lRoller.setPower(defGrabPow);
+
             }
             else if (gamepad2.dpad_right){
-                grab.lRoller.setPower(-defGrabPow);
+
             }
             else{
                 grab.stop();
@@ -104,8 +106,8 @@ Pitch max = 5000
             telemetry.addData("Left Slide Value: ", should.lSlides.getCurrentPosition());
             telemetry.addData("Shoulder Value: ", should.shoulder.getCurrentPosition());
             telemetry.addData("Lift Value: ", lift.lift.getCurrentPosition());
-            telemetry.addData("Hue Value: ", hsvValues[0]);
-            telemetry.addData("Saturation Value: ", hsvValues[1]);
+            telemetry.addData("Wrist Value: ", wristAng);
+            telemetry.addData("Claw Value: ", clawAng);
             telemetry.addData("Value Value: ", hsvValues[2]);
             telemetry.update();
         }
