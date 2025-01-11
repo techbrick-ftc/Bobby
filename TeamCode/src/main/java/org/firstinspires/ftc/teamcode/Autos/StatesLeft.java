@@ -39,9 +39,9 @@ public class StatesLeft extends LinearOpMode {
 
     //TODO: Tune robot positions here
     // x, y, heading
-    double[] move1 = {-62, 46, Math.toRadians(90)};
-    double[] scoringPos = {-46, 44, Math.toRadians(135)};
-    double[] pickPos1 = {-36, 30, Math.toRadians(60)};
+    double[] move1 = {-62, 36, Math.toRadians(90)};
+    double[] scoringPos = {-49, 54, Math.toRadians(135)};
+    double[] pickPos1 = {-38, 32, Math.toRadians(60)};
     double[] pickPos2 = {-25, 36, Math.toRadians(90)};
     double[] pickPos3 = {-25, 48, Math.toRadians(90)};
 
@@ -49,7 +49,7 @@ public class StatesLeft extends LinearOpMode {
     // pitch, slides
     int[] ready = {1400, 50};
     int[] score = {2600, 3100};
-    int[] grabArm1 = {20, 1000};
+    int[] grabArm1 = {20, 1100};
     int[] grabArm2 = {20, 1700};
     int[] grabArm3 = {20, 2400};
 
@@ -79,8 +79,8 @@ public class StatesLeft extends LinearOpMode {
 
             grab = new subGrab(hardwareMap);
 
-            depoAng = 0.5;
-            inAng = 0.5;
+            depoAng = 0.3;
+            inAng = 0.33;
         }
 
         //Drive arm to position
@@ -111,7 +111,7 @@ public class StatesLeft extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.stop();
-                grab.setWristRotation(0.3);
+                grab.setWristRotation(depoAng);
                 armToPos(ready[0], ready[1]);
                 return !reached(20);
             }
@@ -206,7 +206,11 @@ public class StatesLeft extends LinearOpMode {
         telemetry.addData("Program", "States Left");
         telemetry.update();
 
-        arm.readyPos();
+        //TODO: Change to initialization later
+        arm.armToPos(ready[0], ready[1]);
+        grab.setWristRotation(depoAng);
+        grab.stop();
+        grab.release();
 
         waitForStart();
 
@@ -232,8 +236,8 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new ParallelAction(
-                        arm.grab1(),
-                        toGet1.build()
+                        toGet1.build(),
+                        arm.grab1()
                 )
         );
 
@@ -242,7 +246,12 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        toScore.build(),
+
+                        new ParallelAction(
+                                toScore.build(),
+                                arm.scorePos()
+                        ),
+
                         arm.depo()
                 )
         );
