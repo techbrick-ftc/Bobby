@@ -20,11 +20,11 @@ public class subArm {
     public boolean intakeUp = true;
     int slidesSlowHeight = 2500;
 
-    // TODO: Get wrist up and down angles
     double wristDownAngle = .34;
 
-    // Positions
+    // Old Positions
     // Shoulder, Slides
+    /*
     int[] ground = {10, 5};
     int[] home = {1400, 50};
     int[] init = {2420, 20};
@@ -37,6 +37,20 @@ public class subArm {
     int[] barLow = {680, 505};
     int[] lowBin = {2330, 1345};
     int[] highBin = {2650, 3100};
+    */
+
+    // Positions
+    // Should, Slides, Wrist
+    int[] ground = {10, 5, 50};
+    int[] home = {1400, 50, 50};
+    int[] extendIntake = {10, 1150, 56};
+    int[] intake = {10, 1150, 34};
+    int[] retractIntake = {10, 10, 65};
+    int[] wallIntake = {1000, 10, 7};
+    int[] barInit = {3170, 260, 44};
+    int[] barRaise = {3170, 770, 44};
+    int[] highBin = {2600, 3100, 30};
+    int[] lowBin = {2100, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -69,11 +83,13 @@ public class subArm {
         if (state == 0) {
             should.setShld(highBin[0], defShPow);
             should.setSlides(highBin[1], defSlPow);
+            grab.setWristRotation(convertAngle(highBin[2]));
             state++;
         }
         if (state == 1) {
             if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol) && x){
                 should.setSlides(home[1], defSlPow);
+                grab.setWristRotation(convertAngle(home[2]));
                 state++;
             }
         }
@@ -94,6 +110,7 @@ public class subArm {
         if (state == 0) {
             should.setShld(lowBin[0], defSlPow);
             should.setSlides(lowBin[1], defSlPow);
+            grab.setWristRotation(convertAngle(lowBin[2]));
             state++;
         }
         if (state == 1) {
@@ -106,26 +123,28 @@ public class subArm {
 
     public void highBar(boolean a){
         if (state == 0) {
-            should.setShld(barHighInit[0], defShPow);
-            should.setSlides(barHighInit[1], defSlPow);
+            should.setShld(barInit[0], defShPow);
+            should.setSlides(barInit[1], defSlPow);
+            grab.setWristRotation(convertAngle(barInit[2]));
             state++;
         }
 
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
-                should.setShld(barHigh[0], defShPow);
-                should.setSlides(barHigh [1], defSlPow);
+                should.setSlides(barRaise[1], defSlPow);
                 state++;
             }
         }
         else if (state == 2){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
+                grab.release();
                 state = 0;
                 Main.routine = 0;
             }
         }
     }
 
+    /*
     public void lowBar(boolean a){
         if (state == 0) {
             should.setShld(barLowInit[0], defShPow);
@@ -146,19 +165,21 @@ public class subArm {
             }
         }
     }
+    */
 
     public void pitIntake(boolean a, boolean lastA){
         if (state == 0){
-            should.setShld(intake[0], defShPow);
-            should.setSlides(intake[1], defSlPow);
+            should.setShld(extendIntake[0], defShPow);
+            should.setSlides(extendIntake[1], defSlPow);
+            grab.setWristRotation(convertAngle(extendIntake[2]));
             state++;
         }
-        else if (state == 1){
+        else if (state == 2){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 Main.activateSlowMode();
 
                 if (a && !lastA && intakeUp){
-                    grab.setWristRotation(wristDownAngle);
+                    grab.setWristRotation(convertAngle(intake[2]));
                     intakeUp = !intakeUp;
                 }
                 else if (a && !lastA){
@@ -167,45 +188,41 @@ public class subArm {
                 }
 
                 if (grab.checkObjectIn()){
-                    should.setShld(intakeIn[0], defShPow);
-                    should.setSlides(intakeIn[1], defSlPow);
-                    grab.setWristRotation(Main.defWristAngle);
+                    should.setShld(retractIntake[0], defShPow);
+                    should.setSlides(retractIntake[1], defSlPow);
+                    grab.setWristRotation(convertAngle(retractIntake[2]));
                     Main.deactivateSlowMode();
                     state++;
                 }
             }
         }
-        else if (state == 2){
+        else if (state == 3){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
+                grab.setWristRotation(convertAngle(home[2]));
                 state = 0;
                 Main.routine = 0;
             }
         }
     }
 
-    public void wallIntake(){
+    public void wallIntake(boolean a){
         if (state == 0) {
-            should.setShld(wall[0], defShPow);
-            should.setSlides(wall[1], defSlPow);
+            should.setShld(wallIntake[0], defShPow);
+            should.setSlides(wallIntake[1], defSlPow);
+            grab.setWristRotation(convertAngle(wallIntake[2]));
+            grab.release();
             state++;
         }
-
         if (state == 1) {
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
-                should.setSlides(wall[1], 0);
-                should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                state++;
-            }
-        }
-        if (state == 2) {
-            if (should.reached(should.shoulder, defTol) && grab.checkObjectIn()) {
-                Main.deactivateSlowMode();
-                should.lSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                should.rSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                state = 0;
-                Main.routine = 3;
+            if (should.reached(should.shoulder, defTol)) {
+                if (a) {
+                    grab.grab();
+                    Main.deactivateSlowMode();
+                    state = 0;
+                    Main.routine = 3;
+                }
             }
         }
     }
@@ -252,6 +269,10 @@ public class subArm {
             return true;
         }
         return false;
+    }
+
+    public double convertAngle(int ang){
+        return ((double)ang) / 100.0;
     }
 
     public void resetShoulder() {

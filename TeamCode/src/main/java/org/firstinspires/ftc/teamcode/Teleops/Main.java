@@ -48,7 +48,6 @@ public class Main extends LinearOpMode {
     double targetAngle = binsAngle;
     double angle;
 
-    // TODO: Get wrist up and down angles
     public static double defWristAngle = .5;
 
     public static int routine = 0;
@@ -156,7 +155,7 @@ public class Main extends LinearOpMode {
                     routine = 3;
 
                     if (gamepad1.left_bumper) {
-                        routine = 4;
+                        //routine = 4;
                     }
                 }
                 // Intake
@@ -183,13 +182,13 @@ public class Main extends LinearOpMode {
                     arm.highBar(g1A);
                 }
                 else if (routine == 4) {
-                    arm.lowBar(g1A);
+                    //arm.lowBar(g1A);
                 }
                 else if (routine == 5) {
                     arm.pitIntake(g1A, lastG1A);
                 }
                 else if (routine == 6) {
-                    arm.wallIntake();
+                    arm.wallIntake(g1A);
                 }
                 else if (routine == 7){
                     hang.altHang(gamepad2.x);
