@@ -254,7 +254,7 @@ public class StatesLeft extends LinearOpMode {
         );
 
         TrajectoryActionBuilder waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(2);
+                .waitSeconds(2.1);
 
         Actions.runBlocking(
                 new SequentialAction(
