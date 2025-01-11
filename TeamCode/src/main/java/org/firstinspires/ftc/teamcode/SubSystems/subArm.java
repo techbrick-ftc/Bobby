@@ -52,7 +52,7 @@ public class subArm {
     int[] extendIntake = {10, 1150, 56};
     int[] intake = {10, 1150, 34};
     int[] retractIntake = {10, 10, 65};
-    int[] wallIntake = {1000, 10, 7};
+    int[] wallIntake = {1000, 10, 9};
     int[] barInit = {3170, 160, 44};
     int[] barRaise = {3170, 770, 44};
     int[] highBin = {2900, 2900, 30};
@@ -198,12 +198,14 @@ public class subArm {
                     should.setShld(retractIntake[0], defShPow);
                     should.setSlides(retractIntake[1], defSlPow);
                     grab.setWristRotation(convertAngle(retractIntake[2]));
+                    grab.intake(.1);
                     Main.deactivateSlowMode();
                     state++;
                 }
             }
         }
         else if (state == 2){
+            grab.intake(.1);
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
@@ -220,6 +222,7 @@ public class subArm {
             should.setSlides(wallIntake[1], defSlPow);
             grab.setWristRotation(convertAngle(wallIntake[2]));
             grab.release();
+            Main.activateSlowMode();
             state++;
         }
         if (state == 1) {
@@ -237,6 +240,7 @@ public class subArm {
             time = new Date();
             if (time.getTime() - initTime >= delayMS){
                 should.setShld(barInit[0], defShPow);
+                state++;
             }
         }
         if (state == 3){

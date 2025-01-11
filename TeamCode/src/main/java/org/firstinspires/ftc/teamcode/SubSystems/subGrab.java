@@ -39,7 +39,7 @@ public class subGrab {
     double blueAng = 220;
     double yellowAng = 75;
 
-    double grabAngle = .55;
+    double grabAngle = .51;
     double releaseAngle = .7;
 
     Date time = new Date();
