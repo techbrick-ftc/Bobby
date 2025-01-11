@@ -224,6 +224,7 @@ public class StatesLeft extends LinearOpMode {
         TrajectoryActionBuilder toScore = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(scoringPos[0], scoringPos[1]), scoringPos[2]);
 
+
         Actions.runBlocking(
                 new SequentialAction(
                         toScore.build(),
@@ -246,56 +247,12 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-
-                        new ParallelAction(
-                                toScore.build(),
-                                arm.scorePos()
-                        ),
-
-                        arm.depo()
-                )
-        );
-
-        TrajectoryActionBuilder toGet2 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(pickPos2[0], pickPos2[1]), pickPos2[2]);
-
-        Actions.runBlocking(
-                new ParallelAction(
-                        arm.grab2(),
-                        toGet2.build()
-                )
-        );
-
-        toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(scoringPos[0], scoringPos[1]), scoringPos[2]);
-
-        Actions.runBlocking(
-                new SequentialAction(
+                        arm.scorePos(),
                         toScore.build(),
                         arm.depo()
                 )
         );
 
-        TrajectoryActionBuilder toGet3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(pickPos3[0], pickPos3[1]), pickPos3[2]);
-
-        Actions.runBlocking(
-                new ParallelAction(
-                        arm.grab3(),
-                        toGet3.build()
-                )
-        );
-
-
-        toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(scoringPos[0], scoringPos[1]), scoringPos[2]);
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        toScore.build(),
-                        arm.depo()
-                )
-        );
 
 
         /* Seems tedious to use
