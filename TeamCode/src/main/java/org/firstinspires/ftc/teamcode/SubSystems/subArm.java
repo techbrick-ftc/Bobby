@@ -21,7 +21,7 @@ public class subArm {
     int slidesSlowHeight = 2500;
 
     // TODO: Get wrist up and down angles
-    double wristDownAngle = .5;
+    double wristDownAngle = .34;
 
     // Positions
     // Shoulder, Slides

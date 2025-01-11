@@ -21,6 +21,9 @@ public class ArmTester extends LinearOpMode {
     double wristAng = .5;
     double clawAng = .5;
 
+    boolean intakeActive = false;
+    boolean outtakeActive = false;
+
     subShoulder should = null;
     subLift lift = null;
     subGrab grab = null;
@@ -52,6 +55,7 @@ Pitch max = 5000
                     hsvValues);
 
             grab.claw.setPosition(clawAng);
+            grab.setWristRotation(wristAng);
 
 
             if (Math.abs(gamepad1.right_stick_y) > .05) {
@@ -73,31 +77,30 @@ Pitch max = 5000
                 lift.runLiftOverride(0, 2);
             }
 
-            wristAng = (gamepad2.left_stick_x + 1) / 2;
-            grab.setWristRotation(wristAng);
-
             if (gamepad1.right_bumper){
                 grab.intake(defIntakePow);
-                telemetry.addData("Intake", true);
+                intakeActive = true;
             }
             else if (gamepad1.left_bumper){
                 grab.outtake(defIntakePow);
-                telemetry.addData("Outtake", true);
+                outtakeActive = true;
             }
             else if (gamepad2.dpad_up){
-                clawAng += .1;
+                grab.grab();
             }
             else if (gamepad2.dpad_down){
-                clawAng -= .1;
+                grab.release();
             }
             else if (gamepad2.dpad_left){
-
+                wristAng -= .01;
             }
             else if (gamepad2.dpad_right){
-
+                wristAng += .01;
             }
             else{
                 grab.stop();
+                intakeActive = false;
+                outtakeActive = false;
             }
 
 
@@ -108,7 +111,12 @@ Pitch max = 5000
             telemetry.addData("Lift Value: ", lift.lift.getCurrentPosition());
             telemetry.addData("Wrist Value: ", wristAng);
             telemetry.addData("Claw Value: ", clawAng);
-            telemetry.addData("Value Value: ", hsvValues[2]);
+            if (intakeActive){
+                telemetry.addData("Intake", true);
+            }
+            else if (outtakeActive){
+                telemetry.addData("Outtake", true);
+            }
             telemetry.update();
         }
     }

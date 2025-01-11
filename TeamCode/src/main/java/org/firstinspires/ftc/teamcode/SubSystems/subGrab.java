@@ -43,7 +43,7 @@ public class subGrab {
 
     // TODO: Get claw open and close positions
     double grabAngle = .5;
-    double releaseAngle = .5;
+    double releaseAngle = .7;
 
     Date time = new Date();
     long initTime;
@@ -69,12 +69,12 @@ public class subGrab {
     }
 
     public void intake(double pow) {
-        intake.setPower(pow);
+        intake.setPower(-pow);
         direction = 1;
     }
 
     public void outtake(double pow) {
-        intake.setPower(-pow);
+        intake.setPower(pow);
         direction = -1;
     }
 
