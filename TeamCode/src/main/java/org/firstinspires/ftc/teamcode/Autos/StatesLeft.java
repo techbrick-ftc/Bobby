@@ -139,7 +139,7 @@ public class StatesLeft extends LinearOpMode {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
                 armToPos(grabArm1[0], grabArm1[1]);
-                return grab.checkObjectIn();
+                return !grab.checkObjectIn();
             }
         }
         public Action grab1() {
@@ -222,7 +222,7 @@ public class StatesLeft extends LinearOpMode {
         );
 
         TrajectoryActionBuilder toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(scoringPos[0], scoringPos[1]), scoringPos[2]);
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] + 2, scoringPos[1] + 2), scoringPos[2]);
 
 
         Actions.runBlocking(
@@ -253,6 +253,14 @@ public class StatesLeft extends LinearOpMode {
                 )
         );
 
+        TrajectoryActionBuilder waiter = drive.actionBuilder(drive.pose)
+                .waitSeconds(2);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        waiter.build()
+                )
+        );
 
 
         /* Seems tedious to use
