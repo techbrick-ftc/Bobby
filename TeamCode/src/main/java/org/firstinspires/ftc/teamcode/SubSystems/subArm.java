@@ -55,7 +55,7 @@ public class subArm {
     int[] wallIntake = {1000, 10, 7};
     int[] barInit = {3170, 160, 44};
     int[] barRaise = {3170, 770, 44};
-    int[] highBin = {2900, 3100, 30};
+    int[] highBin = {2900, 2900, 30};
     int[] lowBin = {2100, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
@@ -178,6 +178,7 @@ public class subArm {
             should.setShld(extendIntake[0], defShPow);
             should.setSlides(extendIntake[1], defSlPow);
             grab.setWristRotation(convertAngle(extendIntake[2]));
+            intakeUp = true;
             state++;
         }
         else if (state == 1){

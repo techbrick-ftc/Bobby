@@ -34,12 +34,12 @@ public class subGrab {
     double yellowValTol = .8;
     double blueValTol = .4;
     double redValTol = .65;
-    double redAng1 = 0;
-    double redAng2 = 360;
+    double redAng1 = 20;
+    double redAng2 = 20;
     double blueAng = 220;
-    double yellowAng = 40;
+    double yellowAng = 75;
 
-    double grabAngle = .45;
+    double grabAngle = .55;
     double releaseAngle = .7;
 
     Date time = new Date();
