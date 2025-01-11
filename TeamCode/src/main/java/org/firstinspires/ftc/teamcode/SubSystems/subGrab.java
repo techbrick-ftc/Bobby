@@ -22,7 +22,7 @@ public class subGrab {
     public Servo wrist2;
     public Servo claw;
 
-    double distanceTarget = 5.75;
+    double distanceTarget = 1.5;
     int direction = 0;
 
     // false = blue, true = red
@@ -39,8 +39,7 @@ public class subGrab {
     double blueAng = 220;
     double yellowAng = 40;
 
-    // TODO: Get claw open and close positions
-    double grabAngle = .5;
+    double grabAngle = .45;
     double releaseAngle = .7;
 
     Date time = new Date();
