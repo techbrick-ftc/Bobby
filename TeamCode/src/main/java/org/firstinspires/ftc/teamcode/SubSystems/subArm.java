@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Teleops.Main;
 
+import java.util.Date;
+
 public class subArm {
 
     public subShoulder should;
@@ -19,6 +21,10 @@ public class subArm {
     int highBinTol = 10;
     public boolean intakeUp = true;
     int slidesSlowHeight = 2500;
+
+    Date time = new Date();
+    long initTime;
+    int delayMS = 150;
 
     double wristDownAngle = .34;
 
@@ -47,9 +53,9 @@ public class subArm {
     int[] intake = {10, 1150, 34};
     int[] retractIntake = {10, 10, 65};
     int[] wallIntake = {1000, 10, 7};
-    int[] barInit = {3170, 260, 44};
+    int[] barInit = {3170, 160, 44};
     int[] barRaise = {3170, 770, 44};
-    int[] highBin = {2600, 3100, 30};
+    int[] highBin = {2900, 3100, 30};
     int[] lowBin = {2100, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
@@ -174,7 +180,7 @@ public class subArm {
             grab.setWristRotation(convertAngle(extendIntake[2]));
             state++;
         }
-        else if (state == 2){
+        else if (state == 1){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 Main.activateSlowMode();
 
@@ -196,7 +202,7 @@ public class subArm {
                 }
             }
         }
-        else if (state == 3){
+        else if (state == 2){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
@@ -220,10 +226,24 @@ public class subArm {
                 if (a) {
                     grab.grab();
                     Main.deactivateSlowMode();
-                    state = 0;
-                    Main.routine = 3;
+                    time = new Date();
+                    initTime = time.getTime();
+                    state++;
                 }
             }
+        }
+        if (state == 2){
+            time = new Date();
+            if (time.getTime() - initTime >= delayMS){
+                should.setShld(barInit[0], defShPow);
+            }
+        }
+        if (state == 3){
+            if (should.reached(should.shoulder, defTol)) {
+                state = 0;
+                Main.routine = 3;
+            }
+
         }
     }
 
