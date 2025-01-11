@@ -212,11 +212,12 @@ public class subArm {
             should.setShld(wallIntake[0], defShPow);
             should.setSlides(wallIntake[1], defSlPow);
             grab.setWristRotation(convertAngle(wallIntake[2]));
+            grab.release();
             state++;
         }
         if (state == 1) {
             if (should.reached(should.shoulder, defTol)) {
-                if (grab.checkObjectIn() || a) {
+                if (a) {
                     grab.grab();
                     Main.deactivateSlowMode();
                     state = 0;
