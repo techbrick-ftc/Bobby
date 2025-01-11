@@ -25,8 +25,6 @@ public class subGrab {
     double distanceTarget = 5.75;
     int direction = 0;
 
-    public subDrive drive;
-
     // false = blue, true = red
 
     double hue;
@@ -63,8 +61,6 @@ public class subGrab {
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "CS");
         colorSensor = hardwareMap.get(ColorSensor.class, "CS");
-
-        drive = new subDrive(hardwareMap);
 
     }
 
