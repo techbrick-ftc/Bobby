@@ -41,7 +41,7 @@ public class StatesLeft extends LinearOpMode {
     // x, y, heading
     double[] move1 = {-62, 36, Math.toRadians(90)};
     double[] scoringPos = {-49, 54, Math.toRadians(135)};
-    double[] pickPos1 = {-38, 32, Math.toRadians(60)};
+    double[] pickPos1 = {-36, 34, Math.toRadians(60)};
     double[] pickPos2 = {-25, 36, Math.toRadians(90)};
     double[] pickPos3 = {-25, 48, Math.toRadians(90)};
 
@@ -139,7 +139,7 @@ public class StatesLeft extends LinearOpMode {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
                 armToPos(grabArm1[0], grabArm1[1]);
-                return !reached(20);
+                return grab.checkObjectIn();
             }
         }
         public Action grab1() {
@@ -176,7 +176,7 @@ public class StatesLeft extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.outtake(1);
-                return false;
+                return grab.checkObjectIn();
             }
         }
         public Action depo () {
