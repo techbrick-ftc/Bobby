@@ -25,6 +25,9 @@ public class subArm {
     Date time = new Date();
     long initTime;
     int delayMS = 150;
+    int realignTime = 300;
+    int realignPosInit = 100;
+    int realignPos = -100;
 
     double wristDownAngle = .34;
 
@@ -55,7 +58,7 @@ public class subArm {
     int[] wallIntake = {1000, 10, 9};
     int[] barInit = {3170, 160, 44};
     int[] barRaise = {3170, 770, 44};
-    int[] highBin = {2900, 2900, 30};
+    int[] highBin = {2900, 2800, 30};
     int[] lowBin = {2100, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
@@ -66,6 +69,7 @@ public class subArm {
     public void home() {
         should.setShld(home[0], defShPow);
         should.setSlides(home[1], defSlPow);
+        grab.setWristRotation(convertAngle(home[2]));
         Main.deactivateSlowMode();
         Main.routine = 0;
         state = 0;
@@ -87,6 +91,8 @@ public class subArm {
         }
 
         if (state == 0) {
+            Main.setBinsAngle();
+            Main.activateHeadingLock();
             should.setShld(highBin[0], defShPow);
             should.setSlides(highBin[1], defSlPow);
             grab.setWristRotation(convertAngle(highBin[2]));
@@ -100,13 +106,11 @@ public class subArm {
             }
         }
         if (state == 2){
-            if (should.lSlides.getCurrentPosition() < highBin[1] / 2){
+            if (should.lSlides.getCurrentPosition() < slidesSlowHeight){
                 Main.deactivateSlowMode();
             }
             if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)){
-                should.setShld(home[0], defSlPow);
-                state = 0;
-                Main.routine = 0;
+                home();
             }
         }
     }
@@ -114,6 +118,8 @@ public class subArm {
     public void lowBin() {
 
         if (state == 0) {
+            Main.setBinsAngle();
+            Main.activateHeadingLock();
             should.setShld(lowBin[0], defSlPow);
             should.setSlides(lowBin[1], defSlPow);
             grab.setWristRotation(convertAngle(lowBin[2]));
@@ -129,6 +135,8 @@ public class subArm {
 
     public void highBar(boolean a){
         if (state == 0) {
+            Main.setWallAngle();
+            Main.activateHeadingLock();
             should.setShld(barInit[0], defShPow);
             should.setSlides(barInit[1], defSlPow);
             grab.setWristRotation(convertAngle(barInit[2]));
@@ -137,6 +145,7 @@ public class subArm {
 
         if (state == 1) {
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && a) {
+                grab.grab();
                 should.setSlides(barRaise[1], defSlPow);
                 state++;
             }
@@ -144,8 +153,24 @@ public class subArm {
         else if (state == 2){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
                 grab.release();
-                state = 0;
-                Main.routine = 0;
+                should.setSlides(realignPosInit, defSlPow);
+                should.setShld(home[0], defShPow);
+                state++;
+            }
+        }
+        else if (state == 3){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                should.setSlidesOverride(realignPos, defSlPow);
+                time = new Date();
+                initTime = time.getTime();
+                state++;
+            }
+        }
+        else if (state == 4){
+            time = new Date();
+            if (time.getTime() - initTime >= realignTime){
+                should.resetSlides();
+                home();
             }
         }
     }
@@ -198,14 +223,14 @@ public class subArm {
                     should.setShld(retractIntake[0], defShPow);
                     should.setSlides(retractIntake[1], defSlPow);
                     grab.setWristRotation(convertAngle(retractIntake[2]));
-                    grab.intake(.1);
+                    grab.intake(.2);
                     Main.deactivateSlowMode();
                     state++;
                 }
             }
         }
         else if (state == 2){
-            grab.intake(.1);
+            grab.intake(.2);
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
@@ -218,6 +243,8 @@ public class subArm {
 
     public void wallIntake(boolean a){
         if (state == 0) {
+            Main.setWallAngle();
+            Main.activateHeadingLock();
             should.setShld(wallIntake[0], defShPow);
             should.setSlides(wallIntake[1], defSlPow);
             grab.setWristRotation(convertAngle(wallIntake[2]));
@@ -245,6 +272,7 @@ public class subArm {
         }
         if (state == 3){
             if (should.reached(should.shoulder, defTol)) {
+                grab.lightGrab();
                 state = 0;
                 Main.routine = 3;
             }

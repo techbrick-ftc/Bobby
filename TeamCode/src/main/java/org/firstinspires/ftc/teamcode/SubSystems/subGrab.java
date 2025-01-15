@@ -39,7 +39,8 @@ public class subGrab {
     double blueAng = 220;
     double yellowAng = 75;
 
-    double grabAngle = .51;
+    double grabAngle = .5;
+    double lightGrabAngle = .52;
     double releaseAngle = .7;
 
     Date time = new Date();
@@ -76,6 +77,10 @@ public class subGrab {
 
     public void grab(){
         claw.setPosition(grabAngle);
+    }
+
+    public void lightGrab(){
+        claw.setPosition(lightGrabAngle);
     }
 
     public void release(){
