@@ -33,7 +33,7 @@ public class Main extends LinearOpMode {
     double x_move;
     double rotation_x;
 
-    boolean heldHeading = false;
+    public static boolean heldHeading = false;
     boolean g1start = false;
     boolean g2start = false;
     boolean lastG1Start = false;
@@ -43,9 +43,9 @@ public class Main extends LinearOpMode {
     boolean g1A = false;
     boolean lastG1A = false;
 
-    double binsAngle = (5 * Math.PI) / 4;
-    double wallAngle = Math.PI;
-    double targetAngle = binsAngle;
+    public static double binsAngle = (5 * Math.PI) / 4;
+    public static double wallAngle = Math.PI;
+    public static double targetAngle = binsAngle;
     double angle;
 
     public static double defWristAngle = .5;
@@ -88,7 +88,7 @@ public class Main extends LinearOpMode {
             }
             if (g1start && !lastG1Start){
                 if (!heldHeading){
-                    heldHeading = !heldHeading;
+                    toggleHeadingLock();
                 }
                 else{
                     toggleAngle();
@@ -241,14 +241,7 @@ public class Main extends LinearOpMode {
         drivePow = midPow;
     }
 
-    void toggleAngle(){
-        if (targetAngle == wallAngle){
-            targetAngle = binsAngle;
-        }
-        else{
-            targetAngle = wallAngle;
-        }
-    }
+
 
     public static void activateSlowMode(){
         Main.slowMode = true;
@@ -266,7 +259,7 @@ public class Main extends LinearOpMode {
         rotation_x = gamepad1.right_stick_x * -1.0;
 
         if (Math.abs(rotation_x) > .05){
-            heldHeading = false;
+            deactivateHeadingLock();
         }
 
         if (driveAllowed) {
@@ -314,8 +307,37 @@ public class Main extends LinearOpMode {
         telemetry.update();
     }
 
-    public void toggleColor(){
+    public static void toggleColor(){
         isRedTeam = !isRedTeam;
+    }
+
+    public static void toggleHeadingLock(){
+        heldHeading = !heldHeading;
+    }
+
+    public static void activateHeadingLock(){
+        heldHeading = true;
+    }
+
+    public static void deactivateHeadingLock(){
+        heldHeading = false;
+    }
+
+    public static void toggleAngle(){
+        if (targetAngle == wallAngle){
+            targetAngle = binsAngle;
+        }
+        else{
+            targetAngle = wallAngle;
+        }
+    }
+
+    public static void setWallAngle(){
+        targetAngle = wallAngle;
+    }
+
+    public static void setBinsAngle(){
+        targetAngle = binsAngle;
     }
 
 
