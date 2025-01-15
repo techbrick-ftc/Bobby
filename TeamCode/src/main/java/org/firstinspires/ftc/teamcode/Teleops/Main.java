@@ -25,6 +25,7 @@ public class Main extends LinearOpMode {
     static boolean slowMode = false;
 
     public static boolean isRedTeam = false;
+    boolean ranInitCode = false;
 
     boolean slidesHome = true;
     boolean shouldHome = false;
@@ -67,12 +68,14 @@ public class Main extends LinearOpMode {
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
 
-        grab.setWristRotation(defWristAngle);
-
         waitForStart();
         tm1.startTime();
 
         while(opModeIsActive()) {
+            if (!ranInitCode){
+                grab.setWristRotation(defWristAngle);
+                ranInitCode = true;
+            }
 
             lastG1Start = g1start;
             lastG2Start = g2start;
