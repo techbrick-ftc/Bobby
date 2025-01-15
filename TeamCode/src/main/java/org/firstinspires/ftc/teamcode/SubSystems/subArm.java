@@ -243,6 +243,7 @@ public class subArm {
 
     public void wallIntake(boolean a){
         if (state == 0) {
+            Main.activateSlowMode();
             Main.setWallAngle();
             Main.activateHeadingLock();
             should.setShld(wallIntake[0], defShPow);
