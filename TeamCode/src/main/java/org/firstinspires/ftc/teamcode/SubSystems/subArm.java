@@ -106,6 +106,8 @@ public class subArm {
                 grab.setWristRotation(convertAngle(home[2]));
                 state++;
             }
+        }
+        if (state == 2){
             if (should.lSlides.getCurrentPosition() < slideReturnHeight){
                 home();
             }
