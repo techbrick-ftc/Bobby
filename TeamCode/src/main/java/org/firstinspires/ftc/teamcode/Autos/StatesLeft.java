@@ -62,6 +62,8 @@ public class StatesLeft extends LinearOpMode {
 
     int pitchOff = 0;
 
+
+
     public class AutoArm {
 
         public AutoArm(HardwareMap hardwareMap) {
@@ -191,7 +193,7 @@ public class StatesLeft extends LinearOpMode {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
                 armToPos(grabArm1[0], grabArm1[1] + 900);
-                return !grab.checkObjectIn();
+                return !(grab.checkObjectIn() || reached(20));
             }
         }
         public Action grab1out() {
@@ -217,7 +219,7 @@ public class StatesLeft extends LinearOpMode {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
                 armToPos(grabArm2[0], grabArm2[1] + 900);
-                return !grab.checkObjectIn();
+                return !(grab.checkObjectIn() || reached(20));
             }
         }
         public Action grab2out() {
@@ -242,8 +244,8 @@ public class StatesLeft extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(grabArm2[0], grabArm2[1] + 800);
-                return !grab.checkObjectIn();
+                armToPos(grabArm3[0], grabArm3[1] + 800);
+                return !(grab.checkObjectIn() || reached(20));
             }
         }
         public Action grab3out() {
