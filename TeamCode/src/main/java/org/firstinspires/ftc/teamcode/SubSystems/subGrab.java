@@ -22,6 +22,8 @@ public class subGrab {
     public Servo wrist2;
     public Servo claw;
 
+    subLED LED;
+
     double distanceTarget = 1.5;
     int direction = 0;
 
@@ -61,6 +63,8 @@ public class subGrab {
 
         distanceSensor = hardwareMap.get(DistanceSensor.class, "CS");
         colorSensor = hardwareMap.get(ColorSensor.class, "CS");
+
+        LED = new subLED(hardwareMap);
 
     }
 
@@ -103,17 +107,21 @@ public class subGrab {
             // If red
             if (Main.isRedTeam && redCheck() && val >= redValTol) {
                 detected = true;
+                LED.setRed();
             }
             // If blue
             else if (!Main.isRedTeam && blueCheck() && val >= blueValTol) {
                 detected = true;
+                LED.setBlue();
             }
             // If yellow
             else if (yellowCheck() && val >= yellowValTol) {
                 detected = true;
+                LED.setYellow();
             }
             else {
                 detected = false;
+                LED.setIdle();
             }
         }
         else{

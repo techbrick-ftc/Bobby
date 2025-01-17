@@ -12,6 +12,7 @@ public class subHang {
 
     subShoulder should;
     subLift lift;
+    subLED LED;
 
     int state = 0;
 
@@ -42,6 +43,7 @@ public class subHang {
     public subHang(HardwareMap hardwareMap){
         should = new subShoulder(hardwareMap);
         lift = new subLift(hardwareMap);
+        LED = new subLED(hardwareMap);
     }
 
     public void hang(boolean x){
@@ -125,6 +127,7 @@ public class subHang {
             should.setShld(finalize[0], defShPow);
             should.setSlides(finalize[1], defSlPow);
             lift.setLift(finalize[2], defLiftPow);
+            LED.setFire();
             state = 0;
             Main.routine = 0;
         }

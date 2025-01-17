@@ -11,6 +11,7 @@ public class subArm {
 
     public subShoulder should;
     subGrab grab;
+    subLED LED;
 
     public int state = 0;
 
@@ -21,6 +22,7 @@ public class subArm {
     int highBinTol = 10;
     public boolean intakeUp = true;
     int slidesSlowHeight = 2500;
+    int slideReturnHeight = 1300;
 
     Date time = new Date();
     long initTime;
@@ -99,17 +101,12 @@ public class subArm {
             state++;
         }
         if (state == 1) {
-            if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol) && x){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && x){
                 should.setSlides(home[1], defSlPow);
                 grab.setWristRotation(convertAngle(home[2]));
                 state++;
             }
-        }
-        if (state == 2){
-            if (should.lSlides.getCurrentPosition() < slidesSlowHeight){
-                Main.deactivateSlowMode();
-            }
-            if (should.reached(should.lSlides, highBinTol) && should.reached(should.shoulder, highBinTol)){
+            if (should.lSlides.getCurrentPosition() < slideReturnHeight){
                 home();
             }
         }
@@ -153,20 +150,14 @@ public class subArm {
         else if (state == 2){
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
                 grab.release();
-                should.setSlides(realignPosInit, defSlPow);
-                should.setShld(home[0], defShPow);
-                state++;
-            }
-        }
-        else if (state == 3){
-            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
                 should.setSlidesOverride(realignPos, defSlPow);
+                should.setShld(home[0], defShPow);
                 time = new Date();
                 initTime = time.getTime();
                 state++;
             }
         }
-        else if (state == 4){
+        else if (state == 3){
             time = new Date();
             if (time.getTime() - initTime >= realignTime){
                 should.resetSlides();
@@ -223,14 +214,12 @@ public class subArm {
                     should.setShld(retractIntake[0], defShPow);
                     should.setSlides(retractIntake[1], defSlPow);
                     grab.setWristRotation(convertAngle(retractIntake[2]));
-                    grab.intake(.2);
                     Main.deactivateSlowMode();
                     state++;
                 }
             }
         }
         else if (state == 2){
-            grab.intake(.2);
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
