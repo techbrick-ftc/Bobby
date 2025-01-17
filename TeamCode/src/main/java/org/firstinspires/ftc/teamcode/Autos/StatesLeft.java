@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
@@ -304,6 +305,7 @@ public class StatesLeft extends LinearOpMode {
     PinpointDrive drive;
 
     AutoArm arm;
+    ElapsedTime tm1;
 
     @Override
     public void runOpMode() {
@@ -312,6 +314,7 @@ public class StatesLeft extends LinearOpMode {
         drive = new PinpointDrive(hardwareMap, initialPose);
 
         arm = new AutoArm(hardwareMap);
+        tm1 = new ElapsedTime();
 
         TrajectoryActionBuilder first = drive.actionBuilder(initialPose)
                 .strafeToConstantHeading(new Vector2d(move1[0], move1[1]));
@@ -344,10 +347,22 @@ public class StatesLeft extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         toScore.build(),
-                        arm.scorePos(),
+                        arm.scorePos()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
                         arm.depo()
                 )
         );
+
 
         waiter = drive.actionBuilder(drive.pose)
                 .waitSeconds(1);
@@ -381,7 +396,18 @@ public class StatesLeft extends LinearOpMode {
                                 arm.scorePitch(),
                                 toScore.build()
                         ),
-                        arm.scorePos(),
+                        arm.scorePos()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
                         arm.depo()
                 )
         );
@@ -419,7 +445,18 @@ public class StatesLeft extends LinearOpMode {
                                 arm.scorePitch(),
                                 toScore.build()
                         ),
-                        arm.scorePos(),
+                        arm.scorePos()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
                         arm.depo()
                 )
         );
@@ -457,7 +494,18 @@ public class StatesLeft extends LinearOpMode {
                                 arm.scorePitch(),
                                 toScore.build()
                         ),
-                        arm.scorePos(),
+                        arm.scorePos()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
                         arm.depo()
                 )
         );
