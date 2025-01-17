@@ -27,7 +27,7 @@ public class subArm {
     Date time = new Date();
     long initTime;
     int delayMS = 150;
-    int realignTime = 300;
+    int realignTime = 500;
     int realignPosInit = 100;
     int realignPos = -100;
 
@@ -60,7 +60,7 @@ public class subArm {
     int[] wallIntake = {1000, 10, 9};
     int[] barInit = {3170, 160, 44};
     int[] barRaise = {3170, 770, 44};
-    int[] highBin = {2900, 2800, 30};
+    int[] highBin = {2900, 2950, 30};
     int[] lowBin = {2100, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
@@ -274,13 +274,13 @@ public class subArm {
 
     public void manualSlides(double stick_y){
         if (Math.abs(stick_y) > .05) {
-            should.setSlides((int) (should.lSlides.getCurrentPosition() - 50 * stick_y), defSlPow);
+            should.setSlidesOverride((int) (should.lSlides.getCurrentPosition() - 50 * stick_y), defSlPow);
         }
     }
 
     public void manualShould(double stick_y){
         if (Math.abs(stick_y) > .05) {
-            should.setShld((int) (should.shoulder.getCurrentPosition() - 50 * stick_y), defSlPow);
+            should.setShldOverride((int) (should.shoulder.getCurrentPosition() - 50 * stick_y), defSlPow);
         }
     }
 
