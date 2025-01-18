@@ -257,12 +257,22 @@ public class StatesLeft extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.setWristRotation(depoAng);
-                grab.outtake(1);
                 return false;
             }
         }
         public Action depo () {
             return new Depo();
+        }
+
+        public class Outtake implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.outtake(1);
+                return false;
+            }
+        }
+        public Action outtake () {
+            return new Outtake();
         }
 
         public class In implements Action {
@@ -347,7 +357,8 @@ public class StatesLeft extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         toScore.build(),
-                        arm.scorePos()
+                        arm.scorePos(),
+                        arm.depo()
                 )
         );
 
@@ -359,13 +370,13 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.depo()
+                        arm.outtake()
                 )
         );
 
 
         waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -396,7 +407,8 @@ public class StatesLeft extends LinearOpMode {
                                 arm.scorePitch(),
                                 toScore.build()
                         ),
-                        arm.scorePos()
+                        arm.scorePos(),
+                        arm.depo()
                 )
         );
 
@@ -408,12 +420,12 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.depo()
+                        arm.outtake()
                 )
         );
 
         waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -445,7 +457,8 @@ public class StatesLeft extends LinearOpMode {
                                 arm.scorePitch(),
                                 toScore.build()
                         ),
-                        arm.scorePos()
+                        arm.scorePos(),
+                        arm.depo()
                 )
         );
 
@@ -457,12 +470,12 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.depo()
+                        arm.outtake()
                 )
         );
 
         waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -494,7 +507,8 @@ public class StatesLeft extends LinearOpMode {
                                 arm.scorePitch(),
                                 toScore.build()
                         ),
-                        arm.scorePos()
+                        arm.scorePos(),
+                        arm.depo()
                 )
         );
 
@@ -506,12 +520,12 @@ public class StatesLeft extends LinearOpMode {
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.depo()
+                        arm.outtake()
                 )
         );
 
         waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(1);
+                .waitSeconds(0.5);
 
         Actions.runBlocking(
                 new SequentialAction(

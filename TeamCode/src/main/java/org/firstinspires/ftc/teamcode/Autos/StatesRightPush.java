@@ -35,20 +35,20 @@ public class StatesRightPush extends LinearOpMode {
     DcMotorEx lSlides;
     DcMotorEx rSlides;
 
-    int firstY = -36;
-    int secondY = -48;
+    int firstY = -42;
+    int secondY = -52;
     int thirdY = -60;
 
-    int pushIn = -56;
+    int pushIn = -54;
     int farOut = -12;
 
     //TODO: Tune robot positions here
     // x, y, heading
     double[] firstMove = {-50, 2, Math.toRadians(180)};
     double[] toScore = {-29, 2, Math.toRadians(180)};
-    double[] clearPos = {-33, 2, Math.toRadians(180)};
-    double[] first = {-33, -24, Math.toRadians(180)};
-    double[] second = {farOut, -24, Math.toRadians(180)};
+    double[] clearPos = {-34, 2, Math.toRadians(180)};
+    double[] firsty = {-34, -30, Math.toRadians(180)};
+    double[] second = {farOut, -30, Math.toRadians(180)};
     double[] third = {farOut, firstY, Math.toRadians(180)};
     double[] fourth = {pushIn, firstY, Math.toRadians(180)};
     double[] fifth = {farOut, firstY, Math.toRadians(180)};
@@ -58,7 +58,7 @@ public class StatesRightPush extends LinearOpMode {
     double[] ninth = {farOut, thirdY, Math.toRadians(180)};
     double[] tenth = {pushIn, thirdY, Math.toRadians(180)};
 
-    double[] wallInit = {-54, -28, Math.toRadians(180)};
+    double[] wallInit = {-50, -28, Math.toRadians(180)};
     double[] wallNext = {-57, -28, Math.toRadians(180)};
 
     //TODO: Tune arm positions here
@@ -176,6 +176,17 @@ public class StatesRightPush extends LinearOpMode {
             return new PrepWall();
         }
 
+        public class MovePos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                armToPos(wall[0] + 500, wall[1]);
+                return !reached(20);
+            }
+        }
+        public Action movePos() {
+            return new MovePos();
+        }
+
         public class Release implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
@@ -231,21 +242,15 @@ public class StatesRightPush extends LinearOpMode {
 
         waitForStart();
 
+        TrajectoryActionBuilder scorePos = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(toScore[0] + 1, toScore[1]), toScore[2]);
+
         Actions.runBlocking(
                 new SequentialAction(
                         new ParallelAction(
-                                first.build(),
+                                scorePos.build(),
                                 arm.barInit()
-                        )
-                )
-        );
-
-        TrajectoryActionBuilder scorePos = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(toScore[0], toScore[1]), toScore[2]);
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        scorePos.build(),
+                        ),
                         arm.barScore(),
                         arm.release()
                 )
@@ -259,26 +264,31 @@ public class StatesRightPush extends LinearOpMode {
         }
 
         TrajectoryActionBuilder clearing = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(firsty[0], firsty[1]), firsty[2])
                 .strafeToLinearHeading(new Vector2d(second[0], second[1]), second[2])
                 .strafeToLinearHeading(new Vector2d(third[0], third[1]), third[2])
                 .strafeToLinearHeading(new Vector2d(fourth[0], fourth[1]), fourth[2])
                 .strafeToLinearHeading(new Vector2d(fifth[0], fifth[1]), fifth[2])
-                .strafeToLinearHeading(new Vector2d(sixth[0], sixth[1]), sixth[2])
-                .strafeToLinearHeading(new Vector2d(seventh[0], seventh[1]), seventh[2])
-                .strafeToLinearHeading(new Vector2d(eigth[0], eigth[1]), eigth[2])
-                .strafeToLinearHeading(new Vector2d(ninth[0], ninth[1]), ninth[2])
-                .strafeToLinearHeading(new Vector2d(tenth[0], tenth[1]), tenth[2])
-                .strafeToLinearHeading(new Vector2d(wallInit[0], wallInit[1]), wallInit[2])
-                .strafeToLinearHeading(new Vector2d(wallNext[0], wallNext[1]), wallNext[2]);
+                .strafeToLinearHeading(new Vector2d(sixth[0], sixth[1]), sixth[2]);
 
 
         Actions.runBlocking(
                 new SequentialAction (
                         new ParallelAction(
-                                arm.prepWall(),
+                                arm.movePos(),
                                 clearing.build()
                         ),
 
+                        arm.prepWall()
+                )
+        );
+
+        TrajectoryActionBuilder toGet = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(seventh[0] - 4, seventh[1]), seventh[2]);
+
+        Actions.runBlocking(
+                new SequentialAction (
+                        toGet.build(),
                         arm.grab()
                 )
         );
@@ -290,8 +300,52 @@ public class StatesRightPush extends LinearOpMode {
         }
 
         TrajectoryActionBuilder goScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(clearPos[0], clearPos[1]), clearPos[2])
-                .strafeToLinearHeading(new Vector2d(toScore[0], toScore[1]), toScore[2]);
+                //.strafeToLinearHeading(new Vector2d(clearPos[0], clearPos[1] + 6), clearPos[2])
+                .strafeToLinearHeading(new Vector2d(toScore[0] + 1, toScore[1] + 8), toScore[2]);
+
+        Actions.runBlocking(
+                new SequentialAction (
+                        new ParallelAction(
+                                arm.barInit(),
+                                goScore.build()
+                        ),
+
+                        arm.barScore(),
+                        arm.release()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction (
+                        arm.prepWall()
+                )
+        );
+
+        toGet = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(wallNext[0], wallNext[1] - 5), wallNext[2]);
+
+        Actions.runBlocking(
+                new SequentialAction (
+                        toGet.build(),
+                        arm.grab()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400) {
+            time = tm1.milliseconds();
+        }
+
+        goScore = drive.actionBuilder(drive.pose)
+                //.strafeToLinearHeading(new Vector2d(clearPos[0], clearPos[1] - 6), clearPos[2])
+                .strafeToLinearHeading(new Vector2d(toScore[0] + 1, toScore[1] + 4), toScore[2]);
 
         Actions.runBlocking(
                 new SequentialAction (
