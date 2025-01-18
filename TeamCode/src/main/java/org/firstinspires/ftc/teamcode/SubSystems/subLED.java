@@ -4,37 +4,36 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class subLED {
 
-    RevBlinkinLedDriver blinkin1;
+    RevBlinkinLedDriver blinkin;
     int state;
 
     public subLED(HardwareMap hardwareMap){
-        blinkin1 = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin1");
-        blinkin1.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(76));
-        state = 0;
+        blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin1");
+        setIdle();
     }
 
     public void setBlue(){
-        blinkin1.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
         state = 1;
     }
 
     public void setRed(){
-        blinkin1.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
         state = 1;
     }
 
     public void setYellow(){
-        blinkin1.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
         state = 1;
     }
 
     public void setFire(){
-        blinkin1.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(22));
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(22));
         state = 2;
     }
 
     public void setIdle(){
-        blinkin1.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(76));
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(76));
         state = 0;
     }
 

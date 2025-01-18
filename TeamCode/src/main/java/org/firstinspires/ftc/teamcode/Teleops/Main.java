@@ -83,7 +83,7 @@ public class Main extends LinearOpMode {
             }
 
             if (LED.getState() == 1){
-                //grab.checkObjectIn();
+                grab.checkObjectIn();
             }
 
             lastG1Start = g1start;
