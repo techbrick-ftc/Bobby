@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Teleops.Main;
@@ -26,10 +25,13 @@ public class subArm {
 
     Date time = new Date();
     long initTime;
-    int delayMS = 150;
+    int outtakeDelay = 100;
+    int wallDelay = 150;
     int realignTime = 500;
     int realignPosInit = 100;
     int realignPos = -100;
+
+    boolean outtaking = false;
 
     double wristDownAngle = .34;
 
@@ -55,12 +57,13 @@ public class subArm {
     int[] ground = {10, 5, 50};
     int[] home = {1400, 50, 50};
     int[] extendIntake = {10, 1150, 56};
-    int[] intake = {10, 1150, 34};
+    int[] playerOuttake = {10, 1550, 50};
+    int[] intake = {10, 1550, 34};
     int[] retractIntake = {10, 10, 65};
     int[] wallIntake = {1000, 10, 9};
     int[] barInit = {3170, 160, 44};
     int[] barRaise = {3170, 770, 44};
-    int[] highBin = {2900, 2950, 30};
+    int[] highBin = {2900, 3050, 30};
     int[] lowBin = {2100, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
@@ -73,6 +76,7 @@ public class subArm {
         should.setSlides(home[1], defSlPow);
         grab.setWristRotation(convertAngle(home[2]));
         Main.deactivateSlowMode();
+        outtaking = false;
         Main.routine = 0;
         state = 0;
     }
@@ -168,6 +172,33 @@ public class subArm {
         }
     }
 
+    public void playerOuttake(){
+        if (state == 0){
+            should.setShld(playerOuttake[0], defShPow);
+            should.setSlides(playerOuttake[1], defSlPow);
+            grab.setWristRotation(convertAngle(playerOuttake[2]));
+            time = new Date();
+            initTime = time.getTime();
+            state++;
+        }
+        else if (state == 1){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
+                time = new Date();
+                initTime = time.getTime();
+                state++;
+            }
+        }
+        else if (state == 2){
+            grab.outtake(1);
+            outtaking = true;
+            time = new Date();
+            if (time.getTime() - initTime >= outtakeDelay){
+                grab.stop();
+                home();
+            }
+        }
+    }
+
     /*
     public void lowBar(boolean a){
         if (state == 0) {
@@ -257,7 +288,7 @@ public class subArm {
         }
         if (state == 2){
             time = new Date();
-            if (time.getTime() - initTime >= delayMS){
+            if (time.getTime() - initTime >= wallDelay){
                 should.setShld(barInit[0], defShPow);
                 state++;
             }
@@ -292,7 +323,7 @@ public class subArm {
             if (lt > .05 && !grab.checkObjectIn()) {
                 grab.intake(lt);
             }
-            else {
+            else if (!outtaking){
                 grab.stop();
             }
         }

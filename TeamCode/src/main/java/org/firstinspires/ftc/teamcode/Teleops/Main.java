@@ -132,20 +132,10 @@ public class Main extends LinearOpMode {
             }
 
             if (gamepad1.b) {
-                if (gamepad1.left_bumper){
-                    arm.homeSlides();
-                    slidesHome = true;
-                }
-                else if (gamepad1.right_bumper){
-                    arm.homeShould();
-                    shouldHome = true;
-                }
-                else{
-                    arm.home();
-                    shouldHome = true;
-                    slidesHome = true;
-                    drivePow = defPow;
-                }
+                arm.home();
+                shouldHome = true;
+                slidesHome = true;
+                drivePow = defPow;
                 grab.setWristRotation(defWristAngle);
             }
 
@@ -177,6 +167,9 @@ public class Main extends LinearOpMode {
                         routine = 6;
                     }
                 }
+                else if (gamepad1.right_bumper){
+                    routine = 8;
+                }
             }
             else  {
 
@@ -204,6 +197,9 @@ public class Main extends LinearOpMode {
                 }
                 else if (routine == 7){
                     hang.altHang(gamepad2.x);
+                }
+                else if (routine == 8){
+                    arm.playerOuttake();
                 }
             }
 
