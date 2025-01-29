@@ -56,16 +56,16 @@ public class subArm {
     // Positions
     // Should, Slides, Wrist
     int[] ground = {10, 5, 50};
-    int[] home = {1400, 50, 50};
+    int[] home = {1000, 50, 50};
     int[] extendIntake = {10, 1150, 56};
     int[] playerOuttake = {10, 1550, 50};
     int[] intake = {10, 1550, 34};
     int[] retractIntake = {10, 10, 65};
-    int[] wallIntake = {1000, 10, 9};
-    int[] barInit = {3170, 160, 44};
-    int[] barRaise = {3170, 770, 44};
-    int[] highBin = {2900, 3050, 30};
-    int[] lowBin = {2100, 1550, 33};
+    int[] wallIntake = {720, 10, 9};
+    int[] barInit = {2270, 160, 44};
+    int[] barRaise = {2270, 770, 44};
+    int[] highBin = {2080, 3050, 30};
+    int[] lowBin = {1500, 1550, 33};
 
     public subArm(HardwareMap hardwareMap) {
         should = new subShoulder(hardwareMap);
@@ -179,8 +179,6 @@ public class subArm {
             should.setShld(playerOuttake[0], defShPow);
             should.setSlides(playerOuttake[1], defSlPow);
             grab.setWristRotation(convertAngle(playerOuttake[2]));
-            time = new Date();
-            initTime = time.getTime();
             state++;
         }
         else if (state == 1){
@@ -238,7 +236,7 @@ public class subArm {
                 intaking = true;
 
                 if (rt >= .05){
-                    grab.setWristRotation(convertAngle((int) (extendIntake[2] - (extendIntake[2] - intake[2]) * rt)));
+                    grab.setWristRotation(convertAngle(intake[2]));
                 }
                 else{
                     grab.setWristRotation(convertAngle(extendIntake[2]));
