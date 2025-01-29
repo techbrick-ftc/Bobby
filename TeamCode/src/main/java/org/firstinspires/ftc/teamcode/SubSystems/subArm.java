@@ -257,12 +257,7 @@ public class subArm {
         }
         else if (state == 2){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
-                should.setShld(home[0], defShPow);
-                should.setSlides(home[1], defSlPow);
-                grab.setWristRotation(convertAngle(home[2]));
-                intaking = false;
-                state = 0;
-                Main.routine = 0;
+                home();
             }
         }
     }
