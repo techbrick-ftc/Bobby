@@ -25,7 +25,8 @@ public class subArm {
 
     Date time = new Date();
     long initTime;
-    int outtakeDelay = 100;
+    int outtakeDelay = 800;
+    int retractDelay = 300;
     int wallDelay = 150;
     int realignTime = 500;
     int realignPosInit = 100;
@@ -85,7 +86,6 @@ public class subArm {
 
     public void homeSlides() {
         should.setSlides(home[1], defSlPow);
-
     }
 
     public void homeShould() {
@@ -195,6 +195,10 @@ public class subArm {
             if (time.getTime() - initTime >= outtakeDelay){
                 grab.stop();
                 home();
+            }
+            else if (time.getTime() - initTime >= retractDelay){
+                homeShould();
+                homeSlides();
             }
         }
     }
