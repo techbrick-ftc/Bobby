@@ -190,7 +190,7 @@ public class Main extends LinearOpMode {
                     //arm.lowBar(g1A);
                 }
                 else if (routine == 5) {
-                    arm.pitIntake(g1A, lastG1A);
+                    arm.pitIntake(gamepad1.right_trigger);
                 }
                 else if (routine == 6) {
                     arm.wallIntake(g1A);

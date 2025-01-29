@@ -32,6 +32,7 @@ public class subArm {
     int realignPos = -100;
 
     boolean outtaking = false;
+    boolean intaking = false;
 
     double wristDownAngle = .34;
 
@@ -77,6 +78,7 @@ public class subArm {
         grab.setWristRotation(convertAngle(home[2]));
         Main.deactivateSlowMode();
         outtaking = false;
+        intaking = false;
         Main.routine = 0;
         state = 0;
     }
@@ -222,7 +224,7 @@ public class subArm {
     }
     */
 
-    public void pitIntake(boolean a, boolean lastA){
+    public void pitIntake(double rt){
         if (state == 0){
             should.setShld(extendIntake[0], defShPow);
             should.setSlides(extendIntake[1], defSlPow);
@@ -233,14 +235,13 @@ public class subArm {
         else if (state == 1){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 Main.activateSlowMode();
+                intaking = true;
 
-                if (a && !lastA && intakeUp){
-                    grab.setWristRotation(convertAngle(intake[2]));
-                    intakeUp = !intakeUp;
+                if (rt >= .05){
+                    grab.setWristRotation(convertAngle((int) (extendIntake[2] - (extendIntake[2] - intake[2]) * rt)));
                 }
-                else if (a && !lastA){
-                    grab.setWristRotation(Main.defWristAngle);
-                    intakeUp = !intakeUp;
+                else{
+                    grab.setWristRotation(convertAngle(extendIntake[2]));
                 }
 
                 if (grab.checkObjectIn()){
@@ -257,6 +258,7 @@ public class subArm {
                 should.setShld(home[0], defShPow);
                 should.setSlides(home[1], defSlPow);
                 grab.setWristRotation(convertAngle(home[2]));
+                intaking = false;
                 state = 0;
                 Main.routine = 0;
             }
@@ -315,13 +317,21 @@ public class subArm {
         }
     }
 
-    public void grabberUpdate(double lt, double rt) {
-        if (rt > .05) {
-            grab.outtake(rt);
+    public void grabberUpdate(double rt, double lt) {
+        if (lt > .05) {
+            grab.outtake(lt);
         }
-        else {
-            if (lt > .05 && !grab.checkObjectIn()) {
-                grab.intake(lt);
+        else if (intaking){
+            if (rt > .9 && !grab.checkObjectIn()){
+                grab.intake(rt);
+            }
+            else{
+                grab.stop();
+            }
+        }
+        else{
+            if (rt > .05 && !grab.checkObjectIn()) {
+                grab.intake(rt);
             }
             else if (!outtaking){
                 grab.stop();
