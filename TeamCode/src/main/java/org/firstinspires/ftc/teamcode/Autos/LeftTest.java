@@ -5,56 +5,70 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Arclength;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.Pose2dDual;
-import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
-import org.firstinspires.ftc.teamcode.SubSystems.subArm;
-import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
+import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 
 import java.util.Vector;
 
 @Config
-@Autonomous(name = "3 on Left")
+@Autonomous(name = "Maybe 5 Samp")
 public class LeftTest extends LinearOpMode {
 
-    // Shoulder motor initializations
+    //TODO: Shoulder motor initializations
     DcMotorEx shoulder;
     DcMotorEx lSlides;
     DcMotorEx rSlides;
 
-    // Grabber initializations
-    public CRServo Lroller;
-    public CRServo Rroller;
-    public Servo rotator;
-
+    //TODO: Sensor initializations
     public ColorSensor colorSensor;
     public DistanceSensor distanceSensor;
 
-    public class AutoArm {
+    //TODO: Tune robot positions here
+    // x, y, heading
+    double[] move1 = {-61, 35, Math.toRadians(90)};
+    double[] scoringPos = {-50, 53, Math.toRadians(135)};
+    double[] pickPos1 = {-30, 34, Math.toRadians(65)};
+    double[] pickPos2 = {-22, 42, Math.toRadians(90)};
+    double[] pickPos3 = {-22, 48, Math.toRadians(90)};
 
-        subAutoGrab grab;
+    //TODO: Turn arm positions here
+    // pitch, slides
+    int[] ready = {1755, 10};
+    int[] score = {2700, 3100};
+    int[] grabArm1 = {20, 50};
+    int[] grabArm2 = {20, 200};
+    int[] grabArm3 = {20, 600};
+
+    //TODO: Grab
+    subGrab grab;
+    double upAng = 0.56;
+    double depoAng = 0.26;
+    double inAng = 0.34;
+    double inPow = 0.15;
+
+    int pitchOff = 200;
+
+    public class AutoArm {
 
         public AutoArm(HardwareMap hardwareMap) {
 
-            // Shoulder motor declarations
+            //TODO: Shoulder motor declarations
             shoulder = hardwareMap.get(DcMotorEx.class, "AR");
             lSlides = hardwareMap.get(DcMotorEx.class, "SL");
             rSlides = hardwareMap.get(DcMotorEx.class, "SR");
@@ -69,15 +83,11 @@ public class LeftTest extends LinearOpMode {
             rSlides.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
             lSlides.setDirection(DcMotorEx.Direction.REVERSE);
 
-            // Grabber declarations
-            Lroller = hardwareMap.get(CRServo.class, "LG");
-            Rroller = hardwareMap.get(CRServo.class, "RG");
-            rotator = hardwareMap.get(Servo.class, "RTR");
-
-            grab = new subAutoGrab(hardwareMap);
+            grab = new subGrab(hardwareMap);
 
         }
 
+        //Drive arm to position
         private void armToPos(int pitch, int slide) {
 
             // Setting position
@@ -95,110 +105,238 @@ public class LeftTest extends LinearOpMode {
 
         }
 
+        private void armToPos(int pitch, int slide, double sldPow) {
+
+            // Setting position
+            shoulder.setTargetPosition(pitch);
+            lSlides.setTargetPosition(slide);
+            rSlides.setTargetPosition(slide);
+
+            // Setting power
+            shoulder.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            lSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            rSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            shoulder.setPower(1.0);
+            lSlides.setPower(sldPow);
+            rSlides.setPower(sldPow);
+
+        }
+
+        private void slideIn() {
+            lSlides.setTargetPosition(10);
+            rSlides.setTargetPosition(10);
+
+            // Setting power
+            lSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            rSlides.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            lSlides.setPower(1.0);
+            rSlides.setPower(1.0);
+        }
+
         private boolean reached(int tol) {
             return Math.abs(lSlides.getCurrentPosition() - lSlides.getTargetPosition()) < tol && Math.abs(shoulder.getCurrentPosition() - shoulder.getTargetPosition()) < tol;
         }
 
+        //TODO: No grabber code included here
+
         public class ReadyPos implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.rotator.setPosition(0.5);
                 grab.stop();
-                armToPos(3800, 10);
-                return !reached(30);
+                grab.setWristRotation(depoAng);
+                armToPos(ready[0], ready[1]);
+                return !reached(20);
             }
         }
         public Action readyPos() {
             return new ReadyPos();
         }
 
-        public class ReadyPosBack implements Action {
+        public class ScorePitch implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.rotator.setPosition(0.5);
                 grab.stop();
-                armToPos(3800, 3100);
-                return !reached(30);
-            }
-        }
-        public Action readyPosBack() {
-            return new ReadyPos();
-        }
-
-        public class ArmToBin implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                grab.rotator.setPosition(0.5);
-                grab.stop();
-                armToPos(3690, 3100);
-                return !reached(30);
-            }
-        }
-        public Action armToBin() {
-            return new ArmToBin();
-        }
-
-        public class SlideIn implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                armToPos(3300, 10);
+                grab.setWristRotation(upAng);
+                armToPos(score[0] + pitchOff, score[1]);
                 return !reached(20);
             }
         }
-        public Action slideIn() {
-            return new SlideIn();
+        public Action scorePitch() {
+            return new ScorePitch();
         }
 
-        public class PitchDown implements Action {
+        public class ScorePos implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.stop();
-                armToPos(10, 10);
+                grab.setWristRotation(upAng);
+                armToPos(score[0], score[1]);
                 return !reached(20);
             }
         }
-        public Action pitchDown() {
-            return new PitchDown();
+        public Action scorePos() {
+            return new ScorePos();
         }
 
-        public class SlideOut implements Action {
+        public class SlowScorePos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.stop();
+                grab.setWristRotation(upAng);
+                armToPos(score[0], score[1], 0.5);
+                return !reached(20);
+            }
+        }
+        public Action slowScorePos() {
+            return new SlowScorePos();
+        }
+
+        public class PitchForward implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(0.2);
+                grab.setWristRotation(depoAng);
+                armToPos(score[0], score[1]);
+                return !reached(20);
+            }
+        }
+        public Action pitchForward() {
+            return new PitchForward();
+        }
+
+        public class Grab1 implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
-                armToPos(10, 1200);
-                return !(grab.checkObjectIn() || reached(20));
+                grab.setWristRotation(upAng);
+                armToPos(grabArm1[0], grabArm1[1]);
+                return !reached(20);
             }
         }
-        public Action slideOut() {
-            return new SlideOut();
+        public Action grab1() {
+            return new Grab1();
         }
 
-        public class LastOut implements Action {
+        public class Grab1Out implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
-                rotator.setPosition(0.75);
-                armToPos(10, 1200);
+                grab.setWristRotation(inAng);
+                armToPos(grabArm1[0], grabArm1[1] + 900);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
-        public Action lastOut() {
-            return new LastOut();
+        public Action grab1out() {
+            return new Grab1Out();
         }
 
-        public class Output implements Action {
-
-            double startTime = getRuntime();
-
+        public class Grab2 implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.outtake(0.2, 0.5);
+                grab.intake(1);
+                grab.setWristRotation(upAng);
+                armToPos(grabArm2[0], grabArm2[1]);
+                return !reached(20);
+            }
+        }
+        public Action grab2() {
+            return new Grab2();
+        }
+
+        public class Grab2Out implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(1);
+                grab.setWristRotation(inAng);
+                armToPos(grabArm2[0], grabArm2[1] + 900);
+                return !(grab.checkObjectIn() || reached(20));
+            }
+        }
+        public Action grab2out() {
+            return new Grab2Out();
+        }
+
+        public class Grab3 implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(1);
+                grab.setWristRotation(upAng);
+                armToPos(grabArm3[0], grabArm3[1]);
+                return !reached(20);
+            }
+        }
+        public Action grab3() {
+            return new Grab3();
+        }
+
+        public class Grab3Out implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(1);
+                grab.setWristRotation(inAng);
+                armToPos(grabArm3[0], grabArm3[1] + 800);
+                return !(grab.checkObjectIn() || reached(20));
+            }
+        }
+        public Action grab3out() {
+            return new Grab3Out();
+        }
+
+        public class Depo implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.setWristRotation(depoAng);
                 return false;
             }
         }
-        public Action output() {
-            return new Output();
+        public Action depo () {
+            return new Depo();
         }
+
+        public class Outtake implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.outtake(1);
+                return false;
+            }
+        }
+        public Action outtake () {
+            return new Outtake();
+        }
+
+        public class In implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                arm.slideIn();
+                return !reached(20);
+            }
+        }
+        public Action in () {
+            return new In();
+        }
+
+        public class WristUp implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.setWristRotation(upAng);
+                return false;
+            }
+        }
+        public Action wristUp () {
+            return new WristUp();
+        }
+
+        public class WristDown implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.setWristRotation(depoAng);
+                return false;
+            }
+        }
+        public Action wristDown () {
+            return new WristUp();
+        }
+
     }
 
     //RR
@@ -206,160 +344,232 @@ public class LeftTest extends LinearOpMode {
     PinpointDrive drive;
 
     AutoArm arm;
-
-    Vector2d scorePos = new Vector2d(11, -15);
-    double scoreAng = Math.toRadians(50);
+    ElapsedTime tm1;
 
     @Override
     public void runOpMode() {
 
-        initialPose = new Pose2d(-6, 0, 0);
+        initialPose = new Pose2d(-62, 35, Math.toRadians(90));
         drive = new PinpointDrive(hardwareMap, initialPose);
 
         arm = new AutoArm(hardwareMap);
+        tm1 = new ElapsedTime();
+
+        TrajectoryActionBuilder first = drive.actionBuilder(initialPose)
+                .strafeToConstantHeading(new Vector2d(move1[0], move1[1]));
 
 
-
-        TrajectoryActionBuilder part1 = drive.actionBuilder(initialPose)
-                .strafeTo(new Vector2d(0, -8))
-                .strafeToLinearHeading(scorePos, scoreAng);
-
-        TrajectoryActionBuilder waiter1 = drive.actionBuilder(initialPose)
-                .waitSeconds(1);
-
-        TrajectoryActionBuilder waiter2 = drive.actionBuilder(initialPose)
-                .waitSeconds(1);
-
-        TrajectoryActionBuilder waiter3 = drive.actionBuilder(initialPose)
-                .waitSeconds(1);
-
-        TrajectoryActionBuilder waiter4 = drive.actionBuilder(initialPose)
-                .waitSeconds(1);
-
-        telemetry.addData("Program", "Left");
+        telemetry.addData("Program", "States Left");
         telemetry.update();
 
-        arm.armToPos(2420, 10);
+        //TODO: Change to initialization later
+        arm.armToPos(ready[0], ready[1]);
+        grab.setWristRotation(0.1);
+        grab.stop();
+        grab.release();
 
         waitForStart();
 
         Actions.runBlocking(
                 new ParallelAction(
-                        part1.build(),
+                        first.build(),
+                        arm.scorePitch()
+                )
+        );
+
+        TrajectoryActionBuilder toScore = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] + 2, scoringPos[1] + 7), scoringPos[2] + Math.toRadians(5));
+
+        TrajectoryActionBuilder waiter = drive.actionBuilder(drive.pose)
+                .waitSeconds(1);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        toScore.build(),
+
+                        new SequentialAction(
+                                arm.scorePos(),
+                                arm.depo()
+                        )
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 300 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.outtake()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 300 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        TrajectoryActionBuilder toGet1 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(pickPos1[0], pickPos1[1]), pickPos1[2]);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.scorePitch(),
+                        new ParallelAction(
+                                arm.grab1(),
+                                toGet1.build()
+                        ),
+                        arm.grab1out()
+                )
+        );
+
+        toScore = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 3, scoringPos[1] + 3), scoringPos[2]);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        new ParallelAction(
+                                arm.slowScorePos(),
+                                toScore.build()
+                        ),
+
+                        new ParallelAction(
+                                arm.depo()
+                        )
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 300 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.outtake()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 300 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        TrajectoryActionBuilder toGet2 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(pickPos2[0], pickPos2[1]), pickPos2[2]);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.scorePitch(),
+                        new ParallelAction(
+                                arm.grab2(),
+                                toGet2.build()
+                        ),
+                        arm.grab2out()
+                )
+        );
+
+        toScore = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 3, scoringPos[1] + 3), scoringPos[2]);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        new ParallelAction(
+                                arm.slowScorePos(),
+                                toScore.build()
+                        ),
+                        arm.depo()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 300 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.outtake()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 300 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        TrajectoryActionBuilder toGet3 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(pickPos3[0], pickPos3[1]), pickPos3[2]);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.scorePitch(),
+                        new ParallelAction(
+                                arm.grab3(),
+                                toGet3.build()
+                        ),
+                        arm.grab3out()
+                )
+        );
+
+        toScore = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 3, scoringPos[1] + 3), scoringPos[2]);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        new ParallelAction(
+                                arm.scorePitch(),
+                                toScore.build()
+                        ),
+                        arm.scorePos(),
+                        arm.depo()
+                )
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.outtake()
+                )
+        );
+
+        waiter = drive.actionBuilder(drive.pose)
+                .waitSeconds(0.5);
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        waiter.build()
+
+                )
+        );
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        arm.scorePitch(),
+                        arm.in(),
                         arm.readyPos()
                 )
         );
 
+
+        /* Seems tedious to use
         Actions.runBlocking(
-                new SequentialAction(
-                        arm.readyPosBack(),
-                        arm.armToBin(),
-                        arm.output(),
-                        waiter1.build()
+                new MecanumDrive.TurnAction(
+                        new TimeTurn(drive.pose, Math.toRadians(90), add turn constraint here)
                 )
         );
-
-        TrajectoryActionBuilder part2 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(9, -20), Math.toRadians(-90));
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.readyPosBack(),
-                        arm.readyPos(),
-                        part2.build(),
-                        arm.pitchDown(),
-                        arm.slideOut()
-                )
-        );
-
-        TrajectoryActionBuilder part3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(scorePos, scoreAng);
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.readyPos(),
-                        part3.build()
-                )
-        );
-
-        TrajectoryActionBuilder part4 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(18, -20), Math.toRadians(-95));
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.armToBin(),
-                        arm.output(),
-                        waiter2.build(),
-                        arm.readyPosBack(),
-                        arm.slideIn(),
-                        part4.build(),
-                        arm.pitchDown(),
-                        arm.slideOut()
-                )
-        );
-
-        TrajectoryActionBuilder part5 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(scorePos, scoreAng);
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.readyPos(),
-                        part5.build()
-                )
-        );
-
-        PoseStorage.heading = drive.pose.heading.toDouble() + Math.PI/2;
-
-
-        TrajectoryActionBuilder part6 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(5.5, -20), Math.toRadians(-45));
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.armToBin(),
-                        arm.output(),
-                        waiter3.build(),
-                        arm.readyPosBack()
-                )
-        );
-
-        TrajectoryActionBuilder part7 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(2, -24), Math.toRadians(-90));
-
-        Actions.runBlocking(
-                new ParallelAction(
-                        arm.readyPosBack(),
-                        part7.build()
-                )
-        );
-
-        /*
-
-        TrajectoryActionBuilder part7 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(scorePos, scoreAng);
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.readyPos(),
-                        part7.build()
-                )
-        );
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.armToBin(),
-                        arm.output(),
-                        waiter4.build(),
-                        arm.slideIn()
-                )
-        );
-
-        .strafeToLinearHeading(new Vector2d(18, 32.5), Math.toRadians(0))
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(18, 31.5), Math.toRadians(135))
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(18, 32.5), Math.toRadians(0))
-                .waitSeconds(2);
-         */
+        */
     }
 }

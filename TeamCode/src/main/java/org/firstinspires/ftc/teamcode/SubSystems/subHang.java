@@ -13,6 +13,7 @@ public class subHang {
     subShoulder should;
     subLift lift;
     subLED LED;
+    subGrab grab;
 
     int state = 0;
 
@@ -21,6 +22,7 @@ public class subHang {
     double defLiftPow = 1;
 
     int defTol = 20;
+    double wristHangAngle = .4;
     int rotateTol = 50;
     int shouldTol = 100;
 
@@ -44,6 +46,7 @@ public class subHang {
         should = new subShoulder(hardwareMap);
         lift = new subLift(hardwareMap);
         LED = new subLED(hardwareMap);
+        grab = new subGrab(hardwareMap);
     }
 
     public void hang(boolean x){
@@ -128,6 +131,8 @@ public class subHang {
             should.setSlides(finalize[1], defSlPow);
             lift.setLift(finalize[2], defLiftPow);
             LED.setFire();
+            grab.click();
+            grab.setWristRotation(wristHangAngle);
             state = 0;
             Main.routine = 0;
         }
@@ -136,6 +141,7 @@ public class subHang {
     public void releaseSlides(boolean a){
         time = new Date();
         if (a){
+            grab.release();
             endTime = time.getTime();
             timerStarted = true;
         }

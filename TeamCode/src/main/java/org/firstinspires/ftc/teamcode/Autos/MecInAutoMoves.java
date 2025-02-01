@@ -27,8 +27,8 @@ import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 
 @Config
-@Autonomous(name = "States Right")
-public class StatesRightPush extends LinearOpMode {
+@Autonomous(name = "MecInAuto")
+public class MecInAutoMoves extends LinearOpMode {
 
     //TODO: Shoulder motor initializations
     DcMotorEx shoulder;
@@ -78,12 +78,12 @@ public class StatesRightPush extends LinearOpMode {
     double depoAng = 0.44;
     double wallInAng = 0.09;
 
+    DcMotorEx front_Left;
+    DcMotorEx front_Right;
+    DcMotorEx back_Left;
+    DcMotorEx back_Right;
+
     subGrab grab;
-
-
-    //TODO: Tune for vel
-    int highVelCon = 60;
-    int lowVelCon = 48;
 
     public class AutoArm {
 
@@ -216,18 +216,64 @@ public class StatesRightPush extends LinearOpMode {
 
     }
 
+    public class MecDrive {
+
+        public MecDrive (HardwareMap hardwareMap) {
+            back_Right = hardwareMap.get(DcMotorEx.class, "BRM");
+            back_Left = hardwareMap.get(DcMotorEx.class, "BLM");
+            front_Right = hardwareMap.get(DcMotorEx.class, "FRM");
+            front_Left = hardwareMap.get(DcMotorEx.class, "FLM");
+        }
+
+        public void run(double x_move, double y_move, double rotation_x, double heading) {
+
+            if (Math.abs(x_move) > 0.05 || Math.abs(y_move) > 0.05 || Math.abs(rotation_x) > 0.05) {
+                // Orientation
+                double angle = heading;
+
+                // Calculating power variables
+                double x = x_move * Math.cos(-(angle)) - y_move * Math.sin(-(angle));
+                double y = y_move * Math.cos(-(angle)) + x_move * Math.sin(-(angle));
+
+                // Dividing power by a denominator to set maximum output to 1
+                double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rotation_x), 1);
+
+                double frontLeftPower = (y + x + rotation_x) / denominator;
+                double backLeftPower = (y - x + rotation_x) / denominator;
+                double frontRightPower = (y - x - rotation_x) / denominator;
+                double backRightPower = (y + x - rotation_x) / denominator;
+
+                // Writing the power to the motors
+                front_Left.setPower(frontLeftPower);
+                back_Left.setPower(backLeftPower);
+                front_Right.setPower(frontRightPower);
+                back_Right.setPower(backRightPower);
+            }
+
+            else {
+                front_Left.setPower(0);
+                back_Left.setPower(0);
+                front_Right.setPower(0);
+                back_Right.setPower(0);
+            }
+        }
+    }
+
+
     //RR
     Pose2d initialPose;
     PinpointDrive drive;
     ElapsedTime tm1;
 
     AutoArm arm;
+    MecDrive mec;
 
     @Override
     public void runOpMode() {
 
         initialPose = new Pose2d(-62, -10, Math.toRadians(90));
         drive = new PinpointDrive(hardwareMap, initialPose);
+        mec = new MecDrive(hardwareMap);
 
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
@@ -269,12 +315,7 @@ public class StatesRightPush extends LinearOpMode {
         }
 
         TrajectoryActionBuilder clearing = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(firsty[0], firsty[1]), firsty[2])
-                .strafeToLinearHeading(new Vector2d(second[0], second[1]), second[2])
-                .strafeToLinearHeading(new Vector2d(third[0], third[1]), third[2])
-                .strafeToLinearHeading(new Vector2d(fourth[0], fourth[1]), fourth[2])
-                .strafeToLinearHeading(new Vector2d(fifth[0], fifth[1]), fifth[2])
-                .strafeToLinearHeading(new Vector2d(sixth[0], sixth[1]), sixth[2]);
+                .strafeToLinearHeading(new Vector2d(firsty[0], firsty[1]), firsty[2]);
 
 
         Actions.runBlocking(
@@ -282,98 +323,23 @@ public class StatesRightPush extends LinearOpMode {
                         new ParallelAction(
                                 arm.movePos(),
                                 clearing.build()
-                        ),
-
-                        arm.prepWall()
+                        )
                 )
         );
 
-        TrajectoryActionBuilder toGet = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(seventh[0] - 4, seventh[1]), seventh[2]);
-
-        Actions.runBlocking(
-                new SequentialAction (
-                        toGet.build(),
-                        arm.grab()
-                )
-        );
+        mec.run(1.0, 0, 0, Math.PI);
 
         tm1.reset();
         time = tm1.milliseconds();
+
         while (time < 400 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
-        TrajectoryActionBuilder goScore = drive.actionBuilder(drive.pose)
-                //.strafeToLinearHeading(new Vector2d(clearPos[0], clearPos[1] + 6), clearPos[2])
-                .strafeToLinearHeading(new Vector2d(toScore[0] + 3, toScore[1] + 8), toScore[2]);
+        mec.run(0, 0, 0, Math.PI);
 
-        Actions.runBlocking(
-                new SequentialAction (
-                        new ParallelAction(
-                                arm.barInit(),
-                                goScore.build()
-                        ),
-
-                        arm.barScore(),
-                        arm.release()
-                )
-        );
-
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 400 && opModeIsActive()) {
+        while (time < 1000 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
-
-        Actions.runBlocking(
-                new SequentialAction (
-                        arm.prepWall()
-                )
-        );
-
-        toGet = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(wallNext[0], wallNext[1] - 7), wallNext[2]);
-
-        Actions.runBlocking(
-                new SequentialAction (
-                        toGet.build(),
-                        arm.grab()
-                )
-        );
-
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 400 && opModeIsActive()) {
-            time = tm1.milliseconds();
-        }
-
-        goScore = drive.actionBuilder(drive.pose)
-                //.strafeToLinearHeading(new Vector2d(clearPos[0], clearPos[1] - 6), clearPos[2])
-                .strafeToLinearHeading(new Vector2d(toScore[0] + 3, toScore[1] + 4), toScore[2]);
-
-        Actions.runBlocking(
-                new SequentialAction (
-                        new ParallelAction(
-                                arm.barInit(),
-                                goScore.build()
-                        ),
-
-                        arm.barScore(),
-                        arm.release()
-                )
-        );
-
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 400 && opModeIsActive()) {
-            time = tm1.milliseconds();
-        }
-
-        Actions.runBlocking(
-                new SequentialAction (
-                        arm.prepWall()
-                )
-        );
     }
 }

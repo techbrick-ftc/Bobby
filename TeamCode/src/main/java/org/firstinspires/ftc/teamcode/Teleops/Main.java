@@ -60,7 +60,6 @@ public class Main extends LinearOpMode {
     subArm arm = null;
     subGrab grab = null;
     subHang hang = null;
-    subLED LED = null;
 
 
 
@@ -71,7 +70,6 @@ public class Main extends LinearOpMode {
         arm = new subArm(hardwareMap);
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
-        LED = new subLED(hardwareMap);
 
         waitForStart();
         tm1.startTime();
@@ -80,10 +78,6 @@ public class Main extends LinearOpMode {
             if (!ranInitCode){
                 grab.setWristRotation(defWristAngle);
                 ranInitCode = true;
-            }
-
-            if (LED.getState() == 1){
-                grab.checkObjectIn();
             }
 
             lastG1Start = g1start;
@@ -199,7 +193,7 @@ public class Main extends LinearOpMode {
                     hang.altHang(gamepad2.x);
                 }
                 else if (routine == 8){
-                    arm.playerOuttake();
+                    //arm.playerOuttake();
                 }
             }
 

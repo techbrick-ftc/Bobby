@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -364,7 +365,7 @@ public class StatesLeft extends LinearOpMode {
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 400) {
+        while (time < 400 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
@@ -414,7 +415,7 @@ public class StatesLeft extends LinearOpMode {
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 400) {
+        while (time < 400 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
@@ -464,7 +465,7 @@ public class StatesLeft extends LinearOpMode {
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 400) {
+        while (time < 400 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
@@ -514,7 +515,7 @@ public class StatesLeft extends LinearOpMode {
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 400) {
+        while (time < 400 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 

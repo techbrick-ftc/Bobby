@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class subLED {
 
     RevBlinkinLedDriver blinkin;
-    int state;
+    static int state;
 
     public subLED(HardwareMap hardwareMap){
         blinkin = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin1");
@@ -28,12 +28,12 @@ public class subLED {
     }
 
     public void setFire(){
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(22));
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.FIRE_LARGE);
         state = 2;
     }
 
     public void setIdle(){
-        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.fromNumber(76));
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_TWINKLES);
         state = 0;
     }
 

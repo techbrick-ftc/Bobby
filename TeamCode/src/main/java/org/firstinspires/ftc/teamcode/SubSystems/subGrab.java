@@ -44,6 +44,7 @@ public class subGrab {
     double grabAngle = .49;
     double lightGrabAngle = .52;
     double releaseAngle = .7;
+    double clickAngle = .9;
 
     Date time = new Date();
     long initTime;
@@ -85,6 +86,10 @@ public class subGrab {
 
     public void lightGrab(){
         claw.setPosition(lightGrabAngle);
+    }
+
+    public void click(){
+        claw.setPosition(clickAngle);
     }
 
     public void release(){
@@ -166,7 +171,7 @@ public class subGrab {
     }
 
     public boolean redCheck(){
-        return (hue <= redAng1 + hueTol || hue >= redAng2 - hueTol);
+        return (hue <= redAng1 + hueTol && hue >= redAng2 - hueTol);
     }
 
     public boolean blueCheck(){
@@ -183,5 +188,9 @@ public class subGrab {
 
     public double getVal(){
         return hsvValues[2];
+    }
+
+    public void resetLED(){
+        LED.setIdle();
     }
 }
