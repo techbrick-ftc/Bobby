@@ -55,7 +55,7 @@ public class BlueRightTest extends LinearOpMode {
     // x, y, heading
     double[] initPos = {-62, -22, Math.toRadians(90)};
     double[] splinedClear = {-32, -40, Math.toRadians(0)};
-    double[] toGrab = {-54, -44, Math.toRadians(180)};
+    double[] toGrab = {-52, -44, Math.toRadians(180)};
 
     //TODO: Tune arm positions here
     // pitch, slides
@@ -274,10 +274,19 @@ public class BlueRightTest extends LinearOpMode {
                                 return linAccel;
                             }
                         })
-                .splineToConstantHeading(new Vector2d(splinedClear[0], splinedClear[1]), splinedClear[2], new VelConstraint() {
+                .strafeToConstantHeading(new Vector2d(splinedClear[0], splinedClear[1]),
+                        new VelConstraint() {
                             @Override
                             public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                                return 30;
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
                             }
                         })
                 .strafeToConstantHeading(new Vector2d(pushFar, splinedClear[1]),
@@ -295,35 +304,116 @@ public class BlueRightTest extends LinearOpMode {
                                 return linAccel;
                             }
                         })
-                .splineToConstantHeading(new Vector2d(splinedClear[0], splinedClear[1]), splinedClear[2], new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 30;
-                    }
-                })
-                .splineToConstantHeading(new Vector2d(pushFar, pushPos[0]), Math.PI, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 12;
-                    }
-                })
-                .strafeToConstantHeading(new Vector2d(pushClose, pushPos[0]))
-                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[0]))
-                .splineToConstantHeading(new Vector2d(pushFar, pushPos[1]), Math.PI, new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 12;
-                    }
-                })
-                .strafeToConstantHeading(new Vector2d(pushClose, pushPos[1]))
-                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[1]))
-                .splineToConstantHeading(new Vector2d(pushFar, pushPos[2]), Math.PI,
+                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[0]),
                         new VelConstraint() {
                             @Override
                             public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                                return 18;
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
                             }
                         })
+                .strafeToConstantHeading(new Vector2d(pushClose, pushPos[0]),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[0]),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[1]),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+
+                .strafeToConstantHeading(new Vector2d(pushClose, pushPos[1]),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        }
+                )
+
+                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[1]),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+
+                .strafeToConstantHeading(new Vector2d(pushFar, pushPos[2]),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 90;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+
                 .strafeToConstantHeading(new Vector2d(pushClose, pushPos[2]))
                 ;
 
