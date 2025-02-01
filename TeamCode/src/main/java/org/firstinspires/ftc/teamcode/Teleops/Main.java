@@ -193,7 +193,7 @@ public class Main extends LinearOpMode {
                     hang.altHang(gamepad2.x);
                 }
                 else if (routine == 8){
-                    //arm.playerOuttake();
+                    arm.playerOuttake();
                 }
             }
 

@@ -57,14 +57,14 @@ public class subArm {
     // Positions
     // Should, Slides, Wrist
     int[] ground = {10, 5, 50};
-    int[] home = {1000, 50, 50};
+    int[] home = {500, 50, 50};
     int[] extendIntake = {10, 1150, 56};
     int[] playerOuttake = {10, 1550, 50};
-    int[] intake = {10, 1550, 34};
+    int[] intake = {10, 1550, 37};
     int[] retractIntake = {10, 10, 65};
     int[] wallIntake = {690, 10, 9};
-    int[] barInit = {2270, 160, 44};
-    int[] barRaise = {2270, 770, 44};
+    int[] barInit = {2290, 220, 44};
+    int[] barRaise = {2290, 770, 44};
     int[] highBin = {2080, 3050, 30};
     int[] lowBin = {1500, 1550, 33};
 
