@@ -232,12 +232,12 @@ public class subArm {
             should.setSlides(extendIntake[1], defSlPow);
             grab.setWristRotation(convertAngle(extendIntake[2]));
             intakeUp = true;
+            intaking = true;
             state++;
         }
         else if (state == 1){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 Main.activateSlowMode();
-                intaking = true;
 
                 if (rt >= .05){
                     grab.setWristRotation(convertAngle(intake[2]));
@@ -319,12 +319,7 @@ public class subArm {
             grab.outtake(lt);
         }
         else if (intaking){
-            if (rt > .9 && !grab.checkObjectIn()){
-                grab.intake(rt);
-            }
-            else{
-                grab.stop();
-            }
+            grab.intake(1);
         }
         else{
             if (rt > .05 && !grab.checkObjectIn()) {
