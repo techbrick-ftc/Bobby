@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class subPosTransfer extends LinearOpMode {
     static double autoAng;
 
-    public static double getAngle(){
+    public static  double getAngle(){
         return autoAng;
     }
 

@@ -102,6 +102,10 @@ public class subDrive {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle;
     }
 
+    public void setOffset(double off){
+        offset = off;
+    }
+
     public void recalibrate() {
         imu.initialize(parameters);
     }
