@@ -71,7 +71,7 @@ public class Main extends LinearOpMode {
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
 
-        drive.setOffset(subPosTransfer.getAngle() + Math.PI);
+        drive.setOffset(Math.PI - subPosTransfer.getAngle());
 
         waitForStart();
         tm1.startTime();
