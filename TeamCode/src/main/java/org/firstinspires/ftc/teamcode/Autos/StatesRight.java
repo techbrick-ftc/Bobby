@@ -25,10 +25,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
+import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
 
 @Config
-@Disabled
-@Autonomous(name = "States Right")
+@Autonomous(name = "States Right Testing")
 public class StatesRight extends LinearOpMode {
 
     //TODO: Shoulder motor initializations
@@ -48,7 +48,7 @@ public class StatesRight extends LinearOpMode {
 
     //TODO: Tune arm positions here
     // pitch, slides
-    int[] ready = {1735, 10};
+    int[] ready = {1735, 10}; // 1735
     int[] barInit = {2275, 160};
     int[] barRaise = {2275, 770};
     int[] gGrab1 = {20, 300};
@@ -64,6 +64,8 @@ public class StatesRight extends LinearOpMode {
     double wallInAng = 0.09;
 
     subGrab grab;
+
+    subPosTransfer trans = new subPosTransfer();
 
     public class AutoArm {
 
@@ -444,5 +446,7 @@ public class StatesRight extends LinearOpMode {
                         arm.prepWall()
                 )
         );
+
+        trans.setAngle(drive.pose.heading.toDouble());
     }
 }
