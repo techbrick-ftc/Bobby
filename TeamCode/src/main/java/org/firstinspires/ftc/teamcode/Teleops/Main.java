@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subHang;
+import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
 
 
 @TeleOp(name="0A TeleOp")
@@ -15,9 +16,6 @@ public class Main extends LinearOpMode {
 
     // Timer
     ElapsedTime tm1 = new ElapsedTime();
-
-    public static double autoAng;
-
 
     boolean driveAllowed = true;
     public static double defPow = 1;
@@ -61,6 +59,7 @@ public class Main extends LinearOpMode {
     subArm arm = null;
     subGrab grab = null;
     subHang hang = null;
+    subPosTransfer autoPos = new subPosTransfer();
 
 
 
@@ -304,7 +303,7 @@ public class Main extends LinearOpMode {
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", isRedTeam);
         telemetry.addData("Distance: ", grab.getDistance());
-        telemetry.addData("Angle from auto: ", autoAng);
+        telemetry.addData("Angle from auto: ", subPosTransfer.getAngle());
         telemetry.update();
     }
 
