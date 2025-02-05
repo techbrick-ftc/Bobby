@@ -41,28 +41,29 @@ public class LeftTest extends LinearOpMode {
 
     //TODO: Tune robot positions here
     // x, y, heading
-    double[] move1 = {-61, 35, Math.toRadians(90)};
-    double[] scoringPos = {-50, 53, Math.toRadians(135)};
-    double[] pickPos1 = {-30, 34, Math.toRadians(65)};
-    double[] pickPos2 = {-22, 42, Math.toRadians(90)};
-    double[] pickPos3 = {-22, 48, Math.toRadians(90)};
+    double[] move1 = {-64, 35, Math.toRadians(90)};
+    double[] scoringPos = {-45, 48, Math.toRadians(135)};
+    double[] picksX = {-30, -22, -22, -4};
+    double[] picksY = {34, 42, 48, 29};
+    double[] picksAng = {Math.toRadians(65), Math.toRadians(84), Math.toRadians(85), Math.toRadians(-90)};
 
     //TODO: Turn arm positions here
     // pitch, slides
-    int[] ready = {1755, 10};
-    int[] score = {2700, 3100};
-    int[] grabArm1 = {20, 50};
-    int[] grabArm2 = {20, 200};
-    int[] grabArm3 = {20, 600};
+    int[] ready = {1290, 10};
+    int[] score = {1690, 3100};
+    int[] grabSlides = {150, 200, 600, 100};
+    int grabPitch = 5;
 
     //TODO: Grab
     subGrab grab;
     double upAng = 0.56;
-    double depoAng = 0.26;
+    double grabAng = 0.48;
+    double backAng = 0.70;
+    double depoAng = 0.45; //Used to be 0.26
     double inAng = 0.34;
     double inPow = 0.15;
 
-    int pitchOff = 200;
+    int pitchOff = 100;
 
     public class AutoArm {
 
@@ -137,6 +138,10 @@ public class LeftTest extends LinearOpMode {
             return Math.abs(lSlides.getCurrentPosition() - lSlides.getTargetPosition()) < tol && Math.abs(shoulder.getCurrentPosition() - shoulder.getTargetPosition()) < tol;
         }
 
+        private boolean pitchReached(int tol) {
+            return Math.abs(shoulder.getCurrentPosition() - shoulder.getTargetPosition()) < tol;
+        }
+
         //TODO: No grabber code included here
 
         public class ReadyPos implements Action {
@@ -152,23 +157,49 @@ public class LeftTest extends LinearOpMode {
             return new ReadyPos();
         }
 
+        public class FirstScorePos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(0.1);
+                grab.setWristRotation(upAng);
+                armToPos(score[0], score[1]);
+                return !reached(20);
+            }
+        }
+        public Action firstScorePos() {
+            return new FirstScorePos();
+        }
+
         public class ScorePitch implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.stop();
+                grab.intake(0.1);
                 grab.setWristRotation(upAng);
-                armToPos(score[0] + pitchOff, score[1]);
-                return !reached(20);
+                armToPos(score[0] - 1000, 20);
+                return !pitchReached(50);
             }
         }
         public Action scorePitch() {
             return new ScorePitch();
         }
 
-        public class ScorePos implements Action {
+        public class OuttakeOnPos implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.stop();
+                grab.setWristRotation(upAng);
+                armToPos(score[0], score[1] - 300);
+                return !reached(50);
+            }
+        }
+        public Action outtakeOnPos() {
+            return new OuttakeOnPos();
+        }
+
+        public class ScorePos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.outtake(1);
                 grab.setWristRotation(upAng);
                 armToPos(score[0], score[1]);
                 return !reached(20);
@@ -183,7 +214,7 @@ public class LeftTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.stop();
                 grab.setWristRotation(upAng);
-                armToPos(score[0], score[1], 0.5);
+                armToPos(score[0], score[1], 0.4);
                 return !reached(20);
             }
         }
@@ -191,25 +222,25 @@ public class LeftTest extends LinearOpMode {
             return new SlowScorePos();
         }
 
-        public class PitchForward implements Action {
+        public class BackReady implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-                grab.intake(0.2);
-                grab.setWristRotation(depoAng);
-                armToPos(score[0], score[1]);
-                return !reached(20);
+                grab.intake(1);
+                grab.setWristRotation(backAng);
+                armToPos(score[0], score[1] - 800);
+                return !reached(100);
             }
         }
-        public Action pitchForward() {
-            return new PitchForward();
+        public Action backReady() {
+            return new BackReady();
         }
 
         public class Grab1 implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
-                grab.setWristRotation(upAng);
-                armToPos(grabArm1[0], grabArm1[1]);
+                grab.setWristRotation(grabAng);
+                armToPos(grabPitch, grabSlides[0]);
                 return !reached(20);
             }
         }
@@ -222,7 +253,7 @@ public class LeftTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(grabArm1[0], grabArm1[1] + 900);
+                armToPos(grabPitch, grabSlides[0] + 900);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
@@ -234,9 +265,9 @@ public class LeftTest extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
-                grab.setWristRotation(upAng);
-                armToPos(grabArm2[0], grabArm2[1]);
-                return !reached(20);
+                grab.setWristRotation(grabAng);
+                armToPos(grabPitch, grabSlides[1]);
+                return !reached(50);
             }
         }
         public Action grab2() {
@@ -248,7 +279,7 @@ public class LeftTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(grabArm2[0], grabArm2[1] + 900);
+                armToPos(grabPitch, grabSlides[1] + 600);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
@@ -260,9 +291,9 @@ public class LeftTest extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
-                grab.setWristRotation(upAng);
-                armToPos(grabArm3[0], grabArm3[1]);
-                return !reached(20);
+                grab.setWristRotation(grabAng);
+                armToPos(grabPitch, grabSlides[2] + 300);
+                return !reached(50);
             }
         }
         public Action grab3() {
@@ -274,12 +305,38 @@ public class LeftTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(grabArm3[0], grabArm3[1] + 800);
+                armToPos(grabPitch, grabSlides[2] + 800);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
         public Action grab3out() {
             return new Grab3Out();
+        }
+
+        public class Grab4 implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(1);
+                grab.setWristRotation(grabAng);
+                armToPos(grabPitch, grabSlides[3]);
+                return !reached(50);
+            }
+        }
+        public Action grab4() {
+            return new Grab4();
+        }
+
+        public class Grab4Out implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.intake(1);
+                grab.setWristRotation(inAng);
+                armToPos(grabPitch, grabSlides[3] + 1500);
+                return !(grab.checkObjectIn() || reached(20));
+            }
+        }
+        public Action grab4out() {
+            return new Grab4Out();
         }
 
         public class Depo implements Action {
@@ -336,7 +393,6 @@ public class LeftTest extends LinearOpMode {
         public Action wristDown () {
             return new WristUp();
         }
-
     }
 
     //RR
@@ -346,6 +402,7 @@ public class LeftTest extends LinearOpMode {
     AutoArm arm;
     ElapsedTime tm1;
 
+
     @Override
     public void runOpMode() {
 
@@ -354,6 +411,11 @@ public class LeftTest extends LinearOpMode {
 
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
+
+        Action[] grabList = {arm.grab1(), arm.grab2(), arm.grab3()};
+        Action[] outList = {arm.grab1out(), arm.grab2out(), arm.grab3out()};
+
+        TrajectoryActionBuilder toGet;
 
         TrajectoryActionBuilder first = drive.actionBuilder(initialPose)
                 .strafeToConstantHeading(new Vector2d(move1[0], move1[1]));
@@ -372,33 +434,23 @@ public class LeftTest extends LinearOpMode {
 
         Actions.runBlocking(
                 new ParallelAction(
-                        first.build(),
-                        arm.scorePitch()
+                        first.build()
                 )
         );
 
         TrajectoryActionBuilder toScore = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(scoringPos[0] + 2, scoringPos[1] + 7), scoringPos[2] + Math.toRadians(5));
 
-        TrajectoryActionBuilder waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(1);
-
         Actions.runBlocking(
-                new SequentialAction(
+                new ParallelAction(
                         toScore.build(),
 
                         new SequentialAction(
-                                arm.scorePos(),
-                                arm.depo()
+                                arm.outtakeOnPos(),
+                                arm.scorePos()
                         )
                 )
         );
-
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 300 && opModeIsActive()) {
-            time = tm1.milliseconds();
-        }
 
         Actions.runBlocking(
                 new SequentialAction(
@@ -408,20 +460,27 @@ public class LeftTest extends LinearOpMode {
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 300 && opModeIsActive()) {
+        while (time < 150 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
         TrajectoryActionBuilder toGet1 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(pickPos1[0], pickPos1[1]), pickPos1[2]);
+                .strafeToLinearHeading(new Vector2d(picksX[0], picksY[0]), picksAng[0]);
+
+        Actions.runBlocking(
+
+                new ParallelAction(
+                        new SequentialAction(
+                                arm.backReady(),
+                                arm.grab1()
+                        ),
+
+                        toGet1.build()
+                )
+        );
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.scorePitch(),
-                        new ParallelAction(
-                                arm.grab1(),
-                                toGet1.build()
-                        ),
                         arm.grab1out()
                 )
         );
@@ -430,46 +489,44 @@ public class LeftTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(scoringPos[0] - 3, scoringPos[1] + 3), scoringPos[2]);
 
         Actions.runBlocking(
+
                 new SequentialAction(
                         new ParallelAction(
-                                arm.slowScorePos(),
+                                new SequentialAction(
+                                        arm.scorePitch(),
+                                        arm.outtakeOnPos(),
+                                        arm.scorePos()
+                                ),
                                 toScore.build()
                         ),
 
-                        new ParallelAction(
-                                arm.depo()
-                        )
-                )
-        );
-
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 300 && opModeIsActive()) {
-            time = tm1.milliseconds();
-        }
-
-        Actions.runBlocking(
-                new SequentialAction(
                         arm.outtake()
                 )
         );
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 300 && opModeIsActive()) {
+        while (time < 100 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
         TrajectoryActionBuilder toGet2 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(pickPos2[0], pickPos2[1]), pickPos2[2]);
+                .strafeToLinearHeading(new Vector2d(picksX[1], picksY[1]), picksAng[1]);
+
+        Actions.runBlocking(
+
+                new ParallelAction(
+                        new SequentialAction(
+                                arm.backReady(),
+                                arm.grab2()
+                        ),
+
+                        toGet2.build()
+                )
+        );
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.scorePitch(),
-                        new ParallelAction(
-                                arm.grab2(),
-                                toGet2.build()
-                        ),
                         arm.grab2out()
                 )
         );
@@ -478,43 +535,44 @@ public class LeftTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(scoringPos[0] - 3, scoringPos[1] + 3), scoringPos[2]);
 
         Actions.runBlocking(
+
                 new SequentialAction(
                         new ParallelAction(
-                                arm.slowScorePos(),
+                                new SequentialAction(
+                                        arm.scorePitch(),
+                                        arm.outtakeOnPos(),
+                                        arm.scorePos()
+                                ),
                                 toScore.build()
                         ),
-                        arm.depo()
-                )
-        );
 
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 300 && opModeIsActive()) {
-            time = tm1.milliseconds();
-        }
-
-        Actions.runBlocking(
-                new SequentialAction(
                         arm.outtake()
                 )
         );
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 300 && opModeIsActive()) {
+        while (time < 100 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
         TrajectoryActionBuilder toGet3 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(pickPos3[0], pickPos3[1]), pickPos3[2]);
+                .strafeToLinearHeading(new Vector2d(picksX[2], picksY[2]), picksAng[2]);
+
+        Actions.runBlocking(
+
+                new ParallelAction(
+                        new SequentialAction(
+                                arm.backReady(),
+                                arm.grab3()
+                        ),
+
+                        toGet3.build()
+                )
+        );
 
         Actions.runBlocking(
                 new SequentialAction(
-                        arm.scorePitch(),
-                        new ParallelAction(
-                                arm.grab3(),
-                                toGet3.build()
-                        ),
                         arm.grab3out()
                 )
         );
@@ -523,53 +581,72 @@ public class LeftTest extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(scoringPos[0] - 3, scoringPos[1] + 3), scoringPos[2]);
 
         Actions.runBlocking(
+
                 new SequentialAction(
                         new ParallelAction(
-                                arm.scorePitch(),
+                                new SequentialAction(
+                                        arm.scorePitch(),
+                                        arm.outtakeOnPos(),
+                                        arm.scorePos()
+                                ),
                                 toScore.build()
                         ),
-                        arm.scorePos(),
-                        arm.depo()
+
+                        arm.outtake()
                 )
         );
 
         tm1.reset();
         time = tm1.milliseconds();
-        while (time < 400 && opModeIsActive()) {
+        while (time < 100 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
 
+        TrajectoryActionBuilder toGet4 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3])
+                .strafeToConstantHeading(new Vector2d(picksX[3], picksY[3]))
+                ;
+
+        Actions.runBlocking(
+
+                new ParallelAction(
+                        new SequentialAction(
+                                arm.backReady(),
+                                arm.grab4()
+                        ),
+
+                        toGet4.build()
+                )
+        );
+
         Actions.runBlocking(
                 new SequentialAction(
+                        arm.grab4out()
+                )
+        );
+
+        toScore = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3])
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 5, scoringPos[1] + 5), scoringPos[2]);
+
+        Actions.runBlocking(
+
+                new SequentialAction(
+
+                        new ParallelAction(
+                                toScore.build(),
+                                arm.readyPos()
+                        ),
+                        arm.outtakeOnPos(),
+                        arm.scorePos(),
                         arm.outtake()
                 )
         );
 
-        waiter = drive.actionBuilder(drive.pose)
-                .waitSeconds(0.5);
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        waiter.build()
-
-                )
-        );
-
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.scorePitch(),
-                        arm.in(),
-                        arm.readyPos()
-                )
-        );
-
-
-        /* Seems tedious to use
-        Actions.runBlocking(
-                new MecanumDrive.TurnAction(
-                        new TimeTurn(drive.pose, Math.toRadians(90), add turn constraint here)
-                )
-        );
-        */
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 100 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
     }
 }
