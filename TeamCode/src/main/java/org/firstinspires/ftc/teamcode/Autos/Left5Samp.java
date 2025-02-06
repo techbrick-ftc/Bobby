@@ -4,16 +4,21 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.AccelConstraint;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Arclength;
+import com.acmerobotics.roadrunner.MinMax;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Pose2dDual;
+import com.acmerobotics.roadrunner.PosePath;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.VelConstraint;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -23,12 +28,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
-
-import java.util.Vector;
+import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
 
 @Config
-@Autonomous(name = "Maybe 5 Samp")
-public class LeftTest extends LinearOpMode {
+@Autonomous(name = "5 Samp Auto")
+public class Left5Samp extends LinearOpMode {
 
     //TODO: Shoulder motor initializations
     DcMotorEx shoulder;
@@ -42,7 +46,7 @@ public class LeftTest extends LinearOpMode {
     //TODO: Tune robot positions here
     // x, y, heading
     double[] move1 = {-64, 35, Math.toRadians(90)};
-    double[] scoringPos = {-45, 48, Math.toRadians(135)};
+    double[] scoringPos = {-44, 47, Math.toRadians(135)};
     double[] picksX = {-30, -22, -22, -4};
     double[] picksY = {34, 42, 48, 29};
     double[] picksAng = {Math.toRadians(65), Math.toRadians(84), Math.toRadians(85), Math.toRadians(-90)};
@@ -51,8 +55,8 @@ public class LeftTest extends LinearOpMode {
     // pitch, slides
     int[] ready = {1290, 10};
     int[] score = {1690, 3100};
-    int[] grabSlides = {150, 200, 600, 100};
-    int grabPitch = 5;
+    int[] grabSlides = {150, 200, 600, 20};
+    int grabPitch = 10;
 
     //TODO: Grab
     subGrab grab;
@@ -64,6 +68,8 @@ public class LeftTest extends LinearOpMode {
     double inPow = 0.15;
 
     int pitchOff = 100;
+
+
 
     public class AutoArm {
 
@@ -240,7 +246,7 @@ public class LeftTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(grabAng);
-                armToPos(grabPitch, grabSlides[0]);
+                armToPos(-15, grabSlides[0]);
                 return !reached(20);
             }
         }
@@ -253,7 +259,7 @@ public class LeftTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(grabPitch, grabSlides[0] + 900);
+                armToPos(-30, grabSlides[0] + 900);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
@@ -401,7 +407,8 @@ public class LeftTest extends LinearOpMode {
 
     AutoArm arm;
     ElapsedTime tm1;
-
+    MinMax linAccel;
+    subPosTransfer trans;
 
     @Override
     public void runOpMode() {
@@ -411,6 +418,10 @@ public class LeftTest extends LinearOpMode {
 
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
+
+        trans = new subPosTransfer();
+
+        linAccel = new MinMax(-80, 90);
 
         Action[] grabList = {arm.grab1(), arm.grab2(), arm.grab3()};
         Action[] outList = {arm.grab1out(), arm.grab2out(), arm.grab3out()};
@@ -603,7 +614,21 @@ public class LeftTest extends LinearOpMode {
         }
 
         TrajectoryActionBuilder toGet4 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3])
+                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3],
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 120;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
                 .strafeToConstantHeading(new Vector2d(picksX[3], picksY[3]))
                 ;
 
@@ -626,8 +651,21 @@ public class LeftTest extends LinearOpMode {
         );
 
         toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3])
-                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 5, scoringPos[1] + 5), scoringPos[2]);
+                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3], new VelConstraint() {
+                    @Override
+                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        return 120;
+                        }
+                    },
+
+                new AccelConstraint() {
+                    @NonNull
+                    @Override
+                    public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                        return linAccel;
+                    }
+                })
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 2, scoringPos[1] + 7), scoringPos[2]);
 
         Actions.runBlocking(
 
@@ -648,5 +686,7 @@ public class LeftTest extends LinearOpMode {
         while (time < 100 && opModeIsActive()) {
             time = tm1.milliseconds();
         }
+
+        trans.setAngle(drive.pose.heading.toDouble());
     }
 }

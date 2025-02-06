@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -25,8 +26,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
+import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
 
 @Config
+@Disabled
 @Autonomous(name = "States Right")
 public class StatesRightPush extends LinearOpMode {
 
@@ -77,9 +80,9 @@ public class StatesRightPush extends LinearOpMode {
     double upAng = 0.7;
     double depoAng = 0.44;
     double wallInAng = 0.09;
+    double grabAng = 0.48;
 
     subGrab grab;
-
 
     //TODO: Tune for vel
     int highVelCon = 60;
@@ -223,6 +226,8 @@ public class StatesRightPush extends LinearOpMode {
 
     AutoArm arm;
 
+    subPosTransfer trans;
+
     @Override
     public void runOpMode() {
 
@@ -231,6 +236,8 @@ public class StatesRightPush extends LinearOpMode {
 
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
+
+        trans = new subPosTransfer();
 
         arm.armToPos(ready[0], ready[1]);
         grab.setWristRotation(0.1);
@@ -375,5 +382,7 @@ public class StatesRightPush extends LinearOpMode {
                         arm.prepWall()
                 )
         );
+
+        trans.setAngle(drive.pose.heading.toDouble());
     }
 }

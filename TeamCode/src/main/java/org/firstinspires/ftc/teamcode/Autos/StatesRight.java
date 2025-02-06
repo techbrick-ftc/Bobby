@@ -25,9 +25,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
-import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
+
 
 @Config
+@Disabled
 @Autonomous(name = "States Right Testing")
 public class StatesRight extends LinearOpMode {
 
@@ -64,8 +65,6 @@ public class StatesRight extends LinearOpMode {
     double wallInAng = 0.09;
 
     subGrab grab;
-
-    subPosTransfer trans = new subPosTransfer();
 
     public class AutoArm {
 
@@ -446,7 +445,5 @@ public class StatesRight extends LinearOpMode {
                         arm.prepWall()
                 )
         );
-
-        trans.setAngle(drive.pose.heading.toDouble());
     }
 }
