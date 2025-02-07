@@ -19,7 +19,7 @@ public class Main extends LinearOpMode {
 
     boolean driveAllowed = true;
     public static double defPow = 1;
-    public static double midPow = .6;
+    public static double midPow = .82;
     double slowPow = 0.5;
     double slowerPow = 0.25;
     public static double drivePow = defPow;
