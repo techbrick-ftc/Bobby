@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
 
 @Config
-@Autonomous(name = "Right push arm test")
+@Autonomous(name = "Right arm test")
 public class StatesRightArmGrab extends LinearOpMode {
 
     //TODO: Shoulder motor initializations
@@ -44,7 +44,7 @@ public class StatesRightArmGrab extends LinearOpMode {
     //TODO: Tune robot positions here
     // x, y, heading
     double[] initPos = {-62, -22, Math.toRadians(90)};
-    double[] clearPos = {-32, -42, Math.toRadians(-72)};
+    double[] clearPos = {-32, -42, Math.toRadians(-90)};
     double[] toGrab = {-58, -44, Math.toRadians(180)};
     double[] firstSplineTo = {-30, -42, Math.toRadians(-90)};
     double[] depoPos = {-45, -42, Math.toRadians(-135)};
@@ -55,8 +55,8 @@ public class StatesRightArmGrab extends LinearOpMode {
     int[] barInit = {2270, 160};
     int[] barRaise = {2270, 770};
     int[] wall = {720, 10};
-    int groundPitch = 5;
-    int[] groundSlides = {1100, 20, 500};
+    int groundPitch = -10;
+    int[] groundSlides = {500, 20};
 
     //TODO: Intake angles
     double depoAng = 0.44;
@@ -175,6 +175,7 @@ public class StatesRightArmGrab extends LinearOpMode {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.setWristRotation(wallInAng);
+                grab.outtake(1);
                 grab.release();
                 armToPos(wall[0], wall[1]);
                 return !reached(20);
@@ -229,6 +230,18 @@ public class StatesRightArmGrab extends LinearOpMode {
             return new Grab();
         }
 
+        public class ArmDepoPos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                grab.setWristRotation(upAng);
+                armToPos(groundPitch, 1000);
+                return false;
+            }
+        }
+        public Action armDepoPos() {
+            return new ArmDepoPos();
+        }
+
         public class Get1 implements Action {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
@@ -273,7 +286,7 @@ public class StatesRightArmGrab extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(groundPitch, groundSlides[1] + 200, 1.0, 0.2);
+                armToPos(groundPitch, groundSlides[1], 1.0, 0.2);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
@@ -358,7 +371,9 @@ public class StatesRightArmGrab extends LinearOpMode {
                                 return linAccel;
                             }
                         })
-                .strafeToLinearHeading(new Vector2d(clearPos[0], clearPos[1]), clearPos[2], new VelConstraint() {
+
+                //.strafeToLinearHeading(new Vector2d(scoreX - 8, clearPos[1]), clearPos[2]
+                .strafeToLinearHeading(new Vector2d(clearPos[0] + 11, clearPos[1] + 2), clearPos[2], new VelConstraint() {
                             @Override
                             public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
                                 return 120;
@@ -372,7 +387,7 @@ public class StatesRightArmGrab extends LinearOpMode {
                                 return linAccel;
                             }
                         })
-                .strafeToLinearHeading(new Vector2d(clearPos[0]+1, clearPos[1]), clearPos[2]-2)
+                .strafeToLinearHeading(new Vector2d(clearPos[0] + 11, clearPos[1] + 3), clearPos[2])
                 ;
 
 
@@ -438,7 +453,7 @@ public class StatesRightArmGrab extends LinearOpMode {
                                 return linAccel;
                             }
                         })
-                .strafeToLinearHeading(new Vector2d(clearPos[0] + 9, clearPos[1] + 4), Math.toRadians(-90))
+                .strafeToLinearHeading(new Vector2d(clearPos[0] + 11, clearPos[1] + 4), Math.toRadians(-90))
                 ;
 
         Actions.runBlocking(
@@ -450,6 +465,12 @@ public class StatesRightArmGrab extends LinearOpMode {
                         arm.get2Out()
                 )
         );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
 
         depo = drive.actionBuilder(drive.pose)
                 .strafeToLinearHeading(new Vector2d(depoPos[0], depoPos[1]), depoPos[2],
@@ -472,6 +493,7 @@ public class StatesRightArmGrab extends LinearOpMode {
         Actions.runBlocking(
                 new SequentialAction(
                         new ParallelAction(
+                                arm.armDepoPos(),
                                 depo.build()
                         ),
                         arm.outtake()
@@ -485,6 +507,229 @@ public class StatesRightArmGrab extends LinearOpMode {
             time = tm1.milliseconds();
         }
 
+        TrajectoryActionBuilder toGet3 = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(clearPos[0] + 16, clearPos[1] - 16), Math.toRadians(180),
+                        new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 120;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+                .strafeToLinearHeading(new Vector2d(clearPos[0] + 16, -72), Math.toRadians(180), new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 120;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+                .strafeToLinearHeading(new Vector2d(-55, -73), Math.toRadians(180), new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 120;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+                ;
+
+        Actions.runBlocking(
+                new SequentialAction(
+                        new ParallelAction(
+                                arm.prepWall(),
+                                toGet3.build()
+                        ),
+
+                        arm.grab()
+                )
+
+        );
+
+        tm1.reset();
+        time = tm1.milliseconds();
+        while (time < 400 && opModeIsActive()) {
+            time = tm1.milliseconds();
+        }
+
+        TrajectoryActionBuilder goScore = drive.actionBuilder(drive.pose)
+                .strafeToLinearHeading(new Vector2d(scoreX - 8, scoreY[1]), Math.toRadians(180), new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 120;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        })
+                .strafeToLinearHeading(new Vector2d(scoreX + 2, scoreY[1]), Math.toRadians(180), new VelConstraint() {
+                            @Override
+                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return 120;
+                            }
+                        },
+
+                        new AccelConstraint() {
+                            @NonNull
+                            @Override
+                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                return linAccel;
+                            }
+                        });
+
+        Actions.runBlocking(
+                new SequentialAction (
+                        new ParallelAction(
+                                arm.barInit(),
+                                goScore.build()
+                        ),
+
+                        arm.barScore(),
+                        arm.release()
+                )
+        );
+
+        for (int i = 2; i < scoreY.length; i++) {
+
+            TrajectoryActionBuilder getFromWall = drive.actionBuilder(drive.pose)
+                    /*
+                    .strafeToConstantHeading(new Vector2d(toGrab[0] + 24, toGrab[1] + 12),
+                            new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 90;
+                                }
+                            },
+
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            })
+
+                     */
+                    .strafeToLinearHeading(new Vector2d(toGrab[0] + 18, toGrab[1]), toGrab[2],
+                            new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 90;
+                                }
+                            },
+
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            })
+                    .strafeToConstantHeading(new Vector2d(toGrab[0], toGrab[1]),
+                            new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 60;
+                                }
+                            },
+
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            });
+
+            Actions.runBlocking(
+                    new SequentialAction (
+                            new ParallelAction(
+                                    arm.prepWall(),
+                                    getFromWall.build()
+                            ),
+
+                            arm.grab()
+                    )
+            );
+
+            tm1.reset();
+            time = tm1.milliseconds();
+            while (time < 400 && opModeIsActive()) {
+                time = tm1.milliseconds();
+            }
+
+            goScore = drive.actionBuilder(drive.pose)
+                    .strafeToConstantHeading(new Vector2d(scoreX - 8, scoreY[i]), new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 120;
+                                }
+                            },
+
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            })
+                    .strafeToLinearHeading(new Vector2d(scoreX + 4, scoreY[i]), Math.toRadians(180), new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 120;
+                                }
+                            },
+
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            });
+
+            Actions.runBlocking(
+                    new SequentialAction (
+                            new ParallelAction(
+                                    arm.barInit(),
+                                    goScore.build()
+                            ),
+
+                            arm.barScore(),
+                            arm.release()
+                    )
+            );
+
+            tm1.reset();
+            time = tm1.milliseconds();
+            while (time < 400 && opModeIsActive()) {
+                time = tm1.milliseconds();
+            }
+        }
 
         trans.setAngle(drive.pose.heading.toDouble());
     }

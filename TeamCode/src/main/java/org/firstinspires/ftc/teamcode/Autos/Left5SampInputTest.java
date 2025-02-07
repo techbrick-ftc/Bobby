@@ -249,7 +249,7 @@ public class Left5SampInputTest extends LinearOpMode {
                 grab.intake(1);
                 grab.setWristRotation(grabAng);
                 armToPos(-15, grabSlides[0]);
-                return !reached(20);
+                return !reached(40);
             }
         }
         public Action grab1() {
@@ -339,7 +339,7 @@ public class Left5SampInputTest extends LinearOpMode {
             public boolean run(@NonNull TelemetryPacket packet) {
                 grab.intake(1);
                 grab.setWristRotation(inAng);
-                armToPos(grabPitch, grabSlides[3] + 1500);
+                armToPos(grabPitch, grabSlides[3] + 1700, 0.75);
                 return !(grab.checkObjectIn() || reached(20));
             }
         }
@@ -367,6 +367,18 @@ public class Left5SampInputTest extends LinearOpMode {
         }
         public Action outtake () {
             return new Outtake();
+        }
+
+        public class ParkPos implements Action {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                arm.armToPos(1450, 1100);
+                grab.outtake(1.0);
+                return !reached(20);
+            }
+        }
+        public Action parkPos () {
+            return new ParkPos();
         }
 
         public class In implements Action {
@@ -413,6 +425,8 @@ public class Left5SampInputTest extends LinearOpMode {
     subDataTransfer trans;
     subLED LED;
 
+    boolean lastButton = false;
+
     @Override
     public void runOpMode() {
 
@@ -448,20 +462,22 @@ public class Left5SampInputTest extends LinearOpMode {
 
         trans.setTeam(false);
 
-        while (adjusting){
-            if (gamepad1.dpad_left){
-                offset -= .1;
+        while (adjusting && opModeInInit()){
+            if (gamepad1.dpad_left && !lastButton){
+                offset -= 1;
             }
-            else if (gamepad1.dpad_right){
-                offset += .1;
+            else if (gamepad1.dpad_right && !lastButton){
+                offset += 1;
             }
 
-            if (gamepad1.dpad_up){
+            if (gamepad1.dpad_up && !lastButton){
                 trans.setTeam(false);
             }
-            else if (gamepad1.dpad_down){
+            else if (gamepad1.dpad_down && !lastButton){
                 trans.setTeam(true);
             }
+
+            lastButton = gamepad1.dpad_left || gamepad1.dpad_right || gamepad1.dpad_up || gamepad1.dpad_down;
 
             if (gamepad1.a){
                 adjusting = false;
@@ -471,6 +487,8 @@ public class Left5SampInputTest extends LinearOpMode {
             telemetry.addData("Team (true = red): ", trans.getTeam());
             telemetry.addLine("D Pad Up -> blue");
             telemetry.addLine("D Pad Down -> red");
+            telemetry.addLine("D Pad Left -> Closer to players");
+            telemetry.addLine("D Pad Right -> Farther from players");
             telemetry.addLine("Press A to confirm");
             telemetry.update();
         }
@@ -484,7 +502,7 @@ public class Left5SampInputTest extends LinearOpMode {
         );
 
         TrajectoryActionBuilder toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(scoringPos[0] + 2, scoringPos[1] + 7), scoringPos[2] + Math.toRadians(5));
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] + 1, scoringPos[1] + 8), scoringPos[2] + Math.toRadians(5));
 
         Actions.runBlocking(
                 new ParallelAction(
@@ -647,80 +665,93 @@ public class Left5SampInputTest extends LinearOpMode {
             time = tm1.milliseconds();
         }
 
-        TrajectoryActionBuilder toGet4 = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3],
-                        new VelConstraint() {
-                            @Override
-                            public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                                return 120;
-                            }
-                        },
+        TrajectoryActionBuilder toGet4;
+            toGet4 = drive.actionBuilder(drive.pose)
+                    .strafeToLinearHeading(new Vector2d(picksX[3] + offset , picksY[3] + 24), picksAng[3],
+                            new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 120;
+                                }
+                            },
 
-                        new AccelConstraint() {
-                            @NonNull
-                            @Override
-                            public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                                return linAccel;
-                            }
-                        })
-                .strafeToConstantHeading(new Vector2d(picksX[3], picksY[3]))
-                ;
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            })
+                    .strafeToConstantHeading(new Vector2d(picksX[3] + offset, picksY[3] + 3))
+                    ;
 
-        Actions.runBlocking(
+            Actions.runBlocking(
 
-                new ParallelAction(
-                        new SequentialAction(
-                                arm.backReady(),
-                                arm.grab4()
-                        ),
+                    new ParallelAction(
+                            new SequentialAction(
+                                    arm.backReady(),
+                                    arm.grab4()
+                            ),
 
-                        toGet4.build()
-                )
-        );
+                            toGet4.build()
+                    )
+            );
 
-        Actions.runBlocking(
-                new SequentialAction(
-                        arm.grab4out()
-                )
-        );
+            Actions.runBlocking(
+                    new SequentialAction(
+                            arm.grab4out()
+                    )
+            );
 
-        toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3], new VelConstraint() {
-                    @Override
-                    public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return 120;
-                        }
-                    },
+        if (!grab.checkObjectIn()) {
+            Actions.runBlocking(
+                    new SequentialAction(
+                        arm.parkPos()
+                    )
+            );
 
-                new AccelConstraint() {
-                    @NonNull
-                    @Override
-                    public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
-                        return linAccel;
-                    }
-                })
-                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 2, scoringPos[1] + 7), scoringPos[2]);
-
-        Actions.runBlocking(
-
-                new SequentialAction(
-
-                        new ParallelAction(
-                                toScore.build(),
-                                arm.readyPos()
-                        ),
-                        arm.outtakeOnPos(),
-                        arm.scorePos(),
-                        arm.outtake()
-                )
-        );
-
-        tm1.reset();
-        time = tm1.milliseconds();
-        while (time < 100 && opModeIsActive()) {
-            time = tm1.milliseconds();
+            trans.setAngle(drive.pose.heading.toDouble());
         }
 
-        trans.setAngle(drive.pose.heading.toDouble());
+        else {
+            toScore = drive.actionBuilder(drive.pose)
+                    .strafeToLinearHeading(new Vector2d(picksX[3], picksY[3] + 24), picksAng[3], new VelConstraint() {
+                                @Override
+                                public double maxRobotVel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return 120;
+                                }
+                            },
+
+                            new AccelConstraint() {
+                                @NonNull
+                                @Override
+                                public MinMax minMaxProfileAccel(@NonNull Pose2dDual<Arclength> pose2dDual, @NonNull PosePath posePath, double v) {
+                                    return linAccel;
+                                }
+                            })
+                    .strafeToLinearHeading(new Vector2d(scoringPos[0] - 2, scoringPos[1] + 7), scoringPos[2]);
+
+            Actions.runBlocking(
+
+                    new SequentialAction(
+
+                            new ParallelAction(
+                                    toScore.build(),
+                                    arm.readyPos()
+                            ),
+                            arm.outtakeOnPos(),
+                            arm.scorePos(),
+                            arm.outtake()
+                    )
+            );
+
+            tm1.reset();
+            time = tm1.milliseconds();
+            while (time < 100 && opModeIsActive()) {
+                time = tm1.milliseconds();
+            }
+
+            trans.setAngle(drive.pose.heading.toDouble());
+        }
     }
 }

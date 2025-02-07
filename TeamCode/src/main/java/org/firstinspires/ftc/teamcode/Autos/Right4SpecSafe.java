@@ -31,6 +31,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
+import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
 
 @Config
 @Autonomous(name = "Safe 4 Spec")
@@ -210,6 +211,8 @@ public class Right4SpecSafe extends LinearOpMode {
 
     AutoArm arm;
 
+    subDataTransfer trans;
+
     @Override
     public void runOpMode() {
 
@@ -220,6 +223,8 @@ public class Right4SpecSafe extends LinearOpMode {
         tm1 = new ElapsedTime();
 
         linAccel = new MinMax(-80, 90);
+
+        trans = new subDataTransfer();
 
         arm.armToPos(ready[0], ready[1]);
         grab.setWristRotation(0.1);
@@ -396,7 +401,7 @@ public class Right4SpecSafe extends LinearOpMode {
                         }
                 )
 
-                .strafeToConstantHeading(new Vector2d(toGrab[0], pushPos[1]))
+                .strafeToConstantHeading(new Vector2d(toGrab[0] - 2, pushPos[1]))
                 ;
 
 
@@ -543,6 +548,8 @@ public class Right4SpecSafe extends LinearOpMode {
             while (time < 400 && opModeIsActive()) {
                 time = tm1.milliseconds();
             }
+
+            trans.setAngle(drive.pose.heading.toDouble());
 
         }
     }
