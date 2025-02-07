@@ -170,6 +170,7 @@ public class subArm {
             if (time.getTime() - initTime >= realignTime){
                 should.resetSlides();
                 home();
+                Main.routine = 6;
             }
         }
     }
@@ -258,7 +259,6 @@ public class subArm {
         else if (state == 2){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 home();
-                Main.routine = 6;
             }
         }
     }
