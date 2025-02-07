@@ -180,7 +180,7 @@ public class Right3SpecTemplate extends LinearOpMode {
                 rotator.setPosition(0.5);
                 grab.intake(1);
                 armToPos(10, 1800);
-                return !(reached(20) || grab.checkObjectIn());
+                return !(reached(20) || grab.checkObjectIn(false));
             }
         }
         public Action slideOut() {

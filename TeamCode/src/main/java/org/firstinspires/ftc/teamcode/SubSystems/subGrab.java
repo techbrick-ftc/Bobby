@@ -7,10 +7,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Teleops.Main;
 
 import java.util.Date;
 
@@ -23,6 +21,7 @@ public class subGrab {
     public Servo claw;
 
     subLED LED;
+    subDataTransfer dataTransfer = new subDataTransfer();
 
     double distanceTarget = 1.5;
     int direction = 0;
@@ -110,12 +109,12 @@ public class subGrab {
             val = getVal();
 
             // If red
-            if (Main.isRedTeam && redCheck() && val >= redValTol) {
+            if (dataTransfer.getTeam() && redCheck() && val >= redValTol) {
                 detected = true;
                 LED.setRed();
             }
             // If blue
-            else if (!Main.isRedTeam && blueCheck() && val >= blueValTol) {
+            else if (!dataTransfer.getTeam() && blueCheck() && val >= blueValTol) {
                 detected = true;
                 LED.setBlue();
             }

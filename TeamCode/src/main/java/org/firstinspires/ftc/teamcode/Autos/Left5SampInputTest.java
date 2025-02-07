@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
-import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
+import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
 
 @Config
 @Autonomous(name = "5 Samp Auto Offset Test")
@@ -70,6 +70,7 @@ public class Left5SampInputTest extends LinearOpMode {
     int pitchOff = 100;
 
     boolean adjusting = true;
+    boolean isRedTeam = false;
 
     public class AutoArm {
 
@@ -408,7 +409,7 @@ public class Left5SampInputTest extends LinearOpMode {
     AutoArm arm;
     ElapsedTime tm1;
     MinMax linAccel;
-    subPosTransfer trans;
+    subDataTransfer trans;
 
     @Override
     public void runOpMode() {
@@ -419,7 +420,7 @@ public class Left5SampInputTest extends LinearOpMode {
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
 
-        trans = new subPosTransfer();
+        trans = new subDataTransfer();
 
         linAccel = new MinMax(-80, 90);
 
@@ -441,6 +442,8 @@ public class Left5SampInputTest extends LinearOpMode {
         grab.stop();
         grab.release();
 
+        trans.setTeam(false);
+
         while (adjusting){
             if (gamepad1.dpad_left){
                 offset -= .1;
@@ -449,11 +452,21 @@ public class Left5SampInputTest extends LinearOpMode {
                 offset += .1;
             }
 
+            if (gamepad1.dpad_up){
+                trans.setTeam(false);
+            }
+            else if (gamepad1.dpad_down){
+                trans.setTeam(true);
+            }
+
             if (gamepad1.a){
                 adjusting = false;
             }
 
             telemetry.addData("Offset: ", offset);
+            telemetry.addData("Team (true = red): ", trans.getTeam());
+            telemetry.addLine("D Pad Up -> blue");
+            telemetry.addLine("D Pad Down -> red");
             telemetry.addLine("Press A to confirm");
             telemetry.update();
         }

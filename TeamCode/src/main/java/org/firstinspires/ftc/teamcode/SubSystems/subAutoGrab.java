@@ -33,6 +33,9 @@ public class subAutoGrab {
     double redAng2 = 360;
     double blueAng = 220;
     double yellowAng = 40;
+    double yellowValTol = .8;
+    double blueValTol = .4;
+    double redValTol = .65;
 
     public static boolean redCheck;
     public static boolean blueCheck;
@@ -85,7 +88,7 @@ public class subAutoGrab {
         direction = 0;
     }
 
-    public boolean checkObjectIn(){
+    public boolean checkObjectIn(boolean team){
         distance = distanceSensor.getDistance(DistanceUnit.CM);
         time = new Date();
 
@@ -104,23 +107,23 @@ public class subAutoGrab {
 
             if (val > .8)
             {
-                /*
+
                 // If red
-                if (team && redCheck) {
+                if (!team && redCheck() && val >= redValTol) {
                     detected = true;
                 }
                 // If blue
-                else if (!team && blueCheck) {
+                else if (team && blueCheck() && val >= blueValTol) {
                     detected = true;
                 }
                 // If yellow
-                else if (hue >= yellowAng - hueTol & hue <= yellowAng + hueTol) {
+                else if (yellowCheck() && val >= yellowValTol) {
                     detected = true;
                 }
                 else {
                     detected = false;
                 }
-                */
+
 
                 detected = true;
             }
@@ -143,6 +146,18 @@ public class subAutoGrab {
         else {
             return false;
         }
+    }
+
+    public boolean redCheck(){
+        return (hue <= redAng1 + hueTol && hue >= redAng2 - hueTol);
+    }
+
+    public boolean blueCheck(){
+        return (hue >= blueAng - hueTol && hue <= blueAng + hueTol);
+    }
+
+    public boolean yellowCheck(){
+        return (hue >= yellowAng - hueTol && hue <= yellowAng + hueTol);
     }
 
     public boolean checkObjectOut(){

@@ -28,7 +28,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
-import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
+import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
 
 @Config
 @Autonomous(name = "5 Samp Auto")
@@ -408,7 +408,7 @@ public class Left5Samp extends LinearOpMode {
     AutoArm arm;
     ElapsedTime tm1;
     MinMax linAccel;
-    subPosTransfer trans;
+    subDataTransfer trans;
 
     @Override
     public void runOpMode() {
@@ -419,7 +419,7 @@ public class Left5Samp extends LinearOpMode {
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
 
-        trans = new subPosTransfer();
+        trans = new subDataTransfer();
 
         linAccel = new MinMax(-80, 90);
 

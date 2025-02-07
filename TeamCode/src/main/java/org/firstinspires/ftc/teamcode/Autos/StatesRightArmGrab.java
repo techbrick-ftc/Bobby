@@ -20,18 +20,13 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PinpointDrive;
-import org.firstinspires.ftc.teamcode.SubSystems.subAutoGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
-import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
+import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
 
 @Config
 @Autonomous(name = "Right push arm test")
@@ -69,7 +64,7 @@ public class StatesRightArmGrab extends LinearOpMode {
 
     subGrab grab;
 
-    subPosTransfer trans;
+    subDataTransfer trans;
 
     double grabAng = 0.48;
     double inAng = 0.34;
@@ -306,7 +301,7 @@ public class StatesRightArmGrab extends LinearOpMode {
         arm = new AutoArm(hardwareMap);
         tm1 = new ElapsedTime();
 
-        trans = new subPosTransfer();
+        trans = new subDataTransfer();
 
         linAccel = new MinMax(-80, 90);
 

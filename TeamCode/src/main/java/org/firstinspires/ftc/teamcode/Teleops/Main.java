@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.SubSystems.subArm;
 import org.firstinspires.ftc.teamcode.SubSystems.subDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subHang;
-import org.firstinspires.ftc.teamcode.SubSystems.subPosTransfer;
+import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
 
 
 @TeleOp(name="0A TeleOp")
@@ -59,7 +59,7 @@ public class Main extends LinearOpMode {
     subArm arm = null;
     subGrab grab = null;
     subHang hang = null;
-    subPosTransfer autoPos = new subPosTransfer();
+    subDataTransfer dataTransfer = new subDataTransfer();
 
 
 
@@ -71,7 +71,8 @@ public class Main extends LinearOpMode {
         grab = new subGrab(hardwareMap);
         hang = new subHang(hardwareMap);
 
-        drive.setOffset(Math.PI - subPosTransfer.getAngle());
+        drive.setOffset(Math.PI - subDataTransfer.getAngle());
+        isRedTeam = dataTransfer.getTeam();
 
         waitForStart();
         tm1.startTime();
@@ -305,11 +306,12 @@ public class Main extends LinearOpMode {
         telemetry.addData("Shoulder: ", arm.should.shoulder.getCurrentPosition());
         telemetry.addData("Team (false = blue): ", isRedTeam);
         telemetry.addData("Distance: ", grab.getDistance());
-        telemetry.addData("Angle from auto: ", subPosTransfer.getAngle());
+        telemetry.addData("Angle from auto: ", subDataTransfer.getAngle());
         telemetry.update();
     }
 
-    public static void toggleColor(){
+    public void toggleColor(){
+        dataTransfer.setTeam(!dataTransfer.getTeam());
         isRedTeam = !isRedTeam;
     }
 
