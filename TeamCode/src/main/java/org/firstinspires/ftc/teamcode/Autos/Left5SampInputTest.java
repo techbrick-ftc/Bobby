@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.PinpointDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.subGrab;
 import org.firstinspires.ftc.teamcode.SubSystems.subDataTransfer;
+import org.firstinspires.ftc.teamcode.SubSystems.subLED;
 
 @Config
 @Autonomous(name = "5 Samp Auto Offset Test")
@@ -410,6 +411,7 @@ public class Left5SampInputTest extends LinearOpMode {
     ElapsedTime tm1;
     MinMax linAccel;
     subDataTransfer trans;
+    subLED LED;
 
     @Override
     public void runOpMode() {
@@ -421,6 +423,8 @@ public class Left5SampInputTest extends LinearOpMode {
         tm1 = new ElapsedTime();
 
         trans = new subDataTransfer();
+        LED = new subLED(hardwareMap);
+        LED.setAuto();
 
         linAccel = new MinMax(-80, 90);
 

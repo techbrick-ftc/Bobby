@@ -1,4 +1,6 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
+import android.animation.ArgbEvaluator;
+
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -25,6 +27,10 @@ public class subLED {
     public void setYellow(){
         blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
         state = 1;
+    }
+
+    public void setAuto(){
+        blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_SHOT);
     }
 
     public void setFire(){

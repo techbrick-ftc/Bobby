@@ -63,8 +63,8 @@ public class subArm {
     int[] intake = {10, 1550, 37};
     int[] retractIntake = {10, 10, 65};
     int[] wallIntake = {690, 10, 7};
-    int[] barInit = {2290, 220, 44};
-    int[] barRaise = {2290, 770, 44};
+    int[] barInit = {2320, 220, 44};
+    int[] barRaise = {2320, 770, 44};
     int[] highBin = {2080, 3050, 30};
     int[] lowBin = {1500, 1550, 33};
 
@@ -258,6 +258,7 @@ public class subArm {
         else if (state == 2){
             if (should.reached(should.lSlides, highTol) && should.reached(should.shoulder, highTol)) {
                 home();
+                Main.routine = 6;
             }
         }
     }
