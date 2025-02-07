@@ -108,5 +108,6 @@ public class subDrive {
 
     public void recalibrate() {
         imu.initialize(parameters);
+        setOffset(Math.PI);
     }
 }
