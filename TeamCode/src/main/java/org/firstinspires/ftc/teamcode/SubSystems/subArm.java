@@ -63,9 +63,9 @@ public class subArm {
     int[] playerOuttake = {10, 1550, 50};
     int[] intake = {10, 1550, 37};
     int[] retractIntake = {10, 10, 65};
-    int[] wallIntake = {690, 10, 7};
-    int[] barInit = {2320, 220, 44};
-    int[] barRaise = {2320, 770, 44};
+    int[] wallIntake = {710, 10, 7};
+    int[] barInit = {2350, 220, 44};
+    int[] barRaise = {2350, 830, 44};
     int[] highBin = {2080, 3050, 30};
     int[] lowBin = {1500, 1550, 33};
 

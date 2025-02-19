@@ -41,7 +41,7 @@ public class subGrab {
     double yellowAng = 75;
 
     double grabAngle = .49;
-    double lightGrabAngle = .52;
+    double lightGrabAngle = .51;
     double releaseAngle = .7;
     double clickAngle = .9;
 
