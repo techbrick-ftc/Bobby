@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
 public class subDataTransfer extends LinearOpMode {
     static double autoAng;
     static boolean isRedTeam;
+    static Pose2D pose;
 
     public static double getAngle(){
         return autoAng;

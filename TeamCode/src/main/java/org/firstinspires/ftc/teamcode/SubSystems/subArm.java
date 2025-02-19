@@ -31,6 +31,7 @@ public class subArm {
     int realignTime = 500;
     int realignPosInit = 100;
     int realignPos = -100;
+    int outtakeOffset = 1000;
 
     boolean outtaking = false;
     boolean intaking = false;
@@ -183,6 +184,10 @@ public class subArm {
             state++;
         }
         else if (state == 1){
+            if (should.lSlides.getCurrentPosition() >= playerOuttake[1] - outtakeOffset && !outtaking){
+                grab.outtake(1);
+                outtaking = true;
+            }
             if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)){
                 time = new Date();
                 initTime = time.getTime();
@@ -190,8 +195,6 @@ public class subArm {
             }
         }
         else if (state == 2){
-            grab.outtake(1);
-            outtaking = true;
             time = new Date();
             if (time.getTime() - initTime >= outtakeDelay){
                 grab.stop();
