@@ -247,7 +247,7 @@ public class Left5Samp extends LinearOpMode {
                 grab.intake(1);
                 grab.setWristRotation(grabAng);
                 armToPos(-15, grabSlides[0]);
-                return !reached(20);
+                return !reached(40);
             }
         }
         public Action grab1() {
@@ -450,7 +450,7 @@ public class Left5Samp extends LinearOpMode {
         );
 
         TrajectoryActionBuilder toScore = drive.actionBuilder(drive.pose)
-                .strafeToLinearHeading(new Vector2d(scoringPos[0] + 2, scoringPos[1] + 7), scoringPos[2] + Math.toRadians(5));
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] + 1, scoringPos[1] + 8), scoringPos[2] + Math.toRadians(5));
 
         Actions.runBlocking(
                 new ParallelAction(
@@ -629,7 +629,7 @@ public class Left5Samp extends LinearOpMode {
                                 return linAccel;
                             }
                         })
-                .strafeToConstantHeading(new Vector2d(picksX[3], picksY[3]))
+                .strafeToConstantHeading(new Vector2d(picksX[3], picksY[3] + 3))
                 ;
 
         Actions.runBlocking(
@@ -665,7 +665,7 @@ public class Left5Samp extends LinearOpMode {
                         return linAccel;
                     }
                 })
-                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 2, scoringPos[1] + 7), scoringPos[2]);
+                .strafeToLinearHeading(new Vector2d(scoringPos[0] - 1, scoringPos[1] + 6), scoringPos[2]);
 
         Actions.runBlocking(
 
