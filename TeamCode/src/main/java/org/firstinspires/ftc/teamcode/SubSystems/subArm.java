@@ -139,7 +139,7 @@ public class subArm {
         }
     }
 
-    public void highBar(boolean a){
+    public void highBar(boolean a, boolean x){
         if (state == 0) {
             Main.setWallAngle();
             Main.activateHeadingLock();
@@ -154,6 +154,11 @@ public class subArm {
                 grab.grab();
                 should.setSlides(barRaise[1], defSlPow);
                 state++;
+            }
+            else if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol) && x) {
+                grab.grab();
+                should.setSlides(barRaise[1], defSlPow);
+                state = 4;
             }
         }
         else if (state == 2){
@@ -172,6 +177,11 @@ public class subArm {
                 should.resetSlides();
                 home();
                 Main.routine = 6;
+            }
+        }
+        else if (state == 4){
+            if (a) {
+                state = 2;
             }
         }
     }
