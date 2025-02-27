@@ -180,6 +180,12 @@ public class subArm {
             }
         }
         else if (state == 4){
+            if (should.reached(should.lSlides, defTol) && should.reached(should.shoulder, defTol)) {
+                should.setSlides(barRaise[1] - 75, defSlPow);
+                state++;
+            }
+        }
+        else if (state == 5){
             if (a) {
                 state = 2;
             }
